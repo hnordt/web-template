@@ -1,0 +1,19 @@
+/* purgecss start ignore */
+
+@import "~@reach/dialog/styles.css";
+
+@tailwind base;
+@tailwind components;
+
+/* purgecss end ignore */
+
+@tailwind utilities;
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
