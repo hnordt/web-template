@@ -1,7 +1,7 @@
 # OS
 .DS_Store
 
-# NPM
+# npm
 /node_modules
 npm-debug.log*
 
