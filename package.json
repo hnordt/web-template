@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "next dev",
     "test": "jest",
+    "release": "semantic-release",
     "build": "next build",
     "start": "next start"
   },
