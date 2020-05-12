@@ -13,6 +13,7 @@ export default function Toolbar(props) {
           lg: 4,
         }[props.gap]
       }
+      alignItems="center"
       inline={props.inline}
     >
       {props.children}

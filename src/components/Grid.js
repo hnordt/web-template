@@ -10,7 +10,9 @@ export default function Grid(props) {
         props.flow === "col" && "grid-flow-col",
         props.flow === "row" && "grid-flow-row",
         props.cols && `grid-cols-${props.cols}`,
-        props.gap && `gap-${props.gap}`
+        props.gap && `gap-${props.gap}`,
+        props.justifyContent === "center" && "justify-center",
+        props.alignItems === "center" && "items-center"
       )}
     >
       {props.children}

@@ -1,26 +1,17 @@
 import React from "react"
-import axios from "axios"
+import Screen from "components/Screen"
+import Layout from "components/Layout"
+import Container from "components/Container"
+import Link from "components/Link"
 
-export async function getStaticProps() {
-  let response = await axios.get("https://jsonplaceholder.typicode.com/posts")
-
-  return {
-    props: {
-      posts: response.data,
-    },
-  }
-}
-
-export default function Home(props) {
+export default function Home() {
   return (
-    <div className="p-4">
-      <ul>
-        {props.posts.map((post) => (
-          <li key={post.id} className="mt-1">
-            {post.title}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Screen title="Home">
+      <Layout>
+        <Container>
+          <Link href="/playground">Playground</Link>
+        </Container>
+      </Layout>
+    </Screen>
   )
 }

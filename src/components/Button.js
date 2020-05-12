@@ -9,7 +9,8 @@ let Button = React.forwardRef(function Button(props, ref) {
       ref={ref}
       type={props.type ?? "button"}
       className={cn(
-        "flex inline-flex justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out border rounded-md shadow-sm focus:outline-none",
+        props.variant &&
+          "flex inline-flex justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out border rounded-md shadow-sm focus:outline-none",
         props.variant === "secondary" &&
           "text-gray-700 bg-white border-gray-300 hover:text-gray-500 focus:border-blue-300 focus:shadow-outline",
         props.variant === "danger" &&
