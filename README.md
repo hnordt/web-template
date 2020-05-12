@@ -22,6 +22,10 @@ Makes a new release.
 
 Builds the app for production.
 
+### `yarn export`
+
+Exports the app to static HTML, which can be run standalone without the need of a server.
+
 ### `yarn start`
 
 Runs the app in the production mode.
