@@ -14,6 +14,10 @@ Runs the app in the development mode.
 
 Launches the test runner in the interactive watch mode.
 
+### `yarn release`
+
+Makes a new release.
+
 ### `yarn build`
 
 Builds the app for production.

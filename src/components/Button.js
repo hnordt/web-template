@@ -1,5 +1,5 @@
 import React from "react"
-import { cn } from "@smalldots/toolkit"
+import { cn } from "@hnordt/toolkit"
 import Icon from "components/Icon"
 import Spinner from "components/Spinner"
 

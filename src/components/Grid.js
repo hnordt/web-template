@@ -1,5 +1,5 @@
 import React from "react"
-import { cn } from "@smalldots/toolkit"
+import { cn } from "@hnordt/toolkit"
 import { GridPropTypes } from "utils/propTypes"
 
 export default function Grid(props) {

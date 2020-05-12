@@ -1,4 +1,4 @@
-import { buildCreateClient } from "@smalldots/toolkit"
+import { buildCreateClient } from "@hnordt/toolkit"
 import axios from "axios"
 
 let httpClient = axios.create({
