@@ -1,14 +1,11 @@
 import { buildCreateClient } from "@hnordt/toolkit"
 import axios from "axios"
 
-let httpClient = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
-})
-
 let createClient = buildCreateClient({
   sendRequest: (params) =>
-    httpClient({
+    axios({
       method: params.method,
+      baseURL: "https://jsonplaceholder.typicode.com",
       url: params.path,
       [params.method === "get" ? "params" : "data"]: params.payload,
     })

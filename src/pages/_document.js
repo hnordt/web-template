@@ -6,7 +6,7 @@ export default class Document extends BaseDocument {
     return (
       <Html lang="en">
         <Head>
-          <meta name="description" content="This is a web app" />
+          <meta name="description" content="" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900&display=swap"

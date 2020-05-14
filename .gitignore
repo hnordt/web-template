@@ -14,7 +14,7 @@ yarn-error.log*
 # Jest
 /coverage
 
-# Next
+# Next.js
 /.next
 /out
 .env.local
