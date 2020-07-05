@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "next dev",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "build": "next build",
     "export": "next export",
     "start": "next start",
