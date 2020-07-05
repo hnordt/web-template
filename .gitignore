@@ -5,12 +5,6 @@
 /node_modules
 npm-debug.log*
 
-# Yarn
-/.pnp
-.pnp.js
-yarn-debug.log*
-yarn-error.log*
-
 # Jest
 /coverage
 
