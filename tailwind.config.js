@@ -12,6 +12,15 @@ module.exports = {
     boxShadow: ["responsive", "hover", "focus", "focus-visible"],
     textDecoration: ["responsive", "hover", "focus", "focus-visible"],
   },
+  future: {
+    removeDeprecatedGapUtilities: true,
+  },
+  experimental: {
+    uniformColorPalette: true,
+    extendedFontSizeScale: true,
+    defaultLineHeights: true,
+    extendedSpacingScale: true,
+  },
   plugins: [require("@tailwindcss/typography"), require("@tailwindcss/ui")],
   purge: ["src/**/*.js"],
 }
