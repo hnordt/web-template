@@ -1,6 +1,5 @@
 import React from "react"
 import { ToastContainer, Slide, toast } from "react-toastify"
-
 import "focus-visible"
 import "react-toastify/dist/ReactToastify.css"
 import "styles/index.css"
