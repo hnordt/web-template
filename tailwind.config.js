@@ -1,6 +1,18 @@
 let defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+  },
+  experimental: {
+    uniformColorPalette: true,
+    standardFontWeights: true,
+    extendedFontSizeScale: true,
+    defaultLineHeights: true,
+    extendedSpacingScale: true,
+    applyComplexClasses: true,
+  },
   theme: {
     extend: {
       fontFamily: {
@@ -12,15 +24,8 @@ module.exports = {
     boxShadow: ["responsive", "hover", "focus", "focus-visible"],
     textDecoration: ["responsive", "hover", "focus", "focus-visible"],
   },
-  future: {
-    removeDeprecatedGapUtilities: true,
-  },
-  experimental: {
-    uniformColorPalette: true,
-    extendedFontSizeScale: true,
-    defaultLineHeights: true,
-    extendedSpacingScale: true,
+  purge: {
+    content: ["src/**/*.js"],
   },
   plugins: [require("@tailwindcss/typography"), require("@tailwindcss/ui")],
-  purge: ["src/**/*.js"],
 }
