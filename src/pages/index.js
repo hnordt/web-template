@@ -1,10 +1,9 @@
 import React from "react"
-import Layout from "components/Layout"
 
 export default function Index() {
   return (
-    <Layout title="Home">
+    <main className="p-6">
       <h1>It works!</h1>
-    </Layout>
+    </main>
   )
 }

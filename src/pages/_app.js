@@ -1,4 +1,5 @@
 import React from "react"
+import Head from "next/head"
 import { BrowserRouter } from "react-router-dom"
 import { ToastContainer, Slide, toast } from "react-toastify"
 import "focus-visible"
@@ -12,6 +13,9 @@ export default function App(props) {
 
   return (
     <>
+      <Head>
+        <title>App</title>
+      </Head>
       <BrowserRouter>
         <props.Component {...props.pageProps} />
       </BrowserRouter>
