@@ -11,7 +11,7 @@ export default function App(props) {
     <>
       <Head>
         <meta name="description" content="" />
-        <title>Foo</title>
+        <title></title>
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylesheet"
