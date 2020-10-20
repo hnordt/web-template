@@ -2,14 +2,14 @@ let defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
   future: {
+    standardFontWeights: true,
+    defaultLineHeights: true,
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
   },
   experimental: {
     uniformColorPalette: true,
-    standardFontWeights: true,
     extendedFontSizeScale: true,
-    defaultLineHeights: true,
     extendedSpacingScale: true,
     applyComplexClasses: true,
   },
