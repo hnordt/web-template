@@ -8,6 +8,7 @@
     "release": "semantic-release"
   },
   "dependencies": {
+    "@headlessui/react": "0.2.0",
     "@tailwindui/react": "0.1.1",
     "@xstate/react": "1.0.1",
     "axios": "0.20.0",
