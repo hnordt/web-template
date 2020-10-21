@@ -6,7 +6,7 @@ export default class Document extends BaseDocument {
     return (
       <Html lang="en">
         <Head />
-        <body className="text-gray-900 antialiased">
+        <body className="antialiased">
           <Main />
           <NextScript />
         </body>
