@@ -1,8 +1,8 @@
 # Web Template
 
-A template for creating amazing web apps
+A template for creating web apps
 
-## Available Scripts
+## Available scripts
 
 In the project directory, you can run:
 
