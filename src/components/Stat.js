@@ -1,15 +1,19 @@
 import React from "react"
 import cn from "classnames"
+import { StatsContext } from "components/Stats"
 
 export default function Stat(props) {
+  const statsContext = React.useContext(StatsContext)
+  const variant = props.variant ?? statsContext.variant
+
   return (
     <div className="flex flex-col items-end">
       <dd
         className={cn("font-bold text-lg", {
-          "text-gray-600": props.variant === "secondary",
-          "text-blue-500": props.variant === "primary",
-          "text-yellow-400": props.variant === "warning",
-          "text-red-500": props.variant === "danger",
+          "text-gray-600": variant === "secondary",
+          "text-blue-500": variant === "primary",
+          "text-yellow-400": variant === "warning",
+          "text-red-500": variant === "danger",
         })}
       >
         {props.value}
