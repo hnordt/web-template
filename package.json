@@ -15,7 +15,7 @@
     "classnames": "2.2.6",
     "focus-visible": "5.2.0",
     "lodash": "4.17.20",
-    "next": "10.0.1",
+    "next": "^10.0.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-hook-form": "6.10.1",
@@ -30,7 +30,7 @@
     "@commitlint/cli": "11.0.0",
     "@commitlint/config-conventional": "11.0.0",
     "@tailwindcss/typography": "0.2.0",
-    "@tailwindcss/ui": "0.7.2",
+    "@tailwindcss/ui": "^0.7.2",
     "@testing-library/jest-dom": "5.11.5",
     "@testing-library/react": "11.1.1",
     "@testing-library/user-event": "12.2.0",
@@ -51,7 +51,7 @@
     "postcss-focus-visible": "5.0.0",
     "prettier": "2.1.2",
     "semantic-release": "17.2.2",
-    "tailwindcss": "1.9.6"
+    "tailwindcss": "^1.9.6"
   },
   "private": true
 }

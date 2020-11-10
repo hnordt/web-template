@@ -1,5 +1,7 @@
 let defaultTheme = require("tailwindcss/defaultTheme")
 
+const plugin = require("tailwindcss/plugin")
+
 module.exports = {
   future: {
     standardFontWeights: true,
@@ -23,9 +25,20 @@ module.exports = {
   variants: {
     boxShadow: ["responsive", "hover", "focus", "focus-visible"],
     textDecoration: ["responsive", "hover", "focus", "focus-visible"],
+    primary: "text-blue-500",
   },
   purge: {
     content: ["src/**/*.js"],
   },
-  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/ui")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/ui"),
+    plugin(function ({ addVariant, e }) {
+      addVariant("primary", ({ modifySelectors, separator }) => {
+        modifySelectors(
+          ({ className }) => `.${e(`primary${separator}${className}`)}`
+        )
+      })
+    }),
+  ],
 }
