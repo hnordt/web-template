@@ -30,15 +30,4 @@ module.exports = {
   purge: {
     content: ["src/**/*.js"],
   },
-  plugins: [
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/ui"),
-    plugin(function ({ addVariant, e }) {
-      addVariant("primary", ({ modifySelectors, separator }) => {
-        modifySelectors(
-          ({ className }) => `.${e(`primary${separator}${className}`)}`
-        )
-      })
-    }),
-  ],
 }
