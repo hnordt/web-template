@@ -50,6 +50,7 @@
     "lint-staged": "10.5.1",
     "postcss-focus-visible": "5.0.0",
     "prettier": "2.1.2",
+    "prettier-plugin-tailwind": "2.1.9",
     "semantic-release": "17.2.2",
     "tailwindcss": "1.9.6"
   },
