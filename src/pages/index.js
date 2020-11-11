@@ -7,7 +7,7 @@ function Breadcrumbs(props) {
 
 function Breadcrumb(props) {
   return (
-    <ol className="flex inline items-center space-x-4 ml-4">
+    <ol className="flex inline items-center space-x-2 ml-2">
       <li>
         <div>
           <a
