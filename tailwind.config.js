@@ -1,6 +1,4 @@
-let defaultTheme = require("tailwindcss/defaultTheme")
-
-const plugin = require("tailwindcss/plugin")
+const defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
   future: {
@@ -25,9 +23,9 @@ module.exports = {
   variants: {
     boxShadow: ["responsive", "hover", "focus", "focus-visible"],
     textDecoration: ["responsive", "hover", "focus", "focus-visible"],
-    primary: "text-blue-500",
   },
   purge: {
     content: ["src/**/*.js"],
   },
+  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/ui")],
 }
