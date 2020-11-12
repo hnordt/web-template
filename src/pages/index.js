@@ -4,6 +4,7 @@ import {
   BsCheckCircle,
   BsInfoCircleFill,
   BsXCircleFill,
+  BsX,
 } from "react-icons/bs"
 import cn from "classnames"
 
@@ -18,7 +19,7 @@ export default function Index() {
         className={cn("rounded-md p-4", {
           "bg-yellow-50": props.variant === "warning",
           "bg-green-50": props.variant === "success",
-          "bg-gray-100": props.variant === "secondary",
+          "bg-blue-100": props.variant === "secondary",
           "bg-red-50": props.variant === "danger",
         })}
       >
@@ -26,7 +27,7 @@ export default function Index() {
           <div
             className={cn("flex-shrink-0", {
               "text-green-600": props.variant === "success",
-              "text-gray-500": props.variant === "secondary",
+              "text-blue-500": props.variant === "secondary",
               "text-yellow-400": props.variant === "warning",
               "text-red-600": props.variant === "danger",
             })}
@@ -41,7 +42,7 @@ export default function Index() {
               className={cn("text-sm leading-5 font-medium", {
                 "text-green-800": props.variant === "success",
                 "text-yellow-800": props.variant === "warning",
-                "text-gray-800": props.variant === "secondary",
+                "text-blue-800": props.variant === "secondary",
                 "text-red-800": props.variant === "danger",
               })}
             >
@@ -51,7 +52,7 @@ export default function Index() {
               className={cn("mt-2 text-sm leading-5", {
                 "text-green-500": props.variant === "success",
                 "text-yellow-500": props.variant === "warning",
-                "text-gray-500": props.variant === "secondary",
+                "text-blue-500": props.variant === "secondary",
                 "text-red-500": props.variant === "danger",
               })}
             >
@@ -59,6 +60,27 @@ export default function Index() {
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid
                 pariatur, ipsum similique veniam quo totam eius aperiam dolorum.
               </p>
+            </div>
+          </div>
+          <div className="ml-auto pl-3">
+            <div className="-mx-1.5 my-1.5">
+              <button
+                className={cn(
+                  "inline-flex rounded-md p-1.5 transition ease-in-out duration-150",
+                  {
+                    "text-green-500 hover:bg-green-100 focus:outline-none focus:bg-green-100":
+                      props.variant === "success",
+                    "text-blue-500 hover:bg-blue-100 focus:outline-none focus:bg-blue-100":
+                      props.variant === "secondary",
+                    "text-yellow-500 hover:bg-yellow-100 focus:outline-none focus:bg-yellow-100":
+                      props.variant === "warning",
+                    "text-red-500 hover:bg-red-100 focus:outline-none focus:bg-red-100":
+                      props.variant === "danger",
+                  }
+                )}
+              >
+                <BsX size={20} />
+              </button>
             </div>
           </div>
         </div>
