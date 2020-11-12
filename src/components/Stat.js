@@ -8,8 +8,8 @@ export default function Stat(props) {
 
   return (
     <li className="flex flex-col items-end">
-      <span
-        className={cn("block font-bold text-lg", {
+      <div
+        className={cn("font-bold text-lg", {
           "text-gray-600": variant === "secondary",
           "text-blue-500": variant === "primary",
           "text-yellow-400": variant === "warning",
@@ -17,8 +17,8 @@ export default function Stat(props) {
         })}
       >
         {props.children}
-      </span>
-      <span className="block text-gray-500 text-sm">{props.label}</span>
+      </div>
+      <div className="text-gray-500 text-sm">{props.label}</div>
     </li>
   )
 }
