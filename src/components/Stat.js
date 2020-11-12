@@ -9,12 +9,13 @@ export default function Stat(props) {
   return (
     <li className="flex flex-col items-end">
       <div
-        className={cn("font-bold text-lg", {
-          "text-gray-600": variant === "secondary",
-          "text-blue-500": variant === "primary",
-          "text-yellow-400": variant === "warning",
-          "text-red-500": variant === "danger",
-        })}
+        className={cn(
+          "font-bold text-lg",
+          variant === "secondary" && "text-gray-600",
+          variant === "primary" && "text-blue-500",
+          variant === "warning" && "text-yellow-400",
+          variant === "danger" && "text-red-500"
+        )}
       >
         {props.children}
       </div>
