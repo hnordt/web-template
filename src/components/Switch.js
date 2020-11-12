@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function Toggle(props) {
+export default function Switch(props) {
   return (
     <div>
       <span
