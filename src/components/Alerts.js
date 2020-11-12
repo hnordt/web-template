@@ -1,5 +1,5 @@
 import React from "react"
 
 export default function Alerts(props) {
-  return <div>{props.children}</div>
+  return <div className="">{props.children}</div>
 }
