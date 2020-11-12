@@ -4,7 +4,7 @@ export const StatsContext = React.createContext()
 
 export default function Stats(props) {
   return (
-    <ol className="flex space-x-6">
+    <dl className="flex space-x-6">
       <StatsContext.Provider
         value={{
           variant: props.variant,
@@ -12,6 +12,6 @@ export default function Stats(props) {
       >
         {props.children}
       </StatsContext.Provider>
-    </ol>
+    </dl>
   )
 }

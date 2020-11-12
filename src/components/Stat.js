@@ -7,19 +7,23 @@ export default function Stat(props) {
   const variant = props.variant ?? statsContext.variant
 
   return (
-    <li className="flex flex-col items-end">
-      <div
+    <div>
+      <dt className="text-gray-500 truncate text-sm font-medium">
+        {props.label}
+      </dt>
+      <dd
         className={cn(
-          "font-bold text-lg",
+          "mt-1 text-3xl font-semibold",
+          !variant && "text-gray-900",
+          variant === "primary" && "text-blue-600",
           variant === "secondary" && "text-gray-600",
-          variant === "primary" && "text-blue-500",
-          variant === "warning" && "text-yellow-400",
-          variant === "danger" && "text-red-500"
+          variant === "success" && "text-green-600",
+          variant === "warning" && "text-orange-500",
+          variant === "danger" && "text-red-600"
         )}
       >
         {props.children}
-      </div>
-      <div className="text-gray-500 text-sm">{props.label}</div>
-    </li>
+      </dd>
+    </div>
   )
 }
