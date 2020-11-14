@@ -10,9 +10,9 @@ export default function Radio(props) {
         <input
           className="form-radio"
           type="radio"
-          name={radioGroupContext.name}
+          name={props.name ?? radioGroupContext.name}
           value={props.value}
-          checked={props.value === radioGroupContext.value}
+          checked={props.checked ?? props.value === radioGroupContext.value}
           onChange={(e) =>
             (props.onChange ?? radioGroupContext.onChange)?.(
               e.target.value,
