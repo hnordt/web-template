@@ -3,7 +3,9 @@ import React from "react"
 export default function Input(props) {
   return (
     <label>
-      {props.label && <span className="text-gray-700">{props.label}</span>}
+      {props.label && (
+        <span className="text-gray-700 text-base">{props.label}</span>
+      )}
       <input
         className="form-input block mt-1 w-full"
         type={props.type}

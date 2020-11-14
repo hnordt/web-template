@@ -20,7 +20,7 @@ export default function Radio(props) {
             )
           }
         />
-        <span className="ml-2 text-gray-900">{props.label}</span>
+        <span className="ml-2 text-gray-900 text-base">{props.label}</span>
       </span>
     </label>
   )
