@@ -12,13 +12,22 @@ export default function Checkbox(props) {
           type="checkbox"
           name={props.name ?? checkboxGroupContext.name}
           value={props.value}
-          checked={props.checked ?? props.value === checkboxGroupContext.value}
-          onChange={(e) =>
-            (props.onChange ?? checkboxGroupContext.onChange)?.(
-              e.target.value,
-              e.target.checked
-            )
+          checked={
+            props.checked ?? checkboxGroupContext.value.includes(props.value)
           }
+          onChange={(e) => {
+            if (props.onChange) {
+              return props.onChange(e.target.value, e.target.checked)
+            }
+
+            checkboxGroupContext.onChange?.(
+              checkboxGroupContext.value.includes(props.value)
+                ? checkboxGroupContext.value.filter(
+                    (value) => value !== props.value
+                  )
+                : [...checkboxGroupContext.value, e.target.value]
+            )
+          }}
         />
         <span className="ml-2 text-gray-900">{props.label}</span>
       </span>
