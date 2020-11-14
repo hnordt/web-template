@@ -27,5 +27,9 @@ module.exports = {
   purge: {
     content: ["src/**/*.js"],
   },
-  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/ui")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/custom-forms"),
+    require("@tailwindcss/ui"),
+  ],
 }

@@ -1,0 +1,27 @@
+import React from "react"
+import { RadioGroupContext } from "components/RadioGroup"
+
+export default function Radio(props) {
+  const radioGroupContext = React.useContext(RadioGroupContext)
+
+  return (
+    <label>
+      <span className="flex items-center">
+        <input
+          className="form-radio"
+          type="radio"
+          name={radioGroupContext.name}
+          value={props.value}
+          checked={props.value === radioGroupContext.value}
+          onChange={(e) =>
+            (props.onChange ?? radioGroupContext.onChange)?.(
+              e.target.value,
+              e.target.checked
+            )
+          }
+        />
+        <span className="ml-2 text-gray-900">{props.label}</span>
+      </span>
+    </label>
+  )
+}
