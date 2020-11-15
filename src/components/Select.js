@@ -4,10 +4,12 @@ export default function Select(props) {
   return (
     <label>
       {props.label && (
-        <span className="text-gray-700 text-base">{props.label}</span>
+        <span className="inline-block mb-1 text-gray-700 text-base">
+          {props.label}
+        </span>
       )}
       <select
-        className="form-select block mt-1 w-full"
+        className="form-select block w-full"
         name={props.name}
         value={props.value}
         onChange={(e) => props.onChange?.(e.target.value)}

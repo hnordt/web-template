@@ -4,10 +4,12 @@ export default function Input(props) {
   return (
     <label>
       {props.label && (
-        <span className="text-gray-700 text-base">{props.label}</span>
+        <span className="inline-block mb-1 text-gray-700 text-base">
+          {props.label}
+        </span>
       )}
       <input
-        className="form-input block mt-1 w-full"
+        className="form-input block w-full"
         type={props.type}
         name={props.name}
         value={props.value}
