@@ -2,9 +2,9 @@ import React from "react"
 
 export default function TextArea(props) {
   return (
-    <label>
+    <label className="block">
       {props.label && (
-        <span className="inline-block mb-1 text-gray-700 text-base">
+        <span className="block mb-1 text-gray-700 text-base">
           {props.label}
         </span>
       )}

@@ -5,7 +5,7 @@ export default function Checkbox(props) {
   const checkboxGroupContext = React.useContext(CheckboxGroupContext)
 
   return (
-    <label>
+    <label className="block">
       <span className="flex items-center">
         <input
           className="form-checkbox"

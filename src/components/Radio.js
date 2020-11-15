@@ -5,7 +5,7 @@ export default function Radio(props) {
   const radioGroupContext = React.useContext(RadioGroupContext)
 
   return (
-    <label>
+    <label className="block">
       <span className="flex items-center">
         <input
           className="form-radio"

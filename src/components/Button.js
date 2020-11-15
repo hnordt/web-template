@@ -12,7 +12,8 @@ export default function Button(props) {
           props.variant === "secondary" &&
             "hover:text-gray-500 text-gray-700 active:text-gray-800 active:bg-gray-50 bg-white focus:border-blue-300 border-gray-300"
         )}
-        type="button"
+        type={props.type ?? "button"}
+        onClick={() => props.onClick?.()}
       >
         {props.children}
       </button>
