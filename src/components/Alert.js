@@ -13,19 +13,21 @@ export default function Alert(props) {
           <div className="mt-2 text-yellow-700 text-sm">
             <p>{props.description}</p>
           </div>
-          <div className="mt-4">
-            <div className="flex -mx-2 -my-1.5 space-x-3">
-              {props.actions.map((action) => (
-                <button
-                  key={btoa(action.label)}
-                  className="px-2 py-1.5 text-yellow-700 text-sm font-medium leading-5 hover:bg-yellow-100 focus:bg-yellow-100 rounded-md focus:outline-none transition duration-150 ease-in-out"
-                  onClick={action.onClick}
-                >
-                  {action.label}
-                </button>
-              ))}
+          {props.actions && (
+            <div className="mt-4">
+              <div className="flex -mx-2 -my-1.5 space-x-3">
+                {props.actions.map((action) => (
+                  <button
+                    key={btoa(action.label)}
+                    className="px-2 py-1.5 text-yellow-700 text-sm font-medium leading-5 hover:bg-yellow-100 focus:bg-yellow-100 rounded-md focus:outline-none transition duration-150 ease-in-out"
+                    onClick={action.onClick}
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
