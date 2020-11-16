@@ -10,9 +10,11 @@ export default function Alert(props) {
         </div>
         <div className="ml-3">
           <h3 className="text-yellow-800 text-sm font-medium">{props.title}</h3>
-          <div className="mt-2 text-yellow-700 text-sm">
-            <p>{props.description}</p>
-          </div>
+          {props.description && (
+            <div className="mt-2 text-yellow-700 text-sm">
+              <p>{props.description}</p>
+            </div>
+          )}
           {props.actions && (
             <div className="mt-4">
               <div className="flex -mx-2 -my-1.5 space-x-3">
