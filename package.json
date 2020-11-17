@@ -10,6 +10,7 @@
   "dependencies": {
     "@headlessui/react": "0.2.0",
     "@reach/auto-id": "0.11.2",
+    "@reach/dialog": "0.11.2",
     "@reach/popover": "0.11.2",
     "@reach/tooltip": "0.11.2",
     "@tailwindui/react": "0.1.1",
