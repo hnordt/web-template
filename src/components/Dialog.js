@@ -4,8 +4,8 @@ import { DialogOverlay, DialogContent } from "@reach/dialog"
 import cn from "classnames"
 
 export default function Dialog(props) {
-  const [open, setOpen] = React.useState(props.open)
   const onDismissedRef = React.useRef(props.onDismissed)
+  const [open, setOpen] = React.useState(props.open)
 
   React.useEffect(() => {
     onDismissedRef.current = props.onDismissed
