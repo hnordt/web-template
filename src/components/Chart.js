@@ -1,17 +1,14 @@
 import React from "react"
 import { PieChart, Pie, Cell, Legend } from "recharts"
-import { BsPersonFill } from "react-icons/bs"
 
 export const Chart = (props) => (
   <div className="align-middle w-1/4 text-center">
     <h1 className="relative top-48 -ml-2 w-24 transform -rotate-90">
       {props.title}
     </h1>
-    <BsPersonFill
-      size={40}
-      color="gray"
-      className="absolute left-36 top-44 place-self-center ml-3 mt-1"
-    />
+    <i className="absolute left-36 top-44 place-self-center ml-5 mt-2 text-gray-400">
+      {props.icon}
+    </i>
     <PieChart width={490} height={400} className="leading-10">
       <Legend
         height="50%"
@@ -20,7 +17,7 @@ export const Chart = (props) => (
         align="right"
         verticalAlign="middle"
         iconType="circle"
-        iconSize={11}
+        iconSize={9}
       />
 
       <Pie
