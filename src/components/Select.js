@@ -14,7 +14,11 @@ export default function Select(props) {
         value={props.value}
         onChange={(e) => props.onChange?.(e.target.value)}
       >
-        {props.children}
+        {props.options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </select>
     </label>
   )
