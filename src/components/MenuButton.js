@@ -1,5 +1,7 @@
 import React from "react"
 import { Menu, Transition } from "@headlessui/react"
+import { RiArrowDownSLine } from "react-icons/ri"
+import cn from "classnames"
 
 export default function MenuButton(props) {
   return (
@@ -10,17 +12,7 @@ export default function MenuButton(props) {
             <span className="rounded-md shadow-sm">
               <Menu.Button className="inline-flex justify-center px-4 py-2 w-full hover:text-gray-500 text-gray-700 active:text-gray-800 text-sm font-medium active:bg-gray-50 bg-white border focus:border-blue-300 border-gray-300 rounded-md focus:outline-none focus:shadow-outline-blue transition duration-150 ease-in-out">
                 <span>{props.label}</span>
-                <svg
-                  className="-mr-1 ml-2 w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <RiArrowDownSLine className="-mr-1 ml-2 w-5 h-5" />
               </Menu.Button>
             </span>
             <Transition
@@ -33,7 +25,7 @@ export default function MenuButton(props) {
               show={menu.open}
             >
               <Menu.Items
-                className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md outline-none shadow-lg divide-gray-100 divide-y origin-top-right"
+                className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-md outline-none shadow-lg divide-gray-100 divide-y origin-top-right"
                 static
               >
                 {props.items.map((itemGroup, itemGroupIndex) => (
@@ -52,11 +44,12 @@ export default function MenuButton(props) {
                         <Menu.Item key={btoa(item.label)}>
                           {(menuItem) => (
                             <a
-                              className={`${
+                              className={cn(
+                                "flex justify-between px-4 py-2 w-full text-left text-sm focus:outline-none",
                                 menuItem.active
-                                  ? "bg-gray-100 text-gray-900"
+                                  ? "text-gray-900 bg-gray-100"
                                   : "text-gray-700"
-                              } flex justify-between w-full px-4 py-2 text-sm text-left`}
+                              )}
                               href={item.href ?? "#"}
                               onClick={(e) => {
                                 e.preventDefault()
