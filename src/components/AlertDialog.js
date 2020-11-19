@@ -90,7 +90,7 @@ export default function AlertDialog(props) {
             <div className="mt-5 sm:flex sm:flex-row-reverse sm:mt-4">
               <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                 <button
-                  className="inline-flex justify-center px-4 py-2 w-full text-white text-base font-medium hover:bg-red-500 bg-red-600 border focus:border-red-700 border-transparent rounded-md focus:outline-none focus:shadow-outline-red shadow-sm transition duration-150 ease-in-out sm:text-sm"
+                  className="focus:ring-red inline-flex justify-center px-4 py-2 w-full text-white text-base font-medium hover:bg-red-500 bg-red-600 border focus:border-red-700 border-transparent rounded-md focus:outline-none shadow-sm transition sm:text-sm"
                   type="button"
                   onClick={props.onConfirm}
                 >
@@ -99,7 +99,7 @@ export default function AlertDialog(props) {
               </span>
               <span className="flex mt-3 w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                 <button
-                  className="inline-flex justify-center px-4 py-2 w-full hover:text-gray-500 text-gray-700 text-base font-medium bg-white border focus:border-blue-300 border-gray-300 rounded-md focus:outline-none focus:shadow-outline-blue shadow-sm transition duration-150 ease-in-out sm:text-sm"
+                  className="focus:ring-blue inline-flex justify-center px-4 py-2 w-full hover:text-gray-500 text-gray-700 text-base font-medium bg-white border focus:border-blue-300 border-gray-300 rounded-md focus:outline-none shadow-sm transition sm:text-sm"
                   type="button"
                   ref={dismissButtonRef}
                   onClick={props.onDismiss}

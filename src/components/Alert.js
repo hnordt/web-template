@@ -21,7 +21,7 @@ export default function Alert(props) {
                 {props.actions.map((action) => (
                   <button
                     key={btoa(action.label)}
-                    className="px-2 py-1.5 text-yellow-700 text-sm font-medium leading-5 hover:bg-yellow-100 focus:bg-yellow-100 rounded-md focus:outline-none transition duration-150 ease-in-out"
+                    className="px-2 py-1.5 text-yellow-700 text-sm font-medium leading-5 hover:bg-yellow-100 focus:bg-yellow-100 rounded-md focus:outline-none transition"
                     onClick={action.onClick}
                   >
                     {action.label}

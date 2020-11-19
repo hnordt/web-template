@@ -3,7 +3,7 @@ import { Link as BaseLink } from "react-router-dom"
 
 export default function Link(props) {
   const className =
-    "hover:text-blue-500 text-blue-600 focus:underline font-medium focus:outline-none transition duration-150 ease-in-out"
+    "hover:text-blue-500 text-blue-600 focus:underline font-medium focus:outline-none transition"
 
   if (props.href) {
     const external = props.href.startsWith("http")
