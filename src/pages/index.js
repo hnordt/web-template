@@ -1,16 +1,13 @@
 import React from "react"
-import { FiX, FiFacebook, FiTwitter, FiLinkedin, FiPhone } from "react-icons/fi"
+import { FiX, FiFacebook, FiTwitter, FiLinkedin } from "react-icons/fi"
 
 function NewLayout(props) {
   return (
     <div className="w-full max-w-md">
-      <div className="flex items-center justify-between p-4">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <h1 className="text-gray-500 text-lg font-semibold">Contact Details</h1>
-        <span className="relative left-0">
-          <FiX color={"gray"} size={24} />
-        </span>
+        <FiX className="w-6 h-6 text-gray-500" />
       </div>
-      <hr />
       <div className="p-10 text-center">
         <img
           className="m-auto w-28 h-28 rounded-3xl"
