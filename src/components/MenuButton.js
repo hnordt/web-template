@@ -3,6 +3,40 @@ import { Menu, Transition } from "@headlessui/react"
 import { RiArrowDownSLine } from "react-icons/ri"
 import cn from "classnames"
 
+function Item(props) {
+  if (props.disabled) {
+    return (
+      <Menu.Item
+        as="span"
+        className="flex justify-between px-4 py-2 w-full text-left text-gray-700 text-sm opacity-50 cursor-not-allowed"
+        disabled
+      >
+        {props.label}
+      </Menu.Item>
+    )
+  }
+
+  return (
+    <Menu.Item>
+      {(menuItem) => (
+        <a
+          className={cn(
+            "flex justify-between px-4 py-2 w-full text-left text-sm focus:outline-none",
+            menuItem.active ? "text-gray-900 bg-gray-100" : "text-gray-700"
+          )}
+          href={props.href ?? "#"}
+          onClick={(e) => {
+            e.preventDefault()
+            props.onClick?.()
+          }}
+        >
+          {props.label}
+        </a>
+      )}
+    </Menu.Item>
+  )
+}
+
 export default function MenuButton(props) {
   return (
     <div className="relative inline-block text-left">
@@ -28,42 +62,29 @@ export default function MenuButton(props) {
                 className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-md outline-none shadow-lg divide-gray-100 divide-y origin-top-right"
                 static
               >
-                {props.items.map((itemGroup, itemGroupIndex) => (
-                  <div key={itemGroupIndex} className="py-1">
-                    {itemGroup.map((item) =>
-                      item.divider ? null : item.disabled ? (
-                        <Menu.Item
-                          key={btoa(item.label)}
-                          as="span"
-                          className="flex justify-between px-4 py-2 w-full text-left text-gray-700 text-sm opacity-50 cursor-not-allowed"
-                          disabled
-                        >
-                          {item.label}
-                        </Menu.Item>
-                      ) : (
-                        <Menu.Item key={btoa(item.label)}>
-                          {(menuItem) => (
-                            <a
-                              className={cn(
-                                "flex justify-between px-4 py-2 w-full text-left text-sm focus:outline-none",
-                                menuItem.active
-                                  ? "text-gray-900 bg-gray-100"
-                                  : "text-gray-700"
-                              )}
-                              href={item.href ?? "#"}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                item.onClick?.()
-                              }}
-                            >
-                              {item.label}
-                            </a>
-                          )}
-                        </Menu.Item>
-                      )
-                    )}
-                  </div>
-                ))}
+                {props.items
+                  ? props.items.map((item) => (
+                      <Item
+                        key={item.label}
+                        label={item.label}
+                        href={item.href}
+                        disabled={item.disabled}
+                        onClick={item.onClick}
+                      />
+                    ))
+                  : props.sections.map((section, sectionIndex) => (
+                      <div key={section.title ?? sectionIndex} className="py-1">
+                        {(section.items ?? section).map((item) => (
+                          <Item
+                            key={item.label}
+                            label={item.label}
+                            href={item.href}
+                            disabled={item.disabled}
+                            onClick={item.onClick}
+                          />
+                        ))}
+                      </div>
+                    ))}
               </Menu.Items>
             </Transition>
           </>
