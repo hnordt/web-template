@@ -3,7 +3,7 @@ import { FiX, FiFacebook, FiTwitter, FiLinkedin, FiPhone } from "react-icons/fi"
 
 function NewLayout(props) {
   return (
-    <div className="w-1/4 h-1/2">
+    <div className="w-full max-w-md">
       <div className="flex items-center justify-between p-4">
         <h1 className="text-gray-500 text-lg font-semibold">Contact Details</h1>
         <span className="relative left-0">
