@@ -1,13 +1,13 @@
 import React from "react"
-import { MdClose } from "react-icons/md"
+import { FiX, FiFacebook, FiTwitter, FiLinkedin, FiPhone } from "react-icons/fi"
 
 function NewLayout(props) {
   return (
-    <div className="w-1/4 h-1/2 border">
-      <div className="flex items-center justify-between">
+    <div className="w-1/4 h-1/2">
+      <div className="flex items-center justify-between p-4">
         <h1 className="text-gray-500 text-lg font-semibold">Contact Details</h1>
         <span className="relative left-0">
-          <MdClose color={"gray"} size={24} />
+          <FiX color={"gray"} size={24} />
         </span>
       </div>
       <hr />
@@ -17,8 +17,48 @@ function NewLayout(props) {
           src={props.photo}
           alt={props.alt}
         />
-        <h2 className="my-3 text-xl font-semibold">{props.name}</h2>
-        <p>{props.role}</p>
+        <h2 className="mt-3 text-xl font-semibold">{props.name}</h2>
+        <p className="text-gray-500 font-medium">
+          {props.role} at <a className="text-blue-600">{props.company}</a>
+        </p>
+        <div className="flex justify-center mt-3 space-x-4">
+          <FiFacebook
+            size={36}
+            color={"gray"}
+            className="p-1.5 border-2 border-gray-300 rounded-xl"
+          />
+          <FiTwitter
+            size={36}
+            color={"gray"}
+            className="p-1.5 border-2 border-gray-300 rounded-xl"
+          />
+          <FiLinkedin
+            size={36}
+            color={"gray"}
+            className="p-1.5 border-2 border-gray-300 rounded-xl"
+          />
+        </div>
+        <div className="gird-rows-2 grid gap-4 grid-cols-2 justify-start align-bottom ml-8 mt-12 text-left text-gray-500 text-sm font-medium">
+          <div className="">
+            <h4>Phone</h4>
+            <p className="text-gray-900 text-base">{props.phone}</p>
+          </div>
+          <div>
+            <h4>Local Time</h4>
+            <p className="text-gray-900 text-base">{props.localTime}</p>
+          </div>
+
+          <div>
+            <h4>Location</h4>
+            <p className="text-gray-900 text-base">{props.location}</p>
+          </div>
+          <div>
+            <br></br>
+            <p>
+              Data from <a className="text-blue-600">ruby.co</a>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -31,7 +71,11 @@ export default function Index() {
         "https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80"
       }
       name="Sarah Jensen"
-      role="Executive Officer at Starbucks"
+      role="Chief Executive Officer"
+      company="Starbucks"
+      phone="(510) 886-6624"
+      localTime="10:13 AM CDT"
+      location="Austin, Texas"
     />
   )
 }
