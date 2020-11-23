@@ -47,8 +47,10 @@ export default function Dialog(props) {
         >
           <div className="absolute inset-0 bg-gray-500 opacity-75" />
         </Transition>
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" />
-        &#8203;
+        {/* This element is to trick the browser into centering the modal contents */}
+        <span className="hidden sm:inline-block sm:align-middle sm:h-screen">
+          &#8203;
+        </span>
         <Transition
           className={cn(
             "inline-block align-bottom text-left bg-white rounded-lg shadow-xl overflow-hidden transform transition-all sm:align-middle sm:my-8 sm:w-full sm:max-w-sm",
