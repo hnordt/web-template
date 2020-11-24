@@ -1,5 +1,4 @@
 import React from "react"
-import { RiKnifeBloodFill } from "react-icons/ri"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
 
 const data = [
