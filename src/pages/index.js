@@ -6,20 +6,12 @@ const data = [
     uv: 60,
     fill: "#8884d8",
   },
-  {
-    uv: 20,
-    fill: "#bbb",
-  },
 ]
-
-const style = {
-  lineHeight: "35px",
-}
 
 export default class Example extends PureComponent {
   render() {
     return (
-      <div className="border">
+      <div className="w-full max-w-md">
         <RadialBarChart
           width={500}
           height={300}
