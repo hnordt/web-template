@@ -1,5 +1,12 @@
 import React from "react"
-import { MdFlag, MdDevices, MdGroupWork } from "react-icons/md"
+import {
+  MdFlag,
+  MdDevices,
+  MdGroupWork,
+  MdDesktopWindows,
+  MdSync,
+  MdLanguage,
+} from "react-icons/md"
 
 function Categories() {
   return (
@@ -52,10 +59,10 @@ function SecurityThreats() {
 
 function Infos() {
   return (
-    <div className="grid grid-cols-4">
+    <div className="grid grid-cols-4 border rounded-xl shadow-xl">
       {/* Created Date */}
 
-      <div className="flex w-screen border-t rounded-xl">
+      <div className="flex">
         <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
           {/* ÍCONE */}
         </div>
@@ -69,7 +76,7 @@ function Infos() {
 
       {/* Last Active */}
 
-      <div className="relative flex w-screen border-t rounded-xl">
+      <div className="relative flex">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="21"
@@ -99,7 +106,7 @@ function Infos() {
 
       {/* Roaming Client */}
 
-      <div className="flex w-screen border-t rounded-xl">
+      <div className="flex">
         <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
           <MdDevices className="mx-auto my-4 w-7 h-7 text-blue-500" />
         </div>
@@ -113,9 +120,92 @@ function Infos() {
 
       {/* Collection */}
 
-      <div className="flex w-screen border-t rounded-xl">
+      <div className="flex">
         <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
           <MdGroupWork className="mx-auto my-3 w-10 h-10 text-blue-500" />
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Collection
+          </span>
+          <span className="text-gray-900 text-sm font-bold">Marketing</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DeviceInfos() {
+  return (
+    <div className="grid grid-cols-4 border rounded-xl shadow-xl">
+      {/* Last Active */}
+
+      <div className="relative flex">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="21"
+          viewBox="0 0 24 24"
+          width="21"
+          className="absolute left-16 top-5 p-1 text-green-500 bg-green-300 bg-opacity-30 rounded-full fill-current"
+        >
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        <div className="ml-5 mr-2.5 mt-5 p-0.5 w-16 h-16 bg-blue-100 rounded-full">
+          <MdSync className="mx-auto my-4 w-7 h-7 text-blue-500" />
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Last Sync
+          </span>
+          <div>
+            <span className="text-gray-900 text-sm font-bold">
+              07/07/2020 08:51 EST
+            </span>
+            <span className="ml-2 px-3 py-1 text-green-500 text-xs font-bold bg-green-100 rounded-xl">
+              ACTIVE NOW
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Operational System */}
+
+      <div className="flex">
+        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-gray-100 rounded-full">
+          <svg
+            viewBox="0 0 24 24"
+            className="mx-auto my-4 w-8 h-8 text-gray-600 fill-current"
+          >
+            <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z" />
+          </svg>
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Operational System
+          </span>
+          <span className="text-gray-900 text-sm font-bold">macOS</span>
+        </div>
+      </div>
+
+      {/* Version */}
+
+      <div className="flex">
+        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
+          <MdDesktopWindows className="mx-auto my-5 w-6 h-6 text-blue-500" />
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Version
+          </span>
+          <span className="text-gray-900 text-sm font-bold">1.5.2.0</span>
+        </div>
+      </div>
+
+      {/* Site */}
+
+      <div className="flex">
+        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
+          <MdLanguage className="mx-auto my-3.5 w-9 h-9 text-blue-500" />
         </div>
         <div className="py-8">
           <span className="block text-gray-500 text-sm font-normal">
@@ -134,6 +224,7 @@ export default function Index() {
       <Categories />
       <SecurityThreats />
       <Infos />
+      <DeviceInfos />
     </>
   )
 }
