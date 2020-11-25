@@ -6,8 +6,10 @@ import {
   MdDesktopWindows,
   MdSync,
   MdLanguage,
-  MdPerson,
 } from "react-icons/md"
+
+import { IoIosPerson } from "react-icons/io"
+import { GoPerson } from "react-icons/go"
 
 function Categories() {
   return (
@@ -65,7 +67,7 @@ function Infos() {
 
       <div className="flex">
         <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
-          <MdPerson className="mx-auto my-3.5 w-8 h-8 text-blue-500" />
+          <IoIosPerson className="mx-auto my-4 w-7 h-7 text-blue-500" />
         </div>
         <div className="py-8">
           <span className="block text-gray-500 text-sm font-normal">
