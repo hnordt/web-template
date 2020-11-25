@@ -80,7 +80,7 @@ export default function NumberInput(props) {
         <button
           ref={stepDownButtonRef}
           className={cn(
-            "inline-flex items-center justify-center rounded-full w-6 h-6 focus:outline-none focus:ring-blue transition",
+            "inline-flex items-center justify-center rounded-full w-6 h-6 focus:outline-none focus:ring-indigo-500 focus:ring-offset-2 focus:ring-2",
             canStepDown
               ? "text-white hover:bg-blue-500 bg-blue-600 active:bg-blue-700"
               : "text-gray-300 bg-gray-100 cursor-not-allowed"
@@ -97,7 +97,7 @@ export default function NumberInput(props) {
         <button
           ref={stepUpButtonRef}
           className={cn(
-            "inline-flex items-center justify-center rounded-full w-6 h-6 focus:outline-none focus:ring-blue transition",
+            "inline-flex items-center justify-center rounded-full w-6 h-6 focus:outline-none focus:ring-indigo-500 focus:ring-offset-2 focus:ring-2",
             canStepUp
               ? "text-white hover:bg-blue-500 bg-blue-600 active:bg-blue-700"
               : "text-gray-300 bg-gray-100 cursor-not-allowed"

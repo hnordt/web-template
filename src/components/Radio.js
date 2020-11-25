@@ -5,7 +5,7 @@ export default function Radio(props) {
     <label className="block">
       <span className="flex items-center">
         <input
-          className="form-radio"
+          className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
           type="radio"
           name={props.name}
           value={props.value}
