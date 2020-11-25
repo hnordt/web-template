@@ -1,4 +1,5 @@
 import React from "react"
+import { MdFlag, MdDevices, MdGroupWork } from "react-icons/md"
 
 function Categories() {
   return (
@@ -6,10 +7,8 @@ function Categories() {
       <div className="m-5 mt-6 w-20 h-20 bg-blue-100 rounded-full">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="32"
-          viewBox="0 -1 23 24"
-          width="32"
-          className="mt-5 mx-auto text-blue-500 fill-current"
+          viewBox="0 0 24 24"
+          className="mt-6 mx-auto w-7 h-7 text-blue-500 fill-current"
         >
           <path d="M0 0h24v24H0z" fill="none" />
           <path d="M12 2l-5.5 9h11z" />
@@ -32,13 +31,8 @@ function SecurityThreats() {
     <div className="flex w-1/2 border rounded-xl shadow-xl">
       <div className="m-5 mt-5 w-20 h-20 bg-red-100 rounded-full">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
-          version="1.1"
-          width="30"
-          height="30"
-          viewBox="-0.5 -0.5 24 24"
-          className="mt-6 mx-auto text-green-600 fill-current"
+          viewBox="-0.5 -1.5 24 24"
+          className="mt-6 mx-auto w-7 h-7 text-green-600 fill-current"
         >
           <path
             fill="red"
@@ -47,10 +41,88 @@ function SecurityThreats() {
         </svg>
       </div>
       <div className="py-8">
-        <span className="block mb-1 text-xl">Security Threats</span>
+        <span className="block text-xl">Security Threats</span>
         <span className="text-gray-400 text-lg">
           No security threats found for bittorrent.com
         </span>
+      </div>
+    </div>
+  )
+}
+
+function Infos() {
+  return (
+    <div className="grid grid-cols-4">
+      {/* Created Date */}
+
+      <div className="flex w-screen border-t rounded-xl">
+        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
+          {/* ÍCONE */}
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Created Date
+          </span>
+          <span className="text-gray-900 text-sm font-bold">Set 10, 2019</span>
+        </div>
+      </div>
+
+      {/* Last Active */}
+
+      <div className="relative flex w-screen border-t rounded-xl">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="21"
+          viewBox="0 0 24 24"
+          width="21"
+          className="absolute left-16 top-5 p-1 text-green-500 bg-green-300 bg-opacity-30 rounded-full fill-current"
+        >
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        <div className="ml-5 mr-2.5 mt-5 p-0.5 w-16 h-16 bg-blue-100 rounded-full">
+          <MdFlag className="mx-auto my-4 w-7 h-7 text-blue-500" />
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Last Active
+          </span>
+          <div>
+            <span className="text-gray-900 text-sm font-bold">
+              Aug 11, 2020
+            </span>
+            <span className="ml-2 px-3 py-1 text-green-500 text-xs font-bold bg-green-100 rounded-xl">
+              ACTIVE NOW
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Roaming Client */}
+
+      <div className="flex w-screen border-t rounded-xl">
+        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
+          <MdDevices className="mx-auto my-4 w-7 h-7 text-blue-500" />
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Created Date
+          </span>
+          <span className="text-gray-900 text-sm font-bold">LAPTOP-0001</span>
+        </div>
+      </div>
+
+      {/* Collection */}
+
+      <div className="flex w-screen border-t rounded-xl">
+        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
+          <MdGroupWork className="mx-auto my-3 w-10 h-10 text-blue-500" />
+        </div>
+        <div className="py-8">
+          <span className="block text-gray-500 text-sm font-normal">
+            Collection
+          </span>
+          <span className="text-gray-900 text-sm font-bold">Marketing</span>
+        </div>
       </div>
     </div>
   )
@@ -61,6 +133,7 @@ export default function Index() {
     <>
       <Categories />
       <SecurityThreats />
+      <Infos />
     </>
   )
 }
