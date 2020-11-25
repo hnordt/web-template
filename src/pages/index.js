@@ -1,138 +1,95 @@
 import React from "react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
+import { Transition } from "@headlessui/react"
 
-const data = [
-  {
-    date: "SEP 10",
-    name: "Page A",
-    Requests: 4500,
-    OtherThing: 3400,
-    OneMoreThing: 2400,
-  },
-  {
-    date: "SEP 11",
-    name: "Page B",
-    Requests: 3000,
-    OtherThing: 1398,
-    OneMoreThing: 3210,
-  },
-  {
-    date: "SEP 12",
-    name: "Page C",
-    Requests: 2000,
-    OtherThing: 9800,
-    OneMoreThing: 7290,
-  },
-  {
-    date: "SEP 13",
-    name: "Page D",
-    Requests: 2780,
-    OtherThing: 3908,
-    OneMoreThing: 3000,
-  },
-  {
-    date: "SEP 14",
-    name: "Page E",
-    Requests: 1890,
-    OtherThing: 4800,
-    OneMoreThing: 2181,
-  },
-  {
-    date: "SEP 15",
-    name: "Page F",
-    Requests: 6390,
-    OtherThing: 4000,
-    OneMoreThing: 2500,
-  },
-  {
-    date: "SEP 16",
-    name: "Page G",
-    Requests: 3490,
-    OtherThing: 4300,
-    OneMoreThing: 2100,
-    eixoY: [0, 10000],
-  },
-]
+export default function Drawer(props) {
+  const [isClosed, setClosed] = React.useState(false)
 
-const toolTipStyle = {
-  font: "bold",
-}
-
-function LineChartJS(props) {
   return (
-    <div className="w-full max-w-md">
-      <LineChart
-        width={1500}
-        height={500}
-        data={props.data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
+    <div className="flex bg-gray-100">
+      <Transition
+        show={!isClosed}
+        enter="transition-all duration-500"
+        enterFrom="-translate-x-full"
+        enterTo="translate-x-0"
+        leave="transition-all duration-500"
+        leaveFrom="translate-x-0"
+        leaveTo="translate-x-full"
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={{
-            stroke: "#D3D3D3",
-            strokeWidth: 2,
-          }}
-          tickMargin={8}
-        />
-        <YAxis
-          dataKey="eixoY"
-          tickLine={{
-            stroke: "black",
-            strokeWidth: 1.5,
-          }}
-          axisLine={{
-            stroke: "#D3D3D3",
-            strokeWidth: 2,
-          }}
-          type="number"
-          scale="linear"
-          tickMargin={10}
-        />
-        <Tooltip itemStyle={toolTipStyle} />
-        <Line
-          type="monotone"
-          dataKey="OtherThing"
-          stroke="#18F"
-          strokeWidth={2}
-          activeDot={{
-            r: 6,
-          }}
-        />
-        <Line
-          type="monotone"
-          dataKey="Requests"
-          stroke="orange"
-          strokeWidth={2}
-          activeDot={{
-            r: 6,
-          }}
-        />
-        <Line
-          type="monotone"
-          dataKey="OneMoreThing"
-          stroke="red"
-          strokeWidth={2}
-          activeDot={{
-            r: 6,
-          }}
-        />
-      </LineChart>
-    </div>
-  )
-}
-
-export default function Index() {
-  return (
-    <div>
-      <LineChartJS data={data} />
+        <div className="fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <section
+              className="absolute inset-y-0 right-0 flex pl-10 max-w-full"
+              aria-labelledby="slide-over-heading"
+            >
+              <div className="w-screen max-w-md">
+                <div className="flex flex-col py-6 h-full bg-white shadow-xl overflow-y-scroll">
+                  <div className="px-4 sm:px-6">
+                    <div className="flex items-start justify-between">
+                      <h2
+                        id="slide-over-heading"
+                        className="text-gray-900 text-lg font-medium"
+                      >
+                        {props.title}
+                      </h2>
+                      <div className="flex items-center ml-3 h-7">
+                        <button
+                          onClick={() => setClosed(true)}
+                          title="Close"
+                          className="text-gray-400 hover:text-gray-500 bg-white rounded-md focus:outline-none focus:ring-indigo-500 focus:ring-offset-2 focus:ring-2"
+                        >
+                          <span className="sr-only">Close panel</span>
+                          {/* Heroicon name: x */}
+                          <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative flex-1 mt-6 px-4 sm:px-6">
+                    {/* Replace with your content */}
+                    <div className="absolute inset-0 px-4 sm:px-6">
+                      <div
+                        className="h-full border-2 border-dashed border-gray-200"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    {/* /End replace */}
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </Transition>
+      {isClosed ? (
+        <button
+          className="p-2"
+          title="Open Menu"
+          onClick={() => setClosed(false)}
+        >
+          Open
+        </button>
+      ) : (
+        <button
+          className="p-2"
+          title="Close Menu"
+          onClick={() => setClosed(true)}
+        >
+          Closed
+        </button>
+      )}
     </div>
   )
 }
