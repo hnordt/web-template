@@ -12,9 +12,7 @@ export default function NonIdealState(props) {
           </div>
         )}
         <div className="text-center">
-          <h3 className="text-gray-900 text-lg font-medium" id="modal-headline">
-            {props.title}
-          </h3>
+          <h3 className="text-gray-900 text-lg font-medium">{props.title}</h3>
           <div className="mt-2">
             <p className="text-gray-500 text-sm">{props.description}</p>
           </div>

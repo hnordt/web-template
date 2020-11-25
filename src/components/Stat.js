@@ -8,7 +8,7 @@ export default function Stat(props) {
 
   return (
     <div>
-      <dt className="text-gray-500 truncate text-sm font-medium">
+      <dt className="text-gray-500 text-sm font-medium truncate">
         {props.label}
       </dt>
       <dd
