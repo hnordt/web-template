@@ -8,7 +8,10 @@ import {
   MdLanguage,
   MdKeyboardArrowLeft,
   MdSearch,
+  MdKeyboardArrowRight,
+  MdLink,
 } from "react-icons/md"
+import { PieChart, Pie, Cell, Legend } from "recharts"
 
 import { IoIosPerson } from "react-icons/io"
 
@@ -359,43 +362,71 @@ function ActiveOrganizationsCard() {
 }
 
 function Panel() {
-  ;<div>
-    <header>
-      <div>{/* Breadcrumb */}</div>
-      <div>
-        {/* Export to */}
-        <button></button>
-        <button></button>
-      </div>
-    </header>
+  return (
     <div>
-      {/* first content */}
+      <header className="flex justify-between p-3.5 border rounded-md shadow-lg">
+        <div className="flex items-center text-gray-500 text-sm">
+          Requests <MdKeyboardArrowRight className="mx-1 w-5 h-5" /> Threats
+          <MdKeyboardArrowRight className="mx-1 w-5 h-5" />
+          <p className="text-gray-900 font-semibold">By User</p>
+        </div>
+        <div className="flex items-center">
+          <p className="-mx-2 text-gray-500 text-xs font-semibold">EXPORT TO</p>
+          <div className="text-sm space-x-5">
+            <span className="p-1 px-4 border-r">
+              <button className="items-center px-3 py-1.5 border border-gray-400 rounded-md">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="float-left mr-3 w-5 h-5 text-gray-600 fill-current"
+                >
+                  <path d="M20,2H4C2.9,2,2,2.9,2,4v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M20,10H10v10H8V10H4V8h4V4h2v4h10V10 z" />
+                </svg>
+                CSV
+              </button>
+            </span>
+            <button className="px-3 py-1.5 border border-gray-400 rounded-md">
+              <MdLink className="float-left mr-2 w-5 h-5" />
+              Copy
+            </button>
+          </div>
+        </div>
+      </header>
+
       <div>
-        <span>{/* All Requests */}</span>
-        <span>{/* ICONS */}</span>
+        {/* first content */}
+        <div className="items-center p-5">
+          <span className="flex items-center justify-center py-1 w-40 text-xs bg-gray-200 rounded-md space-x-3">
+            <p className="text-gray-700">All Requests</p>
+            <p className="px-2 py-1 text-gray-50 bg-blue-500 rounded-md">
+              Threats
+            </p>
+          </span>
+          <span>{/* ICONS */}</span>
+        </div>
+
+        <div>
+          {/* Charts */}
+          <h1></h1>
+          <span></span>
+        </div>
+        <div>
+          {/* Charts */}
+          <h1></h1>
+          <span></span>
+        </div>
       </div>
+      <input type="search">{/* Filter */}</input>
       <div>
-        {/* Charts */}
-        <h1></h1>
-        <span></span>
+        <div>
+          <p></p>
+          <p></p>
+          <p></p>
+        </div>
+        <div>{/* USERS INFO */}</div>
       </div>
-      <div>
-        {/* Charts */}
-        <h1></h1>
-        <span></span>
-      </div>
+      <footer>{/* Arrows and page */}</footer>
     </div>
-    <input type="search">{/* Filter */}</input>
-    <div>
-      <div>
-        <p></p>
-        <p></p>
-        <p></p>
-      </div>
-      <div>{/* USERS INFO */}</div>
-    </div>
-    <footer>{/* Arrows and page */}</footer>
-  </div>
+  )
 }
 
 export default function Index() {
@@ -413,6 +444,7 @@ export default function Index() {
       <br />
       <ActiveOrganizationsCard />
       <br />
+      <Panel />
     </>
   )
 }
