@@ -7,6 +7,7 @@ import {
   MdSync,
   MdLanguage,
   MdKeyboardArrowLeft,
+  MdSearch,
 } from "react-icons/md"
 
 import { IoIosPerson } from "react-icons/io"
@@ -242,22 +243,115 @@ function Requests() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 items-center">
-        <div className="m-auto text-right">
+      <div className="grid grid-cols-4 text-right">
+        <div className="m-auto">
           <h1 className="text-gray-700 text-2xl font-bold">2M</h1>
           <p className="text-sm">Total Request</p>
         </div>
         <div className="m-auto">
-          <h1 className="text-right text-blue-500 text-2xl font-bold">900K</h1>
+          <h1 className="text-blue-500 text-2xl font-bold">900K</h1>
           <p className="text-sm">Allowed Request</p>
         </div>
         <div className="m-auto">
-          <h1 className="text-right text-yellow-500 text-2xl font-bold">75K</h1>
+          <h1 className="text-yellow-500 text-2xl font-bold">75K</h1>
           <p className="text-sm">Blocked Request</p>
         </div>
         <div className="m-auto">
-          <h1 className="text-right text-red-500 text-2xl font-bold">25K</h1>
+          <h1 className="text-red-500 text-2xl font-bold">25K</h1>
           <p className="text-sm">Threats Request</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ActiveOrganizationsCard() {
+  return (
+    <div className="p-5">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-lg font-bold">Top 3 Active Organizations</h1>
+        <button className="flex items-center px-3 py-2.5 text-gray-600 text-sm bg-white rounded-lg shadow-lg">
+          <MdSearch className="mr-3 w-5 h-5" />
+          FIND ORGANIZATIONS
+        </button>
+      </div>
+      <div className="grid gap-8 grid-cols-3">
+        <div className="p-4 border rounded-lg shadow-lg">
+          <div className="mb-5 ml-3 rounded-xl">
+            <h3 className="mb-3 text-left">Wyndham Worldwide (10%)</h3>
+            <div className="grid grid-cols-3">
+              <span>
+                <h1 className="text-xl font-bold">190K</h1>
+                <p className="text-blue-500 text-sm font-bold">
+                  Allowed Requests
+                </p>
+              </span>
+              <span>
+                <h1 className="text-xl font-bold">50K</h1>
+                <p className="text-yellow-500 text-sm font-bold">
+                  Blocked Requests
+                </p>
+              </span>
+              <span>
+                <h1 className="text-xl font-bold">50K</h1>
+                <p className="text-red-500 text-sm font-bold">
+                  Threat Requests
+                </p>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 border rounded-lg shadow-lg">
+          <div className="mb-4 ml-3 rounded-xl">
+            <h3 className="mb-3 text-left">Wake County (5%) (10%)</h3>
+            <div className="grid grid-cols-3">
+              <span>
+                <h1 className="text-xl font-bold">190K</h1>
+                <p className="text-blue-500 text-sm font-bold">
+                  Allowed Requests
+                </p>
+              </span>
+              <span>
+                <h1 className="text-xl font-bold">50K</h1>
+                <p className="text-yellow-500 text-sm font-bold">
+                  Blocked Requests
+                </p>
+              </span>
+              <span>
+                <h1 className="text-xl font-bold">50K</h1>
+                <p className="text-red-500 text-sm font-bold">
+                  Threat Requests
+                </p>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 border rounded-lg shadow-lg">
+          <div className="mb-4 ml-3 rounded-xl">
+            <h3 className="mb-3 text-left">U.S Navy (10%)</h3>
+            <div className="grid grid-cols-3">
+              <span>
+                <h1 className="text-xl font-bold">190K</h1>
+                <p className="text-blue-500 text-sm font-bold">
+                  Allowed Requests
+                </p>
+              </span>
+              <span>
+                <h1 className="text-xl font-bold">50K</h1>
+                <p className="text-yellow-500 text-sm font-bold">
+                  Blocked Requests
+                </p>
+              </span>
+              <span>
+                <h1 className="text-xl font-bold">50K</h1>
+                <p className="text-red-500 text-sm font-bold">
+                  Threat Requests
+                </p>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -272,6 +366,7 @@ export default function Index() {
       <Infos />
       <DeviceInfos />
       <Requests />
+      <ActiveOrganizationsCard />
     </>
   )
 }
