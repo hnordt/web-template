@@ -267,7 +267,7 @@ function Requests() {
 
 function ActiveOrganizationsCard() {
   return (
-    <div className="p-5">
+    <div className="p-1">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-bold">Top 3 Active Organizations</h1>
         <button className="flex items-center px-3 py-2.5 text-gray-600 text-sm bg-white rounded-lg shadow-lg">
@@ -358,15 +358,61 @@ function ActiveOrganizationsCard() {
   )
 }
 
+function Panel() {
+  ;<div>
+    <header>
+      <div>{/* Breadcrumb */}</div>
+      <div>
+        {/* Export to */}
+        <button></button>
+        <button></button>
+      </div>
+    </header>
+    <div>
+      {/* first content */}
+      <div>
+        <span>{/* All Requests */}</span>
+        <span>{/* ICONS */}</span>
+      </div>
+      <div>
+        {/* Charts */}
+        <h1></h1>
+        <span></span>
+      </div>
+      <div>
+        {/* Charts */}
+        <h1></h1>
+        <span></span>
+      </div>
+    </div>
+    <input type="search">{/* Filter */}</input>
+    <div>
+      <div>
+        <p></p>
+        <p></p>
+        <p></p>
+      </div>
+      <div>{/* USERS INFO */}</div>
+    </div>
+    <footer>{/* Arrows and page */}</footer>
+  </div>
+}
+
 export default function Index() {
   return (
     <>
       <Categories />
+      <br />
       <SecurityThreats />
+      <br />
       <Infos />
+      <br />
       <DeviceInfos />
+      <br />
       <Requests />
+      <br />
       <ActiveOrganizationsCard />
+      <br />
     </>
   )
 }
