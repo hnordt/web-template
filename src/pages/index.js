@@ -6,10 +6,10 @@ import {
   MdDesktopWindows,
   MdSync,
   MdLanguage,
+  MdKeyboardArrowLeft,
 } from "react-icons/md"
 
 import { IoIosPerson } from "react-icons/io"
-import { GoPerson } from "react-icons/go"
 
 function Categories() {
   return (
@@ -221,6 +221,49 @@ function DeviceInfos() {
   )
 }
 
+function Requests() {
+  return (
+    <div className="grid grid-cols-2 w-screen shadow-xl">
+      <div className="flex">
+        <div className="m-6 mt-6 w-16 h-16 bg-blue-100 rounded-full">
+          <IoIosPerson className="mt-4 mx-auto w-7 h-7 text-blue-500" />
+        </div>
+        <div className="py-4">
+          <span className="flex items-center justify-center pr-2 py-1 w-40 text-gray-600 text-xs bg-gray-200 rounded-full">
+            <MdKeyboardArrowLeft className="mr-0.5 w-4 h-4" />
+            ALL ORGANIZATIONS
+          </span>
+          <span className="block mt-1 text-blue-500 text-lg font-semibold">
+            LAPTOP-03QHV0FL
+          </span>
+          <span className="text-gray-500 text-sm">
+            Last acess 07/07/2020 08:51 EST
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 items-center">
+        <div className="m-auto text-right">
+          <h1 className="text-gray-700 text-2xl font-bold">2M</h1>
+          <p className="text-sm">Total Request</p>
+        </div>
+        <div className="m-auto">
+          <h1 className="text-right text-blue-500 text-2xl font-bold">900K</h1>
+          <p className="text-sm">Allowed Request</p>
+        </div>
+        <div className="m-auto">
+          <h1 className="text-right text-yellow-500 text-2xl font-bold">75K</h1>
+          <p className="text-sm">Blocked Request</p>
+        </div>
+        <div className="m-auto">
+          <h1 className="text-right text-red-500 text-2xl font-bold">25K</h1>
+          <p className="text-sm">Threats Request</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Index() {
   return (
     <>
@@ -228,6 +271,7 @@ export default function Index() {
       <SecurityThreats />
       <Infos />
       <DeviceInfos />
+      <Requests />
     </>
   )
 }
