@@ -10,10 +10,56 @@ import {
   MdSearch,
   MdKeyboardArrowRight,
   MdLink,
+  MdDashboard,
+  MdPerson,
 } from "react-icons/md"
 import { PieChart, Pie, Cell, Legend } from "recharts"
-
 import { IoIosPerson } from "react-icons/io"
+
+const top5Users = [
+  {
+    name: "Edward Collins",
+    value: 400,
+  },
+  {
+    name: "Elisha Huber",
+    value: 300,
+  },
+  {
+    name: "Hayden Wilkson",
+    value: 300,
+  },
+  {
+    name: "Eliza Kenedy",
+    value: 200,
+  },
+]
+
+const top5Categories = [
+  {
+    name: "P2P & Illegal",
+    value: 400,
+  },
+  {
+    name: "Malware",
+    value: 200,
+  },
+  {
+    name: "Pishing & Deception",
+    value: 300,
+  },
+  {
+    name: "Botnet",
+    value: 200,
+  },
+  {
+    name: "Adult Content",
+    value: 200,
+  },
+]
+
+const COLORS = ["#DB7093", "#555579", "#FF8C00", "#228B22"]
+const COLORS_CAT = ["#FFA500", "#A022AD", "#1E90FF", "#87CEFA", "#483D8B"]
 
 function Categories() {
   return (
@@ -364,7 +410,7 @@ function ActiveOrganizationsCard() {
 function Panel() {
   return (
     <div>
-      <header className="flex justify-between p-3.5 border rounded-md shadow-lg">
+      <header className="flex justify-between px-5 py-3.5 border rounded-md shadow-lg">
         <div className="flex items-center text-gray-500 text-sm">
           Requests <MdKeyboardArrowRight className="mx-1 w-5 h-5" /> Threats
           <MdKeyboardArrowRight className="mx-1 w-5 h-5" />
@@ -394,37 +440,210 @@ function Panel() {
 
       <div>
         {/* first content */}
-        <div className="items-center p-5">
-          <span className="flex items-center justify-center py-1 w-40 text-xs bg-gray-200 rounded-md space-x-3">
-            <p className="text-gray-700">All Requests</p>
+        <div className="flex items-center p-5 space-x-4">
+          <span className="flex items-center justify-center py-1 w-40 text-xs bg-gray-100 rounded-md space-x-3">
+            <p className="text-gray-600">All Requests</p>
             <p className="px-2 py-1 text-gray-50 bg-blue-500 rounded-md">
               Threats
             </p>
           </span>
-          <span>{/* ICONS */}</span>
+          <span className="flex items-center justify-between py-0.5 w-36 text-xs bg-gray-100 rounded-md">
+            <svg
+              viewBox="0 0 24 24"
+              className="ml-auto py-1 w-7 h-7 text-gray-400 fill-current"
+            >
+              <path d="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z" />
+            </svg>
+            <IoIosPerson className="m-auto py-1 w-7 h-7 text-gray-50 bg-blue-500" />
+            <MdDesktopWindows className="m-auto py-1 w-7 h-7 text-gray-400 fill-current" />
+            <MdDashboard className="m-auto py-1 w-7 h-7 text-gray-400 fill-current" />
+          </span>
         </div>
+        <div>
+          <div className="flex justify-between">
+            <div className="flex items-center">
+              <h1 className="-mx-3 text-base transform -rotate-90">
+                Top 5 Users
+              </h1>
+              <IoIosPerson className="absolute left-36 ml-2 pl-3 w-16 h-16 text-gray-400" />
+              <PieChart
+                width={455}
+                height={320}
+                className="-ml-10 text-sm leading-10"
+              >
+                <Legend
+                  layout="vertical"
+                  align="right"
+                  verticalAlign="middle"
+                  iconType="circle"
+                  iconSize={9}
+                />
 
-        <div>
-          {/* Charts */}
-          <h1></h1>
-          <span></span>
-        </div>
-        <div>
-          {/* Charts */}
-          <h1></h1>
-          <span></span>
+                <Pie
+                  data={top5Users}
+                  innerRadius={100}
+                  outerRadius={120}
+                  dataKey="value"
+                >
+                  {top5Users.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </div>
+            <div className="flex items-center mr-20">
+              <h1 className="-mx-5 transform -rotate-90">Top 5 Categories</h1>
+              <svg
+                viewBox="3 0 25 24"
+                className="relative left-24 w-12 h-12 text-gray-400 fill-current"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 2l-5.5 9h11z" />
+                <circle cx="17.5" cy="17.5" r="4.5" />
+                <path d="M3 13.5h8v8H3z" />
+              </svg>
+              <PieChart
+                width={455}
+                height={320}
+                className="-ml-20 text-sm leading-10"
+              >
+                <Legend
+                  layout="vertical"
+                  align="right"
+                  verticalAlign="middle"
+                  iconType="circle"
+                  iconSize={9}
+                />
+
+                <Pie
+                  data={top5Categories}
+                  innerRadius={100}
+                  outerRadius={120}
+                  dataKey="value"
+                >
+                  {top5Categories.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS_CAT[index % COLORS_CAT.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </div>
+          </div>
         </div>
       </div>
-      <input type="search">{/* Filter */}</input>
-      <div>
-        <div>
-          <p></p>
-          <p></p>
-          <p></p>
-        </div>
-        <div>{/* USERS INFO */}</div>
+      <div className="flex mt-1">
+        <MdSearch className="relative left-9 top-1 w-6 h-6 text-gray-700" />
+        <input
+          type="search"
+          className="realtive pl-10 w-1/3 h-8 text-sm rounded-full"
+          placeholder="Filter"
+        ></input>
       </div>
-      <footer>{/* Arrows and page */}</footer>
+      <div className="text-xs">
+        <div className="grid grid-cols-4 mb-3 mt-7 px-8 text-gray-500">
+          <p className="col-span-2 ml-3">USER</p>
+          <p># OF REQUESTS</p>
+          <p>% OF REQUESTS</p>
+        </div>
+        <div className="mx-6 border rounded-t-md">
+          <span className="grid grid-cols-4 items-center bg-blue-50 border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">4,389</p>
+            <p className="text-gray-800">26.96%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Hayden Wilkinson
+            </p>
+            <p className="text-gray-800">4,389</p>
+            <p className="text-gray-800">25.38%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Hayden Wilkinson
+            </p>
+            <p className="text-gray-800">2,189</p>
+            <p className="text-gray-800">13.39</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Elisha Huber
+            </p>
+            <p className="text-gray-800">1,124</p>
+            <p className="text-gray-800">6.87%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">1,124</p>
+            <p className="text-gray-800">6.87%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">824</p>
+            <p className="text-gray-800">4.06%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">524</p>
+            <p className="text-gray-800">3.82%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">504</p>
+            <p className="text-gray-800">3.34%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center border-b">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">444</p>
+            <p className="text-gray-800">2.98%</p>
+          </span>
+          <span className="grid grid-cols-4 items-center">
+            <p className="flex col-span-2 items-center pl-4 text-gray-800">
+              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              Edward Collins
+            </p>
+            <p className="text-gray-800">424</p>
+            <p className="text-gray-800">2.95%</p>
+          </span>
+        </div>
+      </div>
+      <footer className="flex items-center justify-end m-9 mr-7 text-gray-500 text-xs">
+        <p className="mr-2.5">1-10 of 400</p>
+        <span className="space-x-2">
+          <button>
+            <MdKeyboardArrowLeft className="p-1 w-7 h-7 border border-gray-400 rounded-md" />
+          </button>
+          <button>
+            <MdKeyboardArrowRight className="p-1 w-7 h-7 border border-gray-400 rounded-md" />
+          </button>
+        </span>
+      </footer>
     </div>
   )
 }
