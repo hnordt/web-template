@@ -12,9 +12,82 @@ import {
   MdLink,
   MdDashboard,
   MdPerson,
+  MdComputer,
+  MdArrowDownward,
 } from "react-icons/md"
-import { PieChart, Pie, Cell, Legend } from "recharts"
+import { DiWindows, DiApple, DiAndroid, DiChrome } from "react-icons/di"
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  RadialBarChart,
+  RadialBar,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts"
 import { IoIosPerson } from "react-icons/io"
+
+const data = [
+  {
+    uv: 60,
+    pv: 5567,
+    fill: "#13a1FF",
+  },
+  {
+    uv: 100,
+    fill: "#FFF",
+  },
+]
+
+const areaChart = [
+  {
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+]
 
 const top5Users = [
   {
@@ -648,6 +721,197 @@ function Panel() {
   )
 }
 
+function InfoPanel() {
+  return (
+    <div>
+      <div className="grid gap-6 grid-cols-3 -mb-14 p-10">
+        <div className="flex items-center border border-gray-100 rounded-lg shadow-2xl">
+          <div className="">
+            <RadialBarChart
+              width={200}
+              height={200}
+              innerRadius={75}
+              outerRadius={95}
+              data={data}
+            >
+              <RadialBar minAngle={15} background dataKey="uv" clockwise />
+            </RadialBarChart>
+          </div>
+          <p className="absolute left-28 ml-0.5 text-3xl">60%</p>
+          <div>
+            <p className="text-blue-500 text-base">Sites</p>
+            <p className="w-24 text-lg font-bold">60 Active</p>
+            <p className="text-gray-400 text-sm">40 Active</p>
+          </div>
+          <div className="self-end mb-4 ml-12 text-blue-500 font-bold">
+            VIEW SITES REPORT
+          </div>
+        </div>
+
+        <div className="flex items-center border border-gray-100 rounded-lg shadow-2xl">
+          <div className="">
+            <RadialBarChart
+              width={200}
+              height={200}
+              innerRadius={75}
+              outerRadius={95}
+              data={data}
+            >
+              <RadialBar minAngle={15} background dataKey="uv" clockwise />
+            </RadialBarChart>
+          </div>
+          <p className="absolute left-1/4 ml-60 text-3xl">60%</p>
+          <div className="w-36">
+            <p className="w-48 text-blue-500 text-base">Roaming Clients</p>
+            <p className="w-24 text-lg font-bold">60 Active</p>
+            <p className="text-gray-400 text-sm">40 Active</p>
+          </div>
+          <div className="self-end mb-4 text-blue-500 font-bold">
+            VIEW SITES REPORT
+          </div>
+        </div>
+
+        <div className="flex items-center border border-gray-100 rounded-lg shadow-2xl">
+          <div className="">
+            <RadialBarChart
+              width={200}
+              height={200}
+              innerRadius={75}
+              outerRadius={95}
+              data={data}
+            >
+              <RadialBar minAngle={15} background dataKey="uv" clockwise />
+            </RadialBarChart>
+          </div>
+          <p className="absolute ml-16 pl-2 text-3xl">60%</p>
+          <div>
+            <p className="text-blue-500 text-base">Relays</p>
+            <p className="w-24 text-lg font-bold">60 Active</p>
+            <p className="text-gray-400 text-sm">40 Active</p>
+          </div>
+          <div className="w-42 self-end mb-4 ml-16 text-blue-500 font-bold">
+            VIEW SITES REPORT
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 grid-cols-3 p-10">
+        <div className="p-5 border border-gray-100 rounded-lg shadow-2xl">
+          <h3 className="mt-3 text-lg font-bold">Deployment</h3>
+          <div className="grid gap-5 grid-cols-2 grid-rows-2">
+            <span className="flex items-center mt-5">
+              <MdGroupWork className="p-3 w-14 h-14 text-blue-500 bg-blue-100 rounded-full fill-current" />
+              <span className="ml-2">
+                <p className="font-bold">10</p>
+                <p>Collections</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <span className="bg-blue-100 rounded-full">
+                <MdComputer className="p-3.5 w-14 h-14 text-blue-500 fill-current" />
+              </span>
+              <span className="ml-2">
+                <p className="font-bold">10</p>
+                <p>Users</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <span className="bg-blue-100 rounded-full">
+                <MdDevices className="p-3.5 w-14 h-14 text-blue-500 fill-current" />
+              </span>
+              <span className="ml-2">
+                <p className="font-bold">8</p>
+                <p>Sync Tools</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <MdGroupWork className="p-3 w-14 h-14 text-blue-500 bg-blue-100 rounded-full fill-current" />
+              <span className="ml-2">
+                <p className="font-bold">8</p>
+                <p>Relays</p>
+              </span>
+            </span>
+          </div>
+
+          <h3 className="mt-10 mt-3 text-base">Roaming Clients</h3>
+          <div className="grid gap-5 grid-cols-2 grid-rows-2">
+            <span className="flex items-center mt-5">
+              <span className="bg-blue-50 rounded-full">
+                <DiWindows className="p-3 w-14 h-14 text-blue-400 fill-current" />
+              </span>
+              <span className="ml-2">
+                <p className="font-bold">12</p>
+                <p>Windows</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <span className="bg-gray-100 rounded-full">
+                <DiApple className="p-3.5 w-14 h-14 text-gray-600 fill-current" />
+              </span>
+              <span className="ml-2">
+                <p className="font-bold">25</p>
+                <p>macOS</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <span className="bg-gray-100 rounded-full">
+                <DiApple className="p-3.5 w-14 h-14 text-gray-500 fill-current" />
+              </span>
+              <span className="ml-2">
+                <p className="font-bold">12</p>
+                <p>iOS</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <DiAndroid className="p-3 w-14 h-14 text-green-600 bg-green-50 rounded-full fill-current" />
+              <span className="ml-2">
+                <p className="font-bold">12</p>
+                <p>Android</p>
+              </span>
+            </span>
+            <span className="flex items-center mt-5">
+              <span className="bg-blue-50 rounded-full">
+                <DiChrome className="p-3 w-14 h-14 text-blue-500 fill-current" />
+              </span>
+              <span className="ml-2">
+                <p className="font-bold">12</p>
+                <p>Android</p>
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <div className="col-span-2 p-5 pt-6 border border-gray-100 rounded-lg shadow-2xl">
+          <h3>Queries per Second</h3>
+
+          <h1 className="mt-10 text-2xl font-bold">40.4K</h1>
+          <span className="text-bold flex items-center justify-between mt-2 px-1 w-14 text-blue-500 bg-blue-50">
+            <MdArrowDownward />
+            4%
+          </span>
+
+          <AreaChart width={1050} height={250} data={areaChart}>
+            <defs>
+              <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            <Tooltip />
+            <Area
+              dataKey="pv"
+              stroke="#82ca9d"
+              fillOpacity={10}
+              fill="url(#colorPv)"
+            />
+          </AreaChart>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Index() {
   return (
     <>
@@ -664,6 +928,8 @@ export default function Index() {
       <ActiveOrganizationsCard />
       <br />
       <Panel />
+      <br />
+      <InfoPanel />
     </>
   )
 }
