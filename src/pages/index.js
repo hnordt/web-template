@@ -802,7 +802,7 @@ function InfoPanel() {
             <span className="flex items-center mt-5">
               <MdGroupWork className="p-3 w-14 h-14 text-blue-500 bg-blue-100 rounded-full fill-current" />
               <span className="ml-2">
-                <p className="font-bold">10</p>
+                <p className="text-gray-600 font-bold">10</p>
                 <p>Collections</p>
               </span>
             </span>
@@ -811,7 +811,7 @@ function InfoPanel() {
                 <MdComputer className="p-3.5 w-14 h-14 text-blue-500 fill-current" />
               </span>
               <span className="ml-2">
-                <p className="font-bold">10</p>
+                <p className="text-gray-600 font-bold">10</p>
                 <p>Users</p>
               </span>
             </span>
@@ -820,14 +820,14 @@ function InfoPanel() {
                 <MdDevices className="p-3.5 w-14 h-14 text-blue-500 fill-current" />
               </span>
               <span className="ml-2">
-                <p className="font-bold">8</p>
+                <p className="text-gray-600 font-bold">8</p>
                 <p>Sync Tools</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
               <MdGroupWork className="p-3 w-14 h-14 text-blue-500 bg-blue-100 rounded-full fill-current" />
               <span className="ml-2">
-                <p className="font-bold">8</p>
+                <p className="text-gray-600 font-bold">8</p>
                 <p>Relays</p>
               </span>
             </span>
@@ -840,7 +840,7 @@ function InfoPanel() {
                 <DiWindows className="p-3 w-14 h-14 text-blue-400 fill-current" />
               </span>
               <span className="ml-2">
-                <p className="font-bold">12</p>
+                <p className="text-gray-600 font-bold">12</p>
                 <p>Windows</p>
               </span>
             </span>
@@ -849,7 +849,7 @@ function InfoPanel() {
                 <DiApple className="p-3.5 w-14 h-14 text-gray-600 fill-current" />
               </span>
               <span className="ml-2">
-                <p className="font-bold">25</p>
+                <p className="text-gray-600 font-bold">25</p>
                 <p>macOS</p>
               </span>
             </span>
@@ -858,14 +858,14 @@ function InfoPanel() {
                 <DiApple className="p-3.5 w-14 h-14 text-gray-500 fill-current" />
               </span>
               <span className="ml-2">
-                <p className="font-bold">12</p>
+                <p className="text-gray-600 font-bold">12</p>
                 <p>iOS</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
               <DiAndroid className="p-3 w-14 h-14 text-green-600 bg-green-50 rounded-full fill-current" />
               <span className="ml-2">
-                <p className="font-bold">12</p>
+                <p className="text-gray-600 font-bold">12</p>
                 <p>Android</p>
               </span>
             </span>
@@ -874,7 +874,7 @@ function InfoPanel() {
                 <DiChrome className="p-3 w-14 h-14 text-blue-500 fill-current" />
               </span>
               <span className="ml-2">
-                <p className="font-bold">12</p>
+                <p className="text-gray-600 font-bold">12</p>
                 <p>Android</p>
               </span>
             </span>
@@ -885,7 +885,7 @@ function InfoPanel() {
           <h3>Queries per Second</h3>
 
           <h1 className="mt-10 text-2xl font-bold">40.4K</h1>
-          <span className="text-bold flex items-center justify-between mt-2 px-1 w-14 text-blue-500 bg-blue-50">
+          <span className="flex items-center justify-between mt-2 px-1.5 w-14 text-blue-500 font-bold bg-blue-50">
             <MdArrowDownward />
             4%
           </span>
