@@ -448,23 +448,23 @@ function ActiveOrganizationsCard() {
         <h1 className="text-gray-700 text-base font-bold">
           Top 3 Active Organizations
         </h1>
-        <button className="flex items-center pl-3 pr-5 py-1.5 text-gray-600 text-xs bg-white rounded-md shadow-sm">
+        <button className="flex items-center pl-3 pr-5 py-1.5 text-gray-500 text-xs bg-white rounded-md shadow-sm">
           <MdSearch className="mr-5 w-5 h-5" />
           FIND ORGANIZATIONS
         </button>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between space-x-4">
         <div className="px-4 py-5 bg-white border rounded-md shadow-sm">
-          <div className="mb-5 rounded-xl">
+          <div className="ml-2rounded-xl">
             <h3 className="mb-3 text-left text-sm">Wyndham Worldwide (10%)</h3>
             <div className="grid gap-6 grid-cols-3">
-              <span>
+              <span className="">
                 <h1 className="text-lg font-bold">190K</h1>
                 <p className="text-blue-500 text-xs font-bold">
                   Allowed Requests
                 </p>
               </span>
-              <span>
+              <span className="">
                 <h1 className="text-lg font-bold">50K</h1>
                 <p className="text-yellow-500 text-xs font-bold">
                   Blocked Requests
@@ -480,7 +480,7 @@ function ActiveOrganizationsCard() {
           </div>
         </div>
 
-        <div className="px-3 py-5 bg-white border rounded-lg shadow-sm">
+        <div className="px-3 py-5 bg-white border rounded-md shadow-sm">
           <div className="mb-4 ml-3 rounded-xl">
             <h3 className="mb-3 text-left text-sm">Wake County (5%) (10%)</h3>
             <div className="grid gap-6 grid-cols-3">
@@ -506,7 +506,7 @@ function ActiveOrganizationsCard() {
           </div>
         </div>
 
-        <div className="px-3 py-5 bg-white border rounded-lg shadow-sm">
+        <div className="px-3 py-5 bg-white border rounded-md shadow-sm">
           <div className="mb-4 ml-3 rounded-xl">
             <h3 className="mb-3 text-left text-sm">U.S Navy (10%)</h3>
             <div className="grid gap-6 grid-cols-3">
@@ -1076,13 +1076,6 @@ export default function Index() {
     <SecurityThreats />
     <br />
     <Infos />
-    <br />
-    <br />
-    <br />
-    <br />
-    <Panel />
-    <br />
-    
     */}
 
       <Requests />
