@@ -14,6 +14,7 @@ import {
   MdPerson,
   MdComputer,
   MdArrowDownward,
+  MdLocationCity,
 } from "react-icons/md"
 import { DiWindows, DiApple, DiAndroid, DiChrome } from "react-icons/di"
 import {
@@ -25,12 +26,67 @@ import {
   RadialBar,
   AreaChart,
   Area,
+  Tooltip,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  LineChart,
 } from "recharts"
 import { IoIosPerson } from "react-icons/io"
+
+const line = [
+  {
+    date: "SEP 10",
+    name: "Page A",
+    Requests: 4500,
+    OtherThing: 3400,
+    OneMoreThing: 2400,
+  },
+  {
+    date: "SEP 11",
+    name: "Page B",
+    Requests: 3000,
+    OtherThing: 1398,
+    OneMoreThing: 3210,
+  },
+  {
+    date: "SEP 12",
+    name: "Page C",
+    Requests: 2000,
+    OtherThing: 9800,
+    OneMoreThing: 7290,
+  },
+  {
+    date: "SEP 13",
+    name: "Page D",
+    Requests: 2780,
+    OtherThing: 3908,
+    OneMoreThing: 3000,
+  },
+  {
+    date: "SEP 14",
+    name: "Page E",
+    Requests: 1890,
+    OtherThing: 4800,
+    OneMoreThing: 2181,
+  },
+  {
+    date: "SEP 15",
+    name: "Page F",
+    Requests: 6390,
+    OtherThing: 4000,
+    OneMoreThing: 2500,
+  },
+  {
+    date: "SEP 16",
+    name: "Page G",
+    Requests: 3490,
+    OtherThing: 4300,
+    OneMoreThing: 2100,
+    eixoY: [0, 10000],
+  },
+]
 
 const data = [
   {
@@ -346,41 +402,39 @@ function DeviceInfos() {
 
 function Requests() {
   return (
-    <div className="grid grid-cols-2 w-screen shadow-xl">
+    <div className="grid grid-cols-2 w-screen bg-white shadow-xl">
       <div className="flex">
-        <div className="m-6 mt-6 w-16 h-16 bg-blue-100 rounded-full">
-          <IoIosPerson className="mt-4 mx-auto w-7 h-7 text-blue-500" />
+        <div className="ml-5 mr-3 my-5 w-16 h-16 bg-gray-100 rounded-full">
+          <MdLocationCity className="mt-3.5 mx-auto w-8 h-8 text-gray-600" />
         </div>
-        <div className="py-4">
-          <span className="flex items-center justify-center pr-2 py-1 w-40 text-gray-600 text-xs bg-gray-200 rounded-full">
-            <MdKeyboardArrowLeft className="mr-0.5 w-4 h-4" />
-            ALL ORGANIZATIONS
-          </span>
-          <span className="block mt-1 text-blue-500 text-lg font-semibold">
-            LAPTOP-03QHV0FL
-          </span>
-          <span className="text-gray-500 text-sm">
-            Last acess 07/07/2020 08:51 EST
+        <div className="flex items-center py-4">
+          <span>
+            <h3 className="mb-1 text-gray-500 text-lg font-bold">
+              All Organizations
+            </h3>
+            <p className="text-gray-500 text-xs">
+              Last acess 07/07/2020 08:51 EST
+            </p>
           </span>
         </div>
       </div>
 
       <div className="grid grid-cols-4 text-right">
         <div className="m-auto">
-          <h1 className="text-gray-700 text-2xl font-bold">2M</h1>
-          <p className="text-sm">Total Request</p>
+          <h1 className="text-gray-500 text-2xl font-bold">2M</h1>
+          <p className="text-gray-400 text-xs">Total Request</p>
         </div>
         <div className="m-auto">
           <h1 className="text-blue-500 text-2xl font-bold">900K</h1>
-          <p className="text-sm">Allowed Request</p>
+          <p className="text-gray-400 text-xs">Allowed Request</p>
         </div>
         <div className="m-auto">
           <h1 className="text-yellow-500 text-2xl font-bold">75K</h1>
-          <p className="text-sm">Blocked Request</p>
+          <p className="text-gray-400 text-xs">Blocked Request</p>
         </div>
         <div className="m-auto">
           <h1 className="text-red-500 text-2xl font-bold">25K</h1>
-          <p className="text-sm">Threats Request</p>
+          <p className="text-gray-400 text-xs">Threats Request</p>
         </div>
       </div>
     </div>
@@ -389,34 +443,36 @@ function Requests() {
 
 function ActiveOrganizationsCard() {
   return (
-    <div className="p-1">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg font-bold">Top 3 Active Organizations</h1>
-        <button className="flex items-center px-3 py-2.5 text-gray-600 text-sm bg-white rounded-lg shadow-lg">
-          <MdSearch className="mr-3 w-5 h-5" />
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-gray-700 text-base font-bold">
+          Top 3 Active Organizations
+        </h1>
+        <button className="flex items-center pl-3 pr-5 py-1.5 text-gray-600 text-xs bg-white rounded-md shadow-sm">
+          <MdSearch className="mr-5 w-5 h-5" />
           FIND ORGANIZATIONS
         </button>
       </div>
-      <div className="grid gap-8 grid-cols-3">
-        <div className="p-4 border rounded-lg shadow-lg">
-          <div className="mb-5 ml-3 rounded-xl">
-            <h3 className="mb-3 text-left">Wyndham Worldwide (10%)</h3>
-            <div className="grid grid-cols-3">
+      <div className="flex justify-between">
+        <div className="px-4 py-5 bg-white border rounded-md shadow-sm">
+          <div className="mb-5 rounded-xl">
+            <h3 className="mb-3 text-left text-sm">Wyndham Worldwide (10%)</h3>
+            <div className="grid gap-6 grid-cols-3">
               <span>
-                <h1 className="text-xl font-bold">190K</h1>
-                <p className="text-blue-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">190K</h1>
+                <p className="text-blue-500 text-xs font-bold">
                   Allowed Requests
                 </p>
               </span>
               <span>
-                <h1 className="text-xl font-bold">50K</h1>
-                <p className="text-yellow-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">50K</h1>
+                <p className="text-yellow-500 text-xs font-bold">
                   Blocked Requests
                 </p>
               </span>
               <span>
-                <h1 className="text-xl font-bold">50K</h1>
-                <p className="text-red-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">50K</h1>
+                <p className="text-red-500 text-xs font-bold">
                   Threat Requests
                 </p>
               </span>
@@ -424,25 +480,25 @@ function ActiveOrganizationsCard() {
           </div>
         </div>
 
-        <div className="p-4 border rounded-lg shadow-lg">
+        <div className="px-3 py-5 bg-white border rounded-lg shadow-sm">
           <div className="mb-4 ml-3 rounded-xl">
-            <h3 className="mb-3 text-left">Wake County (5%) (10%)</h3>
-            <div className="grid grid-cols-3">
+            <h3 className="mb-3 text-left text-sm">Wake County (5%) (10%)</h3>
+            <div className="grid gap-6 grid-cols-3">
               <span>
-                <h1 className="text-xl font-bold">190K</h1>
-                <p className="text-blue-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">190K</h1>
+                <p className="text-blue-500 text-xs font-bold">
                   Allowed Requests
                 </p>
               </span>
               <span>
-                <h1 className="text-xl font-bold">50K</h1>
-                <p className="text-yellow-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">50K</h1>
+                <p className="text-yellow-500 text-xs font-bold">
                   Blocked Requests
                 </p>
               </span>
               <span>
-                <h1 className="text-xl font-bold">50K</h1>
-                <p className="text-red-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">50K</h1>
+                <p className="text-red-500 text-xs font-bold">
                   Threat Requests
                 </p>
               </span>
@@ -450,25 +506,25 @@ function ActiveOrganizationsCard() {
           </div>
         </div>
 
-        <div className="p-4 border rounded-lg shadow-lg">
+        <div className="px-3 py-5 bg-white border rounded-lg shadow-sm">
           <div className="mb-4 ml-3 rounded-xl">
-            <h3 className="mb-3 text-left">U.S Navy (10%)</h3>
-            <div className="grid grid-cols-3">
+            <h3 className="mb-3 text-left text-sm">U.S Navy (10%)</h3>
+            <div className="grid gap-6 grid-cols-3">
               <span>
-                <h1 className="text-xl font-bold">190K</h1>
-                <p className="text-blue-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">190K</h1>
+                <p className="text-blue-500 text-xs font-bold">
                   Allowed Requests
                 </p>
               </span>
               <span>
-                <h1 className="text-xl font-bold">50K</h1>
-                <p className="text-yellow-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">50K</h1>
+                <p className="text-yellow-500 text-xs font-bold">
                   Blocked Requests
                 </p>
               </span>
               <span>
-                <h1 className="text-xl font-bold">50K</h1>
-                <p className="text-red-500 text-sm font-bold">
+                <h1 className="text-lg font-bold">50K</h1>
+                <p className="text-red-500 text-xs font-bold">
                   Threat Requests
                 </p>
               </span>
@@ -483,8 +539,8 @@ function ActiveOrganizationsCard() {
 function Panel() {
   return (
     <div>
-      <header className="flex justify-between px-5 py-3.5 border rounded-md shadow-lg">
-        <div className="flex items-center text-gray-500 text-sm">
+      <header className="flex justify-between px-5 py-3.5 rounded-t-md shadow-md">
+        <div className="flex items-center text-gray-500 text-base">
           Requests <MdKeyboardArrowRight className="mx-1 w-5 h-5" /> Threats
           <MdKeyboardArrowRight className="mx-1 w-5 h-5" />
           <p className="text-gray-900 font-semibold">By User</p>
@@ -538,7 +594,7 @@ function Panel() {
               <h1 className="-mx-3 text-base transform -rotate-90">
                 Top 5 Users
               </h1>
-              <IoIosPerson className="absolute left-36 ml-2 pl-3 w-16 h-16 text-gray-400" />
+              <IoIosPerson className="absolute left-44 ml-1.5 pl-3 w-16 h-16 text-gray-400" />
               <PieChart
                 width={455}
                 height={320}
@@ -567,10 +623,10 @@ function Panel() {
                 </Pie>
               </PieChart>
             </div>
-            <div className="flex items-center mr-20">
+            <div className="flex items-center mr-16">
               <h1 className="-mx-5 transform -rotate-90">Top 5 Categories</h1>
               <svg
-                viewBox="3 0 25 24"
+                viewBox="0 0 24 24"
                 className="relative left-24 w-12 h-12 text-gray-400 fill-current"
               >
                 <path d="M0 0h24v24H0z" fill="none" />
@@ -618,7 +674,7 @@ function Panel() {
         ></input>
       </div>
       <div className="text-xs">
-        <div className="grid grid-cols-4 mb-3 mt-7 px-8 text-gray-500">
+        <div className="grid grid-cols-4 mb-3 mt-7 px-8 text-gray-400">
           <p className="col-span-2 ml-3">USER</p>
           <p># OF REQUESTS</p>
           <p>% OF REQUESTS</p>
@@ -626,7 +682,7 @@ function Panel() {
         <div className="mx-6 border rounded-t-md">
           <span className="grid grid-cols-4 items-center bg-blue-50 border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">4,389</p>
@@ -634,7 +690,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Hayden Wilkinson
             </p>
             <p className="text-gray-800">4,389</p>
@@ -642,7 +698,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Hayden Wilkinson
             </p>
             <p className="text-gray-800">2,189</p>
@@ -650,7 +706,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Elisha Huber
             </p>
             <p className="text-gray-800">1,124</p>
@@ -658,7 +714,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">1,124</p>
@@ -666,7 +722,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">824</p>
@@ -674,7 +730,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">524</p>
@@ -682,7 +738,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">504</p>
@@ -690,7 +746,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center border-b">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">444</p>
@@ -698,7 +754,7 @@ function Panel() {
           </span>
           <span className="grid grid-cols-4 items-center">
             <p className="flex col-span-2 items-center pl-4 text-gray-800">
-              <MdPerson className="mr-1 my-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+              <MdPerson className="mr-1 my-1.5 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
               Edward Collins
             </p>
             <p className="text-gray-800">424</p>
@@ -706,7 +762,7 @@ function Panel() {
           </span>
         </div>
       </div>
-      <footer className="flex items-center justify-end m-9 mr-7 text-gray-500 text-xs">
+      <footer className="flex items-center justify-end ml-9 mr-7 mt-8 pb-5 text-gray-400 text-xs">
         <p className="mr-2.5">1-10 of 400</p>
         <span className="space-x-2">
           <button>
@@ -724,86 +780,86 @@ function Panel() {
 function InfoPanel() {
   return (
     <div>
-      <div className="grid gap-6 grid-cols-3 -mb-14 p-10">
-        <div className="flex items-center border border-gray-100 rounded-lg shadow-2xl">
-          <div className="">
+      <div className="grid gap-4 grid-cols-3">
+        <div className="flex items-center py-3 bg-white border rounded-md shadow-md">
+          <div className="mx-3">
             <RadialBarChart
-              width={200}
-              height={200}
-              innerRadius={75}
-              outerRadius={95}
+              width={135}
+              height={135}
+              innerRadius={60}
+              outerRadius={77}
               data={data}
             >
               <RadialBar minAngle={15} background dataKey="uv" clockwise />
             </RadialBarChart>
           </div>
-          <p className="absolute left-28 ml-0.5 text-3xl">60%</p>
+          <p className="absolute left-20 ml-1.5 text-2xl font-semibold">60%</p>
           <div>
-            <p className="text-blue-500 text-base">Sites</p>
-            <p className="w-24 text-lg font-bold">60 Active</p>
-            <p className="text-gray-400 text-sm">40 Active</p>
+            <p className="text-blue-500 text-sm">Sites</p>
+            <p className="w-24 text-base font-bold">60 Active</p>
+            <p className="text-gray-400 text-xs">40 Active</p>
           </div>
-          <div className="self-end mb-4 ml-12 text-blue-500 font-bold">
+          <div className="bottom-0 self-end -ml-7 mb-1 text-blue-500 text-xs font-bold">
             VIEW SITES REPORT
           </div>
         </div>
 
-        <div className="flex items-center border border-gray-100 rounded-lg shadow-2xl">
-          <div className="">
+        <div className="flex items-center py-3 bg-white border rounded-md shadow-md">
+          <div className="mx-3">
             <RadialBarChart
-              width={200}
-              height={200}
-              innerRadius={75}
-              outerRadius={95}
+              width={135}
+              height={135}
+              innerRadius={60}
+              outerRadius={77}
               data={data}
             >
               <RadialBar minAngle={15} background dataKey="uv" clockwise />
             </RadialBarChart>
           </div>
-          <p className="absolute left-1/4 ml-60 text-3xl">60%</p>
-          <div className="w-36">
-            <p className="w-48 text-blue-500 text-base">Roaming Clients</p>
-            <p className="w-24 text-lg font-bold">60 Active</p>
-            <p className="text-gray-400 text-sm">40 Active</p>
+          <p className="absolute ml-14 text-2xl font-semibold">60%</p>
+          <div>
+            <p className="text-blue-500 text-sm">Sites</p>
+            <p className="w-24 text-base font-bold">60 Active</p>
+            <p className="text-gray-400 text-xs">40 Active</p>
           </div>
-          <div className="self-end mb-4 text-blue-500 font-bold">
+          <div className="bottom-0 self-end -ml-7 mb-1 text-blue-500 text-xs font-bold">
             VIEW SITES REPORT
           </div>
         </div>
 
-        <div className="flex items-center border border-gray-100 rounded-lg shadow-2xl">
-          <div className="">
+        <div className="flex items-center py-3 bg-white border rounded-md shadow-md">
+          <div className="mx-3">
             <RadialBarChart
-              width={200}
-              height={200}
-              innerRadius={75}
-              outerRadius={95}
+              width={135}
+              height={135}
+              innerRadius={60}
+              outerRadius={77}
               data={data}
             >
               <RadialBar minAngle={15} background dataKey="uv" clockwise />
             </RadialBarChart>
           </div>
-          <p className="absolute ml-16 pl-2 text-3xl">60%</p>
+          <p className="absolute ml-14 pl-0.5 text-2xl font-semibold">60%</p>
           <div>
-            <p className="text-blue-500 text-base">Relays</p>
-            <p className="w-24 text-lg font-bold">60 Active</p>
-            <p className="text-gray-400 text-sm">40 Active</p>
+            <p className="text-blue-500 text-sm">Sites</p>
+            <p className="w-24 text-base font-bold">60 Active</p>
+            <p className="text-gray-400 text-xs">40 Active</p>
           </div>
-          <div className="w-42 self-end mb-4 ml-16 text-blue-500 font-bold">
+          <div className="bottom-0 self-end -ml-7 mb-1 text-blue-500 text-xs font-bold">
             VIEW SITES REPORT
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 grid-cols-3 p-10">
-        <div className="p-5 border border-gray-100 rounded-lg shadow-2xl">
-          <h3 className="mt-3 text-lg font-bold">Deployment</h3>
-          <div className="grid gap-5 grid-cols-2 grid-rows-2">
+      <div className="grid gap-4 grid-cols-3 mt-5">
+        <div className="p-5 py-3 bg-white border border-gray-100 rounded-md shadow-md">
+          <h3 className="mt-2 text-base font-bold">Deployment</h3>
+          <div className="grid gap-x-10 grid-cols-2 grid-rows-2">
             <span className="flex items-center mt-5">
               <MdGroupWork className="p-3 w-14 h-14 text-blue-500 bg-blue-100 rounded-full fill-current" />
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">10</p>
-                <p>Collections</p>
+                <p className="text-xs">Collections</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
@@ -812,7 +868,7 @@ function InfoPanel() {
               </span>
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">10</p>
-                <p>Users</p>
+                <p className="text-xs">Users</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
@@ -821,27 +877,27 @@ function InfoPanel() {
               </span>
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">8</p>
-                <p>Sync Tools</p>
+                <p className="text-xs">Sync Tools</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
               <MdGroupWork className="p-3 w-14 h-14 text-blue-500 bg-blue-100 rounded-full fill-current" />
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">8</p>
-                <p>Relays</p>
+                <p className="text-xs">Relays</p>
               </span>
             </span>
           </div>
 
-          <h3 className="mt-10 mt-3 text-base">Roaming Clients</h3>
-          <div className="grid gap-5 grid-cols-2 grid-rows-2">
+          <h3 className="mt-8 text-sm">Roaming Clients</h3>
+          <div className="grid gap-x-10 grid-cols-2 grid-rows-2">
             <span className="flex items-center mt-5">
               <span className="bg-blue-50 rounded-full">
                 <DiWindows className="p-3 w-14 h-14 text-blue-400 fill-current" />
               </span>
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">12</p>
-                <p>Windows</p>
+                <p className="text-xs">Windows</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
@@ -850,7 +906,7 @@ function InfoPanel() {
               </span>
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">25</p>
-                <p>macOS</p>
+                <p className="text-xs">macOS</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
@@ -859,14 +915,14 @@ function InfoPanel() {
               </span>
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">12</p>
-                <p>iOS</p>
+                <p className="text-xs">iOS</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
               <DiAndroid className="p-3 w-14 h-14 text-green-600 bg-green-50 rounded-full fill-current" />
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">12</p>
-                <p>Android</p>
+                <p className="text-xs">Android</p>
               </span>
             </span>
             <span className="flex items-center mt-5">
@@ -875,61 +931,177 @@ function InfoPanel() {
               </span>
               <span className="ml-2">
                 <p className="text-gray-600 font-bold">12</p>
-                <p>Android</p>
+                <p className="text-xs">Android</p>
               </span>
             </span>
           </div>
         </div>
 
-        <div className="col-span-2 p-5 pt-6 border border-gray-100 rounded-lg shadow-2xl">
-          <h3>Queries per Second</h3>
+        <div className="col-span-2 p-5 pt-6 bg-white border border-gray-100 rounded-md shadow-md">
+          <h3 className="text-sm">Queries per Second</h3>
 
           <h1 className="mt-10 text-2xl font-bold">40.4K</h1>
           <span className="flex items-center justify-between mt-2 px-1.5 w-14 text-blue-500 font-bold bg-blue-50">
             <MdArrowDownward />
             4%
           </span>
+          <div>
+            <AreaChart width={720} height={325} data={areaChart}>
+              <defs>
+                <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="25%" stopColor="#82ca9d" stopOpacity={0.7} />
+                  <stop offset="100%" stopColor="#82ca9d" stopOpacity={0} />
+                </linearGradient>
+              </defs>
 
-          <AreaChart width={1050} height={250} data={areaChart}>
-            <defs>
-              <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-
-            <Tooltip />
-            <Area
-              dataKey="pv"
-              stroke="#82ca9d"
-              fillOpacity={10}
-              fill="url(#colorPv)"
-            />
-          </AreaChart>
+              <Tooltip />
+              <Area
+                dataKey="pv"
+                stroke="#82ca9d"
+                fillOpacity={10}
+                fill="url(#colorPv)"
+              />
+            </AreaChart>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
+const toolTipStyle = {
+  font: "bold",
+}
+
+const CustomizedAxisTick = () => {
+  const { x, y, stroke, payload } = this.props
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={0}
+        dy={16}
+        textAnchor="end"
+        fill="#666"
+        transform="rotate(-35)"
+      >
+        {payload.value}
+      </text>
+    </g>
+  )
+}
+
+function LineChartJS() {
+  return (
+    <div>
+      <LineChart
+        width={1100}
+        height={350}
+        data={line}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey="date"
+          tickLine={false}
+          axisLine={{
+            stroke: "#D3D3D3",
+            strokeWidth: 2,
+          }}
+          tickMargin={8}
+          tick={{
+            stroke: "black",
+          }}
+          strokeWidth={0.5}
+        />
+        <YAxis
+          dataKey="eixoY"
+          axisLine={{
+            stroke: "#D3D3D3",
+            strokeWidth: 2,
+          }}
+          type="number"
+          scale="linear"
+          tickMargin={10}
+          tick={{
+            stroke: "black",
+          }}
+          strokeWidth={0.5}
+        />
+        <Tooltip itemStyle={toolTipStyle} />
+        <Line
+          type="monotone"
+          dataKey="OtherThing"
+          stroke="#18F"
+          strokeWidth={2}
+          activeDot={{
+            r: 6,
+          }}
+        />
+        <Line
+          type="monotone"
+          dataKey="Requests"
+          stroke="orange"
+          strokeWidth={2}
+          activeDot={{
+            r: 6,
+          }}
+        />
+        <Line
+          type="monotone"
+          dataKey="OneMoreThing"
+          stroke="red"
+          strokeWidth={2}
+          activeDot={{
+            r: 6,
+          }}
+        />
+      </LineChart>
+    </div>
+  )
+}
+
 export default function Index() {
   return (
-    <>
-      <Categories />
-      <br />
-      <SecurityThreats />
-      <br />
-      <Infos />
-      <br />
-      <DeviceInfos />
-      <br />
+    <div className="bg-gray-200">
+      {/*
+    <Categories />
+    <br />
+    <SecurityThreats />
+    <br />
+    <Infos />
+    <br />
+    <br />
+    <br />
+    <br />
+    <Panel />
+    <br />
+    
+    */}
+
       <Requests />
-      <br />
-      <ActiveOrganizationsCard />
-      <br />
-      <Panel />
-      <br />
-      <InfoPanel />
-    </>
+      <div className="p-7">
+        <div>
+          <ActiveOrganizationsCard />
+        </div>
+        <div className="mt-6 px-7 py-5 bg-white rounded-md shadow-md">
+          <h3 className="mb-7 text-base font-bold">Time Series Request</h3>
+          <LineChartJS />
+        </div>
+        <div className="mt-6 bg-white rounded-md shadow-md">
+          <Panel />
+        </div>
+
+        <div className="mt-5">
+          <InfoPanel />
+        </div>
+      </div>
+    </div>
   )
 }
