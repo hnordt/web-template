@@ -192,12 +192,12 @@ const COLORS_CAT = ["#FFA500", "#A022AD", "#1E90FF", "#87CEFA", "#483D8B"]
 
 function Categories() {
   return (
-    <div className="flex w-1/2 border rounded-xl shadow-xl">
-      <div className="m-5 mt-6 w-20 h-20 bg-blue-100 rounded-full">
+    <div className="flex w-1/2 bg-white border rounded-md shadow-md">
+      <div className="mx-5 my-4 w-14 h-14 bg-blue-50 rounded-full">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          className="mt-6 mx-auto w-7 h-7 text-blue-500 fill-current"
+          className="mt-3.5 mx-auto w-6 h-6 text-blue-500 fill-current"
         >
           <path d="M0 0h24v24H0z" fill="none" />
           <path d="M12 2l-5.5 9h11z" />
@@ -205,9 +205,9 @@ function Categories() {
           <path d="M3 13.5h8v8H3z" />
         </svg>
       </div>
-      <div className="py-8">
-        <span className="block mb-3 text-xl">Categories</span>
-        <span className="px-6 py-0.5 text-gray-700 text-xl bg-gray-200 rounded-md">
+      <div className="my-auto">
+        <span className="block mb-1 text-xs">Categories</span>
+        <span className="px-3 py-0.5 text-gray-700 text-xs bg-gray-200 rounded-md">
           P2P & Illegal
         </span>
       </div>
@@ -217,11 +217,11 @@ function Categories() {
 
 function SecurityThreats() {
   return (
-    <div className="flex w-1/2 border rounded-xl shadow-xl">
-      <div className="m-5 mt-5 w-20 h-20 bg-red-100 rounded-full">
+    <div className="flex w-1/2 bg-white border rounded-md shadow-md">
+      <div className="mx-5 my-4 w-14 h-14 bg-red-50 rounded-full">
         <svg
           viewBox="-0.5 -1.5 24 24"
-          className="mt-6 mx-auto w-7 h-7 text-green-600 fill-current"
+          className="mt-3.5 mx-auto w-6 h-6 text-green-600 fill-current"
         >
           <path
             fill="red"
@@ -229,9 +229,9 @@ function SecurityThreats() {
           />
         </svg>
       </div>
-      <div className="py-8">
-        <span className="block text-xl">Security Threats</span>
-        <span className="text-gray-400 text-lg">
+      <div className="my-auto">
+        <span className="block text-xs">Security Threats</span>
+        <span className="text-gray-400 text-xs">
           No security threats found for bittorrent.com
         </span>
       </div>
@@ -436,6 +436,58 @@ function Requests() {
           <h1 className="text-red-500 text-2xl font-bold">25K</h1>
           <p className="text-gray-400 text-xs">Threats Request</p>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function Requests2() {
+  return (
+    <div className="grid grid-cols-2 w-screen bg-white shadow-xl">
+      <div className="flex">
+        <div className="ml-8 mr-3 my-5 w-16 h-16 bg-blue-50 rounded-full">
+          <svg
+            id="Capa_1"
+            enable-background="new 0 0 512 512"
+            height="512"
+            viewBox="0 0 512 512"
+            width="512"
+            xmlns="http://www.w3.org/2000/svg"
+            className="mt-4 mx-auto p-1 w-8 h-8 text-blue-500 fill-current"
+          >
+            <g>
+              <path d="m162.457 434.408c-23.427 23.444-61.433 23.444-84.861 0-23.075-23.059-23.443-60.249-1.088-83.757l126.465-126.465c-39.112-10.458-82.481-.832-113.748 28.904l-56.231 56.231c-44.711 47.015-43.975 121.395 2.176 167.514 46.855 46.887 122.867 46.887 169.722 0l51.846-51.846c31.425-31.404 41.785-75.905 31.086-115.947z" />
+              <path d="m476.835 35.17c-46.119-46.151-120.499-46.887-167.514-2.176l-56.231 56.231c-29.735 31.268-39.361 74.637-28.904 113.748l126.465-126.465c23.508-22.355 60.697-21.987 83.757 1.088 23.444 23.428 23.443 61.433 0 84.861l-125.367 125.367c40.042 10.699 84.543.34 115.947-31.086l51.846-51.846c46.888-46.855 46.888-122.867.001-169.722z" />
+              <path d="m164.774 347.228c11.714 11.722 30.717 11.722 42.43 0l140.023-140.023c11.722-11.714 11.722-30.717 0-42.43-11.53-11.538-30.125-11.722-41.878-.544l-141.12 141.12c-11.177 11.752-10.993 30.347.545 41.877z" />
+            </g>
+          </svg>
+        </div>
+        <div className="flex items-center py-4">
+          <span>
+            <p className="flex items-center justify-center pr-1 py-1 w-40 text-gray-500 text-xs bg-gray-100 rounded-full">
+              <MdKeyboardArrowLeft className="mr-1 w-4 h-4" />
+              ALL ORGANIZATIONS
+            </p>
+            <p className="text-blue-500 text-base font-bold">bittorrent.com</p>
+            <p className="text-gray-500 text-xs">
+              FQDN: tps10255.bittorrent.com
+            </p>
+          </span>
+        </div>
+      </div>
+
+      <div className="flex justify-end mr-8 pb-7 text-right space-x-14">
+        <div className="my-auto">
+          <h1 className="text-gray-500 text-2xl font-bold">2M</h1>
+          <p className="text-gray-400 text-xs">Total Request</p>
+        </div>
+        <div className="my-auto">
+          <h1 className="text-blue-500 text-2xl font-bold">10.30%</h1>
+          <p className="text-gray-400 text-xs">Allowed Request</p>
+        </div>
+        <p className="absolute mt-14 pt-3 text-gray-500 text-xs">
+          Last access 07/07/2020 08:51 EST | Last scan 07/07/2020 08:51 EST
+        </p>
       </div>
     </div>
   )
@@ -799,7 +851,7 @@ function InfoPanel() {
             <p className="w-24 text-base font-bold">60 Active</p>
             <p className="text-gray-400 text-xs">40 Active</p>
           </div>
-          <div className="bottom-0 self-end -ml-7 mb-1 text-blue-500 text-xs font-bold">
+          <div className="bottom-0 self-end -ml-7 mb-1 pr-4 pr-4 w-full text-right text-blue-500 text-xs font-bold">
             VIEW SITES REPORT
           </div>
         </div>
@@ -822,7 +874,7 @@ function InfoPanel() {
             <p className="w-24 text-base font-bold">60 Active</p>
             <p className="text-gray-400 text-xs">40 Active</p>
           </div>
-          <div className="bottom-0 self-end -ml-7 mb-1 text-blue-500 text-xs font-bold">
+          <div className="bottom-0 self-end -ml-7 mb-1 pr-4 w-full text-right text-blue-500 text-xs font-bold">
             VIEW SITES REPORT
           </div>
         </div>
@@ -845,7 +897,7 @@ function InfoPanel() {
             <p className="w-24 text-base font-bold">60 Active</p>
             <p className="text-gray-400 text-xs">40 Active</p>
           </div>
-          <div className="bottom-0 self-end -ml-7 mb-1 text-blue-500 text-xs font-bold">
+          <div className="bottom-0 self-end -ml-7 mb-1 pr-4 w-full text-right text-blue-500 text-xs font-bold">
             VIEW SITES REPORT
           </div>
         </div>
@@ -1071,29 +1123,35 @@ export default function Index() {
   return (
     <div className="bg-gray-200">
       {/*
-    <Categories />
     <br />
-    <SecurityThreats />
     <br />
     <Infos />
-    */}
-
-      <Requests />
-      <div className="p-7">
-        <div>
+  */}
+      {/*
+          Layout 01
+          <Requests />
+          <div className="p-7">
+          <div>
           <ActiveOrganizationsCard />
-        </div>
-        <div className="mt-6 px-7 py-5 bg-white rounded-md shadow-md">
+          </div>
+          <div className="mt-6 px-7 py-5 bg-white rounded-md shadow-md">
           <h3 className="mb-7 text-base font-bold">Time Series Request</h3>
           <LineChartJS />
-        </div>
-        <div className="mt-6 bg-white rounded-md shadow-md">
+          </div>
+          <div className="mt-6 bg-white rounded-md shadow-md">
           <Panel />
-        </div>
-
-        <div className="mt-5">
+          </div>
+          
+          <div className="mt-5">
           <InfoPanel />
-        </div>
+          </div>
+          </div>
+          
+        */}
+      <Requests2 />
+      <div className="flex px-8 py-5 space-x-5">
+        <Categories />
+        <SecurityThreats />
       </div>
     </div>
   )
