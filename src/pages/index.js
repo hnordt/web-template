@@ -15,6 +15,7 @@ import {
   MdComputer,
   MdArrowDownward,
   MdLocationCity,
+  MdDateRange,
 } from "react-icons/md"
 import { DiWindows, DiApple, DiAndroid, DiChrome } from "react-icons/di"
 import {
@@ -1046,75 +1047,77 @@ const CustomizedAxisTick = () => {
 
 function LineChartJS() {
   return (
-    <div>
-      <LineChart
-        width={1100}
-        height={350}
-        data={line}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={{
-            stroke: "#D3D3D3",
-            strokeWidth: 2,
+    <div className="bg-white">
+      <div className="ml-4 pb-4">
+        <LineChart
+          width={1100}
+          height={350}
+          data={line}
+          margin={{
+            top: 5,
+            right: 20,
+            left: 15,
+            bottom: 5,
           }}
-          tickMargin={8}
-          tick={{
-            stroke: "black",
-          }}
-          strokeWidth={0.5}
-        />
-        <YAxis
-          dataKey="eixoY"
-          axisLine={{
-            stroke: "#D3D3D3",
-            strokeWidth: 2,
-          }}
-          type="number"
-          scale="linear"
-          tickMargin={10}
-          tick={{
-            stroke: "black",
-          }}
-          strokeWidth={0.5}
-        />
-        <Tooltip itemStyle={toolTipStyle} />
-        <Line
-          type="monotone"
-          dataKey="OtherThing"
-          stroke="#18F"
-          strokeWidth={2}
-          activeDot={{
-            r: 6,
-          }}
-        />
-        <Line
-          type="monotone"
-          dataKey="Requests"
-          stroke="orange"
-          strokeWidth={2}
-          activeDot={{
-            r: 6,
-          }}
-        />
-        <Line
-          type="monotone"
-          dataKey="OneMoreThing"
-          stroke="red"
-          strokeWidth={2}
-          activeDot={{
-            r: 6,
-          }}
-        />
-      </LineChart>
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            axisLine={{
+              stroke: "#D3D3D3",
+              strokeWidth: 2,
+            }}
+            tickMargin={8}
+            tick={{
+              stroke: "black",
+            }}
+            strokeWidth={0.5}
+          />
+          <YAxis
+            dataKey="eixoY"
+            axisLine={{
+              stroke: "#D3D3D3",
+              strokeWidth: 2,
+            }}
+            type="number"
+            scale="linear"
+            tickMargin={10}
+            tick={{
+              stroke: "black",
+            }}
+            strokeWidth={0.5}
+          />
+          <Tooltip itemStyle={toolTipStyle} />
+          <Line
+            type="monotone"
+            dataKey="OtherThing"
+            stroke="#18F"
+            strokeWidth={2}
+            activeDot={{
+              r: 6,
+            }}
+          />
+          <Line
+            type="monotone"
+            dataKey="Requests"
+            stroke="orange"
+            strokeWidth={2}
+            activeDot={{
+              r: 6,
+            }}
+          />
+          <Line
+            type="monotone"
+            dataKey="OneMoreThing"
+            stroke="red"
+            strokeWidth={2}
+            activeDot={{
+              r: 6,
+            }}
+          />
+        </LineChart>
+      </div>
     </div>
   )
 }
@@ -1146,13 +1149,81 @@ export default function Index() {
           <InfoPanel />
           </div>
           </div>
-          
-        */}
+  
+  */}
+
+      {/*
+        
+        
+        
+        
+        
       <Requests2 />
-      <div className="flex px-8 py-5 space-x-5">
-        <Categories />
-        <SecurityThreats />
+      <div className="px-8 py-5">
+        <div className="flex space-x-5">
+          <Categories />
+          <SecurityThreats />
+        </div>
+        <div className="flex justify-between mt-5 pl-6 pr-7 py-4 bg-white">
+          <p className="font-bold">Time Series Request</p>
+          <div>
+            <div className="mb-2.5">
+              <MdDateRange className="absolute ml-1 mt-0.5 p-1 w-7 h-7 text-gray-500 fill-current" />
+              <select
+                id="location"
+                name="location"
+                className="pl-9 pr-20 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+              >
+                <option selected>Last 7 Days</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white">
+        <LineChartJS />
+        <div className="mt-6 space-x-5 items-center text-right mr-10 pb-7">
+          <select
+            id="location"
+            name="location"
+            className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+          >
+            <option selected>All Organizations</option>
+          </select>
+          <select
+            id="location"
+            name="location"
+            className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+          >
+            <option selected>All Sites</option>
+          </select>
+          <select
+            id="location"
+            name="location"
+            className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+          >
+            <option selected>All Deployments Types</option>
+          </select>
+          <select
+            id="location"
+            name="location"
+            className="w-60 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+          >
+            <option selected>Select a Roaming Client or User</option>
+          </select>
+        </div>
+        <div>
+          <div>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+          </div>
+        </div>
+
+        </div>
       </div>
+    */}
     </div>
   )
 }
