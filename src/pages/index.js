@@ -1152,12 +1152,6 @@ export default function Index() {
   
   */}
 
-      {/*
-        
-        
-        
-        
-        
       <Requests2 />
       <div className="px-8 py-5">
         <div className="flex space-x-5">
@@ -1180,50 +1174,164 @@ export default function Index() {
           </div>
         </div>
         <div className="bg-white">
-        <LineChartJS />
-        <div className="mt-6 space-x-5 items-center text-right mr-10 pb-7">
-          <select
-            id="location"
-            name="location"
-            className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
-          >
-            <option selected>All Organizations</option>
-          </select>
-          <select
-            id="location"
-            name="location"
-            className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
-          >
-            <option selected>All Sites</option>
-          </select>
-          <select
-            id="location"
-            name="location"
-            className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
-          >
-            <option selected>All Deployments Types</option>
-          </select>
-          <select
-            id="location"
-            name="location"
-            className="w-60 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
-          >
-            <option selected>Select a Roaming Client or User</option>
-          </select>
-        </div>
-        <div>
-          <div>
-            <p></p>
-            <p></p>
-            <p></p>
-            <p></p>
-            <p></p>
+          <LineChartJS />
+          <div className="items-center mr-10 mt-6 pb-7 text-right space-x-5">
+            <select
+              id="location"
+              name="location"
+              className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+            >
+              <option selected>All Organizations</option>
+            </select>
+            <select
+              id="location"
+              name="location"
+              className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+            >
+              <option selected>All Sites</option>
+            </select>
+            <select
+              id="location"
+              name="location"
+              className="w-52 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+            >
+              <option selected>All Deployments Types</option>
+            </select>
+            <select
+              id="location"
+              name="location"
+              className="w-60 text-gray-500 text-gray-500 text-xs border-gray-300 focus:border-indigo-500 rounded-md focus:outline-none focus:ring-indigo-500"
+            >
+              <option selected>Select a Roaming Client or User</option>
+            </select>
+          </div>
+          <div className="m-7 pb-7 text-xs">
+            <div className="grid grid-cols-6 px-5 text-gray-400 text-xs">
+              <p>ORGANIZATION</p>
+              <p>DEPLOYMENT</p>
+              <p>FQDN</p>
+              <p>LOCAL ADDRESS</p>
+              <p>TIME OF REQUESTS</p>
+            </div>
+            <div className="grid-row-10 grid">
+              <div className="mb-1 mt-4 px-5 border rounded-md">
+                <div className="grid grid-cols-6 py-3 border-b border-dashed border-gray-300">
+                  <p>Anaptyx</p>
+                  <p>{/* ICON */}LAPTOP-WIN-01</p>
+                  <p>tps10255.doubleverify.com</p>
+                  <p>103.247.36.36</p>
+                  <p>2020-08-19 13:34:41.945617</p>
+                  {/* ICON */}
+                </div>
+                <div className="grid grid-cols-6 mt-3.5 text-gray-400">
+                  <p>WAN IP</p>
+                  <p>SERVER LOCATION</p>
+                  <p>RESPONSE TIME</p>
+                  <p>ANYCAST NETWORK</p>
+                  <p>AGENT TYPE</p>
+                </div>
+                <div className="grid grid-cols-6 mb-3 mt-2">
+                  <p>67.12.48.133</p>
+                  <p>Dallas, TX, USA</p>
+                  <p>0.11395 ms</p>
+                  <p>DNS1</p>
+                  <p className="text-gray-400">--</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+              <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
+                <p>Anaptyx</p>
+                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p>tps10255.doubleverify.com</p>
+                <p>103.247.36.36</p>
+                <p>2020-08-19 13:34:41.945617</p>
+                <span className="place-self-end">
+                  <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-
-        </div>
       </div>
-    */}
     </div>
   )
 }
