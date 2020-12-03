@@ -1217,11 +1217,16 @@ export default function Index() {
               <div className="mb-1 mt-4 px-5 border rounded-md">
                 <div className="grid grid-cols-6 py-3 border-b border-dashed border-gray-300">
                   <p>Anaptyx</p>
-                  <p>{/* ICON */}LAPTOP-WIN-01</p>
+                  <p className="flex items-center">
+                    <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                    LAPTOP-WIN-01
+                  </p>
                   <p>tps10255.doubleverify.com</p>
                   <p>103.247.36.36</p>
                   <p>2020-08-19 13:34:41.945617</p>
-                  {/* ICON */}
+                  <span className="place-self-end">
+                    <MdKeyboardArrowRight className="w-4 h-4 text-gray-400" />
+                  </span>
                 </div>
                 <div className="grid grid-cols-6 mt-3.5 text-gray-400">
                   <p>WAN IP</p>
@@ -1240,7 +1245,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1250,7 +1258,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1260,7 +1271,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1270,7 +1284,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1280,7 +1297,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1290,7 +1310,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1300,7 +1323,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1310,7 +1336,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
@@ -1320,7 +1349,10 @@ export default function Index() {
               </div>
               <div className="grid grid-cols-6 items-center my-1 px-5 py-3 border rounded-md">
                 <p>Anaptyx</p>
-                <p>{/* ICON */}LAPTOP-WIN-01</p>
+                <p className="flex items-center">
+                  <DiWindows className="mr-1 w-5 h-5 text-blue-500" />
+                  LAPTOP-WIN-01
+                </p>
                 <p>tps10255.doubleverify.com</p>
                 <p>103.247.36.36</p>
                 <p>2020-08-19 13:34:41.945617</p>
