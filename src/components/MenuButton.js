@@ -44,7 +44,7 @@ export default function MenuButton(props) {
         {(menu) => (
           <>
             <span className="rounded-md shadow-sm">
-              <Menu.Button className="focus:ring-blue inline-flex justify-center px-4 py-2 w-full hover:text-gray-500 text-gray-700 active:text-gray-800 text-sm font-medium active:bg-gray-50 bg-white border focus:border-blue-300 border-gray-300 rounded-md focus:outline-none transition">
+              <Menu.Button className="inline-flex justify-center px-4 py-2 w-full hover:text-gray-500 text-gray-700 active:text-gray-800 text-sm font-medium active:bg-gray-50 bg-white border focus:border-blue-300 border-gray-300 rounded-md focus:outline-none transition">
                 <span>{props.children}</span>
                 <RiArrowDownSLine className="-mr-1 ml-2 w-5 h-5" />
               </Menu.Button>

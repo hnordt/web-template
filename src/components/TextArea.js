@@ -9,7 +9,7 @@ export default function TextArea(props) {
         </span>
       )}
       <textarea
-        className="form-textarea block w-full"
+        className="block w-full border-gray-300 focus:border-indigo-500 rounded-md shadow-sm focus:ring-indigo-500 sm:text-sm"
         name={props.name}
         rows={props.rows ?? 3}
         value={props.value}
