@@ -320,81 +320,76 @@ function Infos() {
 
 function DeviceInfos() {
   return (
-    <div className="grid grid-cols-4 border rounded-xl shadow-xl">
+    <div className="grid grid-cols-4 py-3.5 text-xs bg-white border rounded-md shadow-md">
       {/* Last Active */}
 
-      <div className="relative flex">
+      <div className="items-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="21"
+          height="18"
           viewBox="0 0 24 24"
-          width="21"
-          className="absolute left-16 top-5 p-1 text-green-500 bg-green-300 bg-opacity-30 rounded-full fill-current"
+          width="18"
+          className="absolute -mt-1 ml-12 p-1 text-green-500 bg-green-300 bg-opacity-30 rounded-full fill-current"
         >
           <circle cx="12" cy="12" r="10" />
         </svg>
-        <div className="ml-5 mr-2.5 mt-5 p-0.5 w-16 h-16 bg-blue-100 rounded-full">
-          <MdSync className="mx-auto my-4 w-7 h-7 text-blue-500" />
-        </div>
-        <div className="py-8">
-          <span className="block text-gray-500 text-sm font-normal">
-            Last Sync
-          </span>
-          <div>
-            <span className="text-gray-900 text-sm font-bold">
-              07/07/2020 08:51 EST
-            </span>
-            <span className="ml-2 px-3 py-1 text-green-500 text-xs font-bold bg-green-100 rounded-xl">
+
+        <div className="flex items-center">
+          <div className="ml-5 mr-2.5 w-12 h-12 bg-blue-50 rounded-full">
+            <MdSync className="mt-3.5 mx-auto w-5 h-5 text-blue-600 fill-current" />
+          </div>
+          <div className="">
+            <span className="block text-gray-500 font-normal">Last Sync</span>
+            <span className="text-gray-900 font-bold">07/07/2020 8:51 EST</span>
+            {/* I couldn't implement this, maybe a smaller font could solve it
+            <span className="ml-2 px-3 py-1 text-xs text-green-500 font-bold bg-green-100 rounded-full">
               ACTIVE NOW
             </span>
+            */}
           </div>
         </div>
       </div>
 
       {/* Operational System */}
 
-      <div className="flex">
-        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-gray-100 rounded-full">
+      <div className="flex items-center">
+        <div className="ml-5 mr-2.5 w-12 h-12 bg-gray-100 rounded-full">
           <svg
             viewBox="0 0 24 24"
-            className="mx-auto my-4 w-8 h-8 text-gray-600 fill-current"
+            className="mx-auto my-3 w-6 h-6 text-gray-600 fill-current"
           >
             <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z" />
           </svg>
         </div>
-        <div className="py-8">
-          <span className="block text-gray-500 text-sm font-normal">
+        <div className="">
+          <span className="block text-gray-500 font-normal">
             Operational System
           </span>
-          <span className="text-gray-900 text-sm font-bold">macOS</span>
+          <span className="text-gray-900 font-bold">macOS</span>
         </div>
       </div>
 
       {/* Version */}
 
-      <div className="flex">
-        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
-          <MdDesktopWindows className="mx-auto my-5 w-6 h-6 text-blue-500" />
+      <div className="flex items-center">
+        <div className="ml-5 mr-2.5 w-12 h-12 bg-blue-50 rounded-full">
+          <MdDesktopWindows className="mx-auto my-3.5 w-5 h-5 text-blue-500" />
         </div>
-        <div className="py-8">
-          <span className="block text-gray-500 text-sm font-normal">
-            Version
-          </span>
-          <span className="text-gray-900 text-sm font-bold">1.5.2.0</span>
+        <div className="">
+          <span className="block text-gray-500 font-normal">Version</span>
+          <span className="text-gray-900 font-bold">1.5.2.0</span>
         </div>
       </div>
 
       {/* Site */}
 
-      <div className="flex">
-        <div className="ml-5 mr-2.5 mt-5 w-16 h-16 bg-blue-100 rounded-full">
-          <MdLanguage className="mx-auto my-3.5 w-9 h-9 text-blue-500" />
+      <div className="flex items-center">
+        <div className="ml-5 mr-2.5 w-12 h-12 bg-blue-50 rounded-full">
+          <MdLanguage className="mx-auto my-3 w-6 h-6 text-blue-500" />
         </div>
-        <div className="py-8">
-          <span className="block text-gray-500 text-sm font-normal">
-            Collection
-          </span>
-          <span className="text-gray-900 text-sm font-bold">Marketing</span>
+        <div className="">
+          <span className="block text-gray-500 font-normal">Site</span>
+          <span className="text-gray-900 font-bold">Anaptyx Main Office</span>
         </div>
       </div>
     </div>
@@ -403,7 +398,7 @@ function DeviceInfos() {
 
 function Requests() {
   return (
-    <div className="grid grid-cols-2 w-screen bg-white shadow-xl">
+    <div className="grid grid-cols-2 w-screen bg-white shadow-md">
       <div className="flex">
         <div className="ml-5 mr-3 my-5 w-16 h-16 bg-gray-100 rounded-full">
           <MdLocationCity className="mt-3.5 mx-auto w-8 h-8 text-gray-600" />
@@ -444,7 +439,7 @@ function Requests() {
 
 function Requests2() {
   return (
-    <div className="grid grid-cols-2 w-screen bg-white shadow-xl">
+    <div className="grid grid-cols-2 w-screen bg-white shadow-md">
       <div className="flex">
         <div className="ml-8 mr-3 my-5 w-16 h-16 bg-blue-50 rounded-full">
           <svg
@@ -489,6 +484,63 @@ function Requests2() {
         <p className="absolute mt-14 pt-3 text-gray-500 text-xs">
           Last access 07/07/2020 08:51 EST | Last scan 07/07/2020 08:51 EST
         </p>
+      </div>
+    </div>
+  )
+}
+
+function Requests3() {
+  return (
+    <div className="grid grid-cols-2 w-screen bg-white shadow-md">
+      <div className="flex">
+        <div className="ml-8 mr-3 my-5 w-16 h-16 bg-blue-50 rounded-full">
+          <svg
+            id="Capa_1"
+            enable-background="new 0 0 512 512"
+            height="512"
+            viewBox="0 0 512 512"
+            width="512"
+            xmlns="http://www.w3.org/2000/svg"
+            className="mt-4 mx-auto p-1 w-8 h-8 text-blue-500 fill-current"
+          >
+            <g>
+              <path d="m162.457 434.408c-23.427 23.444-61.433 23.444-84.861 0-23.075-23.059-23.443-60.249-1.088-83.757l126.465-126.465c-39.112-10.458-82.481-.832-113.748 28.904l-56.231 56.231c-44.711 47.015-43.975 121.395 2.176 167.514 46.855 46.887 122.867 46.887 169.722 0l51.846-51.846c31.425-31.404 41.785-75.905 31.086-115.947z" />
+              <path d="m476.835 35.17c-46.119-46.151-120.499-46.887-167.514-2.176l-56.231 56.231c-29.735 31.268-39.361 74.637-28.904 113.748l126.465-126.465c23.508-22.355 60.697-21.987 83.757 1.088 23.444 23.428 23.443 61.433 0 84.861l-125.367 125.367c40.042 10.699 84.543.34 115.947-31.086l51.846-51.846c46.888-46.855 46.888-122.867.001-169.722z" />
+              <path d="m164.774 347.228c11.714 11.722 30.717 11.722 42.43 0l140.023-140.023c11.722-11.714 11.722-30.717 0-42.43-11.53-11.538-30.125-11.722-41.878-.544l-141.12 141.12c-11.177 11.752-10.993 30.347.545 41.877z" />
+            </g>
+          </svg>
+        </div>
+        <div className="flex items-center py-4">
+          <span>
+            <p className="flex items-center justify-center pr-1 py-1 w-40 text-gray-500 text-xs bg-gray-100 rounded-full">
+              <MdKeyboardArrowLeft className="mr-1 w-4 h-4" />
+              ALL ORGANIZATIONS
+            </p>
+            <p className="text-blue-500 text-lg font-bold">LAPTOP-03QHV0FL</p>
+            <p className="text-gray-500 text-xs">
+              Last acess 07/07/2020 08:51 EST
+            </p>
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 text-right">
+        <div className="m-auto">
+          <h1 className="text-gray-500 text-2xl font-bold">2M</h1>
+          <p className="text-gray-400 text-xs">Total Request</p>
+        </div>
+        <div className="m-auto">
+          <h1 className="text-blue-500 text-2xl font-bold">900K</h1>
+          <p className="text-gray-400 text-xs">Allowed Request</p>
+        </div>
+        <div className="m-auto">
+          <h1 className="text-yellow-500 text-2xl font-bold">75K</h1>
+          <p className="text-gray-400 text-xs">Blocked Request</p>
+        </div>
+        <div className="m-auto">
+          <h1 className="text-red-500 text-2xl font-bold">25K</h1>
+          <p className="text-gray-400 text-xs">Threats Request</p>
+        </div>
       </div>
     </div>
   )
@@ -830,6 +882,295 @@ function Panel() {
   )
 }
 
+function PanelLayout3() {
+  return (
+    <div className="bg-white rounded-md shadow-md">
+      <div>
+        {/* first content */}
+        <div>
+          <div className="flex justify-between">
+            <div className="flex items-center">
+              <h1 className="-mx-3 text-sm transform -rotate-90">
+                Top 5 Users
+              </h1>
+              <svg
+                viewBox="0 0 24 24"
+                className="absolute left-44 ml-2.5 w-12 h-12 text-gray-400 fill-current"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 2l-5.5 9h11z" />
+                <circle cx="17.5" cy="17.5" r="4.5" />
+                <path d="M3 13.5h8v8H3z" />
+              </svg>{" "}
+              <PieChart
+                width={455}
+                height={320}
+                className="-ml-10 text-sm leading-10"
+              >
+                <Legend
+                  layout="vertical"
+                  align="right"
+                  verticalAlign="middle"
+                  iconType="circle"
+                  iconSize={9}
+                />
+
+                <Pie
+                  data={top5Users}
+                  innerRadius={100}
+                  outerRadius={120}
+                  dataKey="value"
+                >
+                  {top5Users.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </div>
+            <div className="flex items-center mr-16">
+              <svg
+                id="Capa_1"
+                enable-background="new 0 0 512 512"
+                height="512"
+                viewBox="0 0 512 512"
+                width="512"
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute ml-52 w-11 h-11 text-gray-400 fill-current"
+              >
+                <g>
+                  <path d="m162.457 434.408c-23.427 23.444-61.433 23.444-84.861 0-23.075-23.059-23.443-60.249-1.088-83.757l126.465-126.465c-39.112-10.458-82.481-.832-113.748 28.904l-56.231 56.231c-44.711 47.015-43.975 121.395 2.176 167.514 46.855 46.887 122.867 46.887 169.722 0l51.846-51.846c31.425-31.404 41.785-75.905 31.086-115.947z" />
+                  <path d="m476.835 35.17c-46.119-46.151-120.499-46.887-167.514-2.176l-56.231 56.231c-29.735 31.268-39.361 74.637-28.904 113.748l126.465-126.465c23.508-22.355 60.697-21.987 83.757 1.088 23.444 23.428 23.443 61.433 0 84.861l-125.367 125.367c40.042 10.699 84.543.34 115.947-31.086l51.846-51.846c46.888-46.855 46.888-122.867.001-169.722z" />
+                  <path d="m164.774 347.228c11.714 11.722 30.717 11.722 42.43 0l140.023-140.023c11.722-11.714 11.722-30.717 0-42.43-11.53-11.538-30.125-11.722-41.878-.544l-141.12 141.12c-11.177 11.752-10.993 30.347.545 41.877z" />
+                </g>
+              </svg>
+              <h1 className="mx-5 text-sm transform -rotate-90">
+                Top 5 Categories
+              </h1>
+              <PieChart
+                width={455}
+                height={320}
+                className="-ml-20 text-sm leading-10"
+              >
+                <Legend
+                  layout="vertical"
+                  align="right"
+                  verticalAlign="middle"
+                  iconType="circle"
+                  iconSize={9}
+                />
+
+                <Pie
+                  data={top5Categories}
+                  innerRadius={100}
+                  outerRadius={120}
+                  dataKey="value"
+                >
+                  {top5Categories.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS_CAT[index % COLORS_CAT.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex mt-1">
+        <MdSearch className="relative left-9 top-1 w-6 h-6 text-gray-700" />
+        <input
+          type="search"
+          className="realtive pl-10 w-1/3 h-8 text-sm rounded-full"
+          placeholder="Search for Domain"
+        ></input>
+      </div>
+      <div className="text-xs">
+        <div className="grid grid-cols-4 mb-2.5 mt-7 px-8 text-gray-400">
+          <p className="ml-3">FQDN</p>
+          <p>CATEGORY</p>
+          <p className="ml-20">RESULT</p>
+          <p className="ml-12">TIME OF REQUEST</p>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+
+        <div className="mx-7 my-2">
+          <span className="grid grid-cols-4 items-center py-2 border rounded-md">
+            <p className="pl-4 text-gray-800">tps10255.doubleverify.com</p>
+            <p className="py-1 w-24 text-center text-gray-600 text-xs bg-gray-100 rounded-md">
+              P2P & Illegal
+            </p>
+            <p className="ml-20 py-1 w-28 text-center text-red-500 bg-red-50 rounded-md">
+              Threats
+            </p>
+            <p className="flex justify-between ml-12 text-gray-800">
+              2020-08-19 13:34:41.945617{" "}
+              <MdKeyboardArrowRight className="mr-3 w-4 h-4 text-gray-500" />
+            </p>
+          </span>
+        </div>
+      </div>
+      <footer className="flex items-center justify-end ml-9 mr-7 mt-8 pb-5 text-gray-400 text-xs">
+        <p className="mr-2.5">1-10 of 400</p>
+        <span className="space-x-2">
+          <button>
+            <MdKeyboardArrowLeft className="p-1 w-7 h-7 border border-gray-400 rounded-md" />
+          </button>
+          <button>
+            <MdKeyboardArrowRight className="p-1 w-7 h-7 border border-gray-400 rounded-md" />
+          </button>
+        </span>
+      </footer>
+    </div>
+  )
+}
+
 function InfoPanel() {
   return (
     <div>
@@ -1047,11 +1388,11 @@ const CustomizedAxisTick = () => {
 
 function LineChartJS() {
   return (
-    <div className="bg-white">
+    <div className="bg-white rounded-b-md">
       <div className="ml-4 pb-4">
         <LineChart
           width={1100}
-          height={350}
+          height={330}
           data={line}
           margin={{
             top: 5,
@@ -1071,6 +1412,7 @@ function LineChartJS() {
             tickMargin={8}
             tick={{
               stroke: "black",
+              fontSize: "12",
             }}
             strokeWidth={0.5}
           />
@@ -1085,8 +1427,10 @@ function LineChartJS() {
             tickMargin={10}
             tick={{
               stroke: "black",
+              fontSize: "12",
             }}
             strokeWidth={0.5}
+            width={70}
           />
           <Tooltip itemStyle={toolTipStyle} />
           <Line
@@ -1151,7 +1495,7 @@ export default function Index() {
           </div>
   
   */}
-
+      {/*
       <Requests2 />
       <div className="px-8 py-5">
         <div className="flex space-x-5">
@@ -1362,6 +1706,22 @@ export default function Index() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      
+      */}
+
+      <Requests3 />
+      <div className="px-7 py-5">
+        <div>
+          <DeviceInfos />
+        </div>
+        <div className="mt-7 bg-white rounded-md shadow-md">
+          <h2 className="pl-6 py-6 font-bold">Time Series Request</h2>
+          <LineChartJS />
+        </div>
+        <div className="mt-7">
+          <PanelLayout3 />
         </div>
       </div>
     </div>
