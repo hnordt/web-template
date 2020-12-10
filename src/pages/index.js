@@ -1469,32 +1469,27 @@ function LineChartJS() {
 export default function Index() {
   return (
     <div className="bg-gray-200">
-      {/*
-    <br />
-    <br />
-    <Infos />
-  */}
-      {/*
-          Layout 01
-          <Requests />
-          <div className="p-7">
-          <div>
+      {/* <br />
+      <br />
+      <Infos /> */}
+      Layout 01
+      <Requests />
+      <div className="p-7">
+        <div>
           <ActiveOrganizationsCard />
-          </div>
-          <div className="mt-6 px-7 py-5 bg-white rounded-md shadow-md">
+        </div>
+        <div className="mt-6 px-7 py-5 bg-white rounded-md shadow-md">
           <h3 className="mb-7 text-base font-bold">Time Series Request</h3>
           <LineChartJS />
-          </div>
-          <div className="mt-6 bg-white rounded-md shadow-md">
+        </div>
+        <div className="mt-6 bg-white rounded-md shadow-md">
           <Panel />
-          </div>
-          
-          <div className="mt-5">
+        </div>
+
+        <div className="mt-5">
           <InfoPanel />
-          </div>
-          </div>
-  
-  */}
+        </div>
+      </div>
       {/*
       <Requests2 />
       <div className="px-8 py-5">
@@ -1710,8 +1705,7 @@ export default function Index() {
       </div>
       
       */}
-
-      <Requests3 />
+      {/* <Requests3 />
       <div className="px-7 py-5">
         <div>
           <DeviceInfos />
@@ -1723,7 +1717,7 @@ export default function Index() {
         <div className="mt-7">
           <PanelLayout3 />
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

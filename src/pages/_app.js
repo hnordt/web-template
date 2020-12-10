@@ -2,9 +2,13 @@ import React from "react"
 import Head from "next/head"
 import { BrowserRouter } from "react-router-dom"
 import { ToastContainer, Slide, toast } from "react-toastify"
+import dayjs from "dayjs"
 import "focus-visible"
 import "react-toastify/dist/ReactToastify.css"
 import "styles/index.css"
+
+dayjs.extend(require("dayjs/plugin/utc"))
+dayjs.extend(require("dayjs/plugin/localizedFormat"))
 
 export default function App(props) {
   return (
