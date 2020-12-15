@@ -1,11 +1,10 @@
 import jwtDecode from "jwt-decode"
 
 export default function login() {
-  if (!localStorage.token) {
-    return Promise.resolve()
-  }
-
-  if (new Date().getTime() / 1000 < jwtDecode(localStorage.token).exp) {
+  if (
+    localStorage.token &&
+    new Date().getTime() / 1000 < jwtDecode(localStorage.token).exp
+  ) {
     return Promise.resolve()
   }
 

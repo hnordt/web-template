@@ -1,4 +1,5 @@
 import React from "react"
+import { useQueries, useQuery } from "react-query"
 import {
   MdFlag,
   MdDevices,
@@ -17,8 +18,24 @@ import {
   MdLocationCity,
   MdDateRange,
 } from "react-icons/md"
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  RadialBarChart,
+  RadialBar,
+  AreaChart,
+  Area,
+  Tooltip,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  LineChart,
+} from "recharts"
 import dayjs from "dayjs"
-import useQuery from "hooks/useQuery"
 import login from "services/login"
 import authenticate from "services/authenticate"
 import httpClient from "utils/httpClient"
@@ -26,10 +43,6 @@ import formatNumber from "utils/formatNumber"
 
 function getMSPIdFromOrganization(organization) {
   return organization?.owned_msp_id ?? organization?.managed_by_msp_id ?? null
-}
-
-function Render(props) {
-  return props.children()
 }
 
 export default function ReportingAllOrganizationsScreen() {
@@ -46,13 +59,13 @@ export default function ReportingAllOrganizationsScreen() {
 
   const mspId = getMSPIdFromOrganization(organization)
   const timeframe = [
-    dayjs.utc().subtract(6, "month").startOf("day").toJSON(),
-    dayjs.utc().endOf("day").toJSON(),
+    dayjs.utc().startOf("month").toISOString(),
+    dayjs.utc().endOf("day").toISOString(),
   ]
 
-  const totalMSPStats = useQuery(
-    ["totalMSPStats", mspId, timeframe],
-    (_, mspId, timeframe) =>
+  const mspStats = useQuery(
+    ["/traffic_reports/total_organizations_stats", "msp", mspId, timeframe],
+    () =>
       httpClient
         .get("/traffic_reports/total_organizations_stats", {
           params: {
@@ -61,15 +74,21 @@ export default function ReportingAllOrganizationsScreen() {
             to: timeframe[1],
           },
         })
-        .then((response) => response.data),
+        .then((response) => response.data.data),
     {
+      initialData: {
+        total_requests: 0,
+        allowed_requests: 0,
+        blocked_requests: 0,
+        threat_requests: 0,
+      },
       enabled: !!mspId && !!timeframe,
     }
   )
 
-  const topOrganizationsByRequests = useQuery(
-    ["topOrganizationsByRequests", mspId, timeframe],
-    (_, mspId, timeframe) =>
+  const topOrganizations = useQuery(
+    ["/traffic_reports/top_organizations_requests", "msp", mspId, timeframe],
+    () =>
       httpClient
         .get("/traffic_reports/top_organizations_requests", {
           params: {
@@ -78,15 +97,38 @@ export default function ReportingAllOrganizationsScreen() {
             to: timeframe[1],
           },
         })
-        .then((response) => response.data),
+        .then((response) => response.data.data.values),
     {
+      initialData: [],
       enabled: !!mspId && !!timeframe,
     }
   )
 
-  const totalOrganizationsRequests = useQuery(
-    ["totalOrganizationsRequests", mspId, timeframe],
-    (_, mspId, timeframe) =>
+  const topOrganizationsStats = useQueries(
+    topOrganizations.data.slice(0, 3).map((item) => ({
+      queryKey: [
+        "/traffic_reports/total_organizations_stats",
+        "org",
+        item.organization_id,
+        timeframe,
+      ],
+      queryFn: () =>
+        httpClient
+          .get("/traffic_reports/total_organizations_stats", {
+            params: {
+              organization_id: item.organization_id,
+              from: timeframe[0],
+              to: timeframe[1],
+            },
+          })
+          .then((response) => response.data.data),
+      // TODO: initialData
+    }))
+  )
+
+  const mspRequests = useQuery(
+    ["/traffic_reports/total_organizations_requests", "msp", mspId, timeframe],
+    () =>
       httpClient
         .get("/traffic_reports/total_organizations_requests", {
           params: {
@@ -95,15 +137,16 @@ export default function ReportingAllOrganizationsScreen() {
             to: timeframe[1],
           },
         })
-        .then((response) => response.data),
+        .then((response) => response.data.data.values),
     {
+      initialData: [],
       enabled: !!mspId && !!timeframe,
     }
   )
 
   const totalDeployments = useQuery(
-    ["totalDeployments", mspId],
-    (_, mspId) =>
+    ["totalDeployments", "msp", mspId],
+    () =>
       httpClient
         .get("/traffic_reports/total_deployments", {
           params: {
@@ -117,8 +160,8 @@ export default function ReportingAllOrganizationsScreen() {
   )
 
   const totalRoamingClients = useQuery(
-    ["totalRoamingClients", mspId],
-    (_, mspId) =>
+    ["totalRoamingClients", "msp", mspId],
+    () =>
       httpClient
         .get("/traffic_reports/total_roaming_clients", {
           params: {
@@ -151,7 +194,7 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Total requests</dt>
             <dd className="text-gray-500 text-2xl font-semibold">
-              {formatNumber(totalMSPStats.data?.total_requests ?? 0, {
+              {formatNumber(mspStats.data.total_requests, {
                 notation: "compact",
               })}
             </dd>
@@ -159,7 +202,7 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Allowed requests</dt>
             <dd className="text-blue-500 text-2xl font-semibold">
-              {formatNumber(totalMSPStats.data?.allowed_requests ?? 0, {
+              {formatNumber(mspStats.data.allowed_requests, {
                 notation: "compact",
               })}
             </dd>
@@ -167,7 +210,7 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Blocked requests</dt>
             <dd className="text-yellow-500 text-2xl font-semibold">
-              {formatNumber(totalMSPStats.data?.blocked_requests ?? 0, {
+              {formatNumber(mspStats.data.blocked_requests, {
                 notation: "compact",
               })}
             </dd>
@@ -175,7 +218,7 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Threats</dt>
             <dd className="text-red-500 text-2xl font-semibold">
-              {formatNumber(totalMSPStats.data?.threat_requests ?? 0, {
+              {formatNumber(mspStats.data.threat_requests, {
                 notation: "compact",
               })}
             </dd>
@@ -193,83 +236,118 @@ export default function ReportingAllOrganizationsScreen() {
           </button>
         </div>
         <div className="flex space-x-4">
-          {topOrganizationsByRequests.data?.values.slice(0, 3).map((item) => (
-            <Render key={item.organization_id}>
-              {() => {
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                const totalOrganizationStats = useQuery(
-                  ["totalOrganizationStats", item.organization_id, timeframe],
-                  (_, organizationId, timeframe) =>
-                    httpClient
-                      .get("/traffic_reports/total_organizations_stats", {
-                        params: {
-                          organization_id: organizationId,
-                          from: timeframe[0],
-                          to: timeframe[1],
-                        },
-                      })
-                      .then((response) => response.data)
-                )
-
-                return (
-                  <div className="flex-1 p-6 bg-white rounded-md shadow-sm">
-                    <h3 className="mb-3 text-gray-700 text-sm">
-                      {item.organization_name} (
-                      {formatNumber(
-                        (totalOrganizationStats.data?.total_requests ?? 0) /
-                          (totalMSPStats.data?.total_requests ?? 0),
-                        {
-                          style: "percent",
-                        }
-                      )}
-                      )
-                    </h3>
-                    <div className="flex space-x-6">
-                      <div>
-                        <h1 className="text-lg font-semibold">
-                          {formatNumber(
-                            totalOrganizationStats.data?.allowed_requests ?? 0,
-                            {
-                              notation: "compact",
-                            }
-                          )}
-                        </h1>
-                        <p className="text-blue-500 whitespace-nowrap text-xs font-semibold">
-                          Allowed Requests
-                        </p>
-                      </div>
-                      <div>
-                        <h1 className="text-lg font-semibold">
-                          {formatNumber(
-                            totalOrganizationStats.data?.blocked_requests ?? 0,
-                            {
-                              notation: "compact",
-                            }
-                          )}
-                        </h1>
-                        <p className="text-yellow-500 whitespace-nowrap text-xs font-semibold">
-                          Blocked Requests
-                        </p>
-                      </div>
-                      <div>
-                        <h1 className="text-lg font-semibold">
-                          {formatNumber(
-                            totalOrganizationStats.data?.threat_requests ?? 0,
-                            {
-                              notation: "compact",
-                            }
-                          )}
-                        </h1>
-                        <p className="text-red-500 whitespace-nowrap text-xs font-semibold">
-                          Threats
-                        </p>
-                      </div>
-                    </div>
+          {topOrganizationsStats
+            .filter((stats) => !!stats.data)
+            .map((stats) => (
+              <div
+                key={stats.data.organization_ids[0]}
+                className="flex-1 p-6 bg-white rounded-md shadow-sm"
+              >
+                <h3 className="mb-3 text-gray-700 text-sm">
+                  {stats.data.organization_names[0]} (
+                  {formatNumber(
+                    stats.data.total_requests / mspStats.data.total_requests,
+                    {
+                      style: "percent",
+                    }
+                  )}
+                  )
+                </h3>
+                <div className="flex space-x-6">
+                  <div>
+                    <h1 className="text-lg font-semibold">
+                      {formatNumber(stats.data.allowed_requests, {
+                        notation: "compact",
+                      })}
+                    </h1>
+                    <p className="text-blue-500 whitespace-nowrap text-xs font-semibold">
+                      Allowed Requests
+                    </p>
                   </div>
-                )
-              }}
-            </Render>
-          ))}
+                  <div>
+                    <h1 className="text-lg font-semibold">
+                      {formatNumber(stats.data.blocked_requests, {
+                        notation: "compact",
+                      })}
+                    </h1>
+                    <p className="text-yellow-500 whitespace-nowrap text-xs font-semibold">
+                      Blocked Requests
+                    </p>
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-semibold">
+                      {formatNumber(stats.data.threat_requests, {
+                        notation: "compact",
+                      })}
+                    </h1>
+                    <p className="text-red-500 whitespace-nowrap text-xs font-semibold">
+                      Threats
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+        </div>
+        <div className="mt-6 p-6 bg-white rounded-md shadow-md">
+          <h3 className="mb-6 text-base font-semibold">Time Series Request</h3>
+          <ResponsiveContainer width="100%" height={340}>
+            <LineChart className="text-xs" data={mspRequests.data}>
+              <CartesianGrid stroke="#e5e9ea" strokeDasharray="4 4" />
+              <XAxis
+                dataKey="bucket"
+                axisLine={{
+                  stroke: "#e5e9ea",
+                  strokeWidth: 2,
+                }}
+                tickMargin={8}
+                tickLine={false}
+              />
+              <YAxis
+                axisLine={{
+                  stroke: "#e5e9ea",
+                  strokeWidth: 2,
+                }}
+                tickLine={false}
+              />
+              <Tooltip
+                separator=": "
+                cursor={{
+                  stroke: "#e5e9ea",
+                  strokeWidth: 2,
+                }}
+              />
+              <Line
+                type="monotone"
+                name="Allowed requests"
+                dataKey="allowed_requests"
+                stroke="#2b98f0"
+                strokeWidth={2}
+                activeDot={{
+                  r: 8,
+                }}
+              />
+              <Line
+                type="monotone"
+                name="Blocked requests"
+                dataKey="blocked_requests"
+                stroke="#ef5350"
+                strokeWidth={2}
+                activeDot={{
+                  r: 8,
+                }}
+              />
+              <Line
+                type="monotone"
+                name="Threats"
+                dataKey="threat_requests"
+                stroke="#ffb300"
+                strokeWidth={2}
+                activeDot={{
+                  r: 8,
+                }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
