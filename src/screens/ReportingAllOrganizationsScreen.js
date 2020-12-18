@@ -42,6 +42,7 @@ import login from "services/login"
 import authenticate from "services/authenticate"
 import httpClient from "utils/httpClient"
 import formatNumber from "utils/formatNumber"
+import Select from "components/Select"
 
 function getMSPIdFromOrganization(organization) {
   return organization?.owned_msp_id ?? organization?.managed_by_msp_id ?? null
@@ -49,6 +50,7 @@ function getMSPIdFromOrganization(organization) {
 
 export default function ReportingAllOrganizationsScreen() {
   const [organization, setOrganization] = React.useState(null)
+  const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
   React.useEffect(() => {
     async function init() {
@@ -249,6 +251,20 @@ export default function ReportingAllOrganizationsScreen() {
       initialData: [],
       enabled: Array.isArray(mspStats.data.organization_ids),
     }
+  )
+
+  React.useEffect(() => {
+    if (
+      qpsOrganizationId === null &&
+      Array.isArray(mspStats.data.organization_ids) &&
+      !!mspStats.data.organization_ids[0]
+    ) {
+      setQPSOrganizationId(mspStats.data.organization_ids[0])
+    }
+  }, [qpsOrganizationId, mspStats.data.organization_ids])
+
+  const mspQPSData = mspQPS.data.filter(
+    (item) => String(item.organization_id) === String(qpsOrganizationId)
   )
 
   return (
@@ -641,24 +657,35 @@ export default function ReportingAllOrganizationsScreen() {
             </div>
           </div>
           <div className="col-span-2 p-6 bg-white rounded-md shadow-md">
-            <h3 className="text-base font-semibold">Queries per second</h3>
-            <div>
-              <h1 className="mt-8 text-2xl font-bold">
-                {formatNumber(
-                  _.sumBy("qps", mspQPS.data) / mspQPS.data.length,
-                  {
-                    maximumFractionDigits: 1,
-                  }
-                )}
-              </h1>
-              <p className="text-gray-500 text-xs">average</p>
+            <div className="relative">
+              <h3 className="text-base font-semibold">Queries per second</h3>
+              {qpsOrganizationId !== null && (
+                <div className="absolute right-0 top-0">
+                  <Select
+                    options={mspStats.data.organization_ids.map(
+                      (id, index) => ({
+                        label: mspStats.data.organization_names[index],
+                        value: id,
+                      })
+                    )}
+                    value={qpsOrganizationId}
+                    onChange={setQPSOrganizationId}
+                  />
+                </div>
+              )}
             </div>
+            <h1 className="mt-6 text-2xl font-bold">
+              {formatNumber(_.sumBy("qps", mspQPSData) / mspQPSData.length, {
+                maximumFractionDigits: 1,
+              })}{" "}
+              <span className="text-gray-500 text-sm font-normal">average</span>
+            </h1>
             {/* <span className="flex items-center justify-between mt-2 px-1.5 w-14 text-blue-500 font-bold bg-blue-50">
               <MdArrowDownward />
               4%
             </span> */}
             <ResponsiveContainer width="100%" height={340}>
-              <AreaChart data={mspQPS.data}>
+              <AreaChart data={mspQPSData}>
                 <XAxis dataKey="bucket" hide />
                 <Tooltip separator=": " />
                 <Area
