@@ -51,57 +51,42 @@ function getMSPIdFromOrganization(organization) {
 function DataExplorer(props) {
   const ROW_HEIGHT = 44
 
-  const requestsByUser = useInfiniteQuery(
-    [
-      "/traffic_reports/total_requests_users",
-      "msp",
-      props.mspId,
-      props.timeframe,
-    ],
+  const query = useInfiniteQuery(
+    ["/traffic_reports/top_users", "msp", props.mspId, props.timeframe],
     () =>
       httpClient
-        .get("/traffic_reports/total_requests_users", {
+        .get("/traffic_reports/top_users", {
           params: {
-            organization_ids: props.mspStats.data.organization_ids.join(","),
-            from: props.timeframe[0],
-            to: props.timeframe[1],
-            show_individual_users: true,
+            "organization_ids": props.mspStats.data.organization_ids.join(","),
+            "from": props.timeframe[0],
+            "to": props.timeframe[1],
+            "page[number]": 1,
+            "page[size]": 20,
           },
         })
-        .then((response) => {
-          const total = _.sumBy("total", response.data.data.values)
-
-          return Object.values(
-            response.data.data.values.reduce((acc, item) => {
-              const _total = (acc[item.user_name]?.total ?? 0) + item.total
-
-              return {
-                ...acc,
-                [item.user_name]: {
-                  user_name: item.user_name,
-                  total: _total,
-                  percentage: _total / total,
-                },
-              }
-            }, {})
-          )
-        }),
+        .then((response) => response.data),
     {
-      getNextPageParam: () => undefined,
+      getNextPageParam: (lastPage) => lastPage.data.page.next ?? undefined,
       enabled: Array.isArray(props.mspStats.data.organization_ids),
     }
   )
-  const flatRequestsByUser = requestsByUser.data
-    ? requestsByUser.data.pages.flat(1)
+  const flatData = query.data
+    ? query.data.pages
+        .map((page, pageIndex) =>
+          page.data.values.map((value) => ({
+            ...value,
+            percentage:
+              value.total / query.data.pages[pageIndex].meta.total_count,
+          }))
+        )
+        .flat(1)
     : []
 
   const parentRef = React.useRef()
   const rowVirtualizer = useVirtual({
     parentRef,
     estimateSize: React.useCallback(() => ROW_HEIGHT, [ROW_HEIGHT]),
-    size: requestsByUser.isFetchingNextPage
-      ? flatRequestsByUser.length + 1
-      : flatRequestsByUser.length,
+    size: query.isFetchingNextPage ? flatData.length + 1 : flatData.length,
   })
 
   React.useEffect(() => {
@@ -112,21 +97,13 @@ function DataExplorer(props) {
     }
 
     if (
-      lastItem.index === flatRequestsByUser.length - 1 &&
-      requestsByUser.hasNextPage &&
-      !requestsByUser.isFetchingNextPage
+      lastItem.index === flatData.length - 1 &&
+      query.hasNextPage &&
+      !query.isFetchingNextPage
     ) {
-      requestsByUser.fetchNextPage()
+      query.fetchNextPage()
     }
-  }, [requestsByUser, flatRequestsByUser.length, rowVirtualizer.virtualItems])
-
-  if (requestsByUser.status === "loading") {
-    return <p>Loading...</p>
-  }
-
-  if (requestsByUser.status === "error") {
-    return <p>Error: {requestsByUser.error.message}</p>
-  }
+  }, [query, flatData.length, rowVirtualizer.virtualItems])
 
   return (
     <>
@@ -160,7 +137,7 @@ function DataExplorer(props) {
           }}
         >
           {rowVirtualizer.virtualItems.map((virtualRow) => {
-            const item = flatRequestsByUser[virtualRow.index]
+            const item = flatData[virtualRow.index]
 
             return (
               <div
@@ -180,7 +157,7 @@ function DataExplorer(props) {
                   } grid grid-cols-4 items-center h-full border-gray-200`}
                 >
                   <span className="block col-span-2 px-4 text-gray-900 text-sm">
-                    {virtualRow.index > flatRequestsByUser.length - 1 ? (
+                    {virtualRow.index > flatData.length - 1 ? (
                       "Loading more..."
                     ) : (
                       <span className="flex items-center">
