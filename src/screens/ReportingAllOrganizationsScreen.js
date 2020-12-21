@@ -39,6 +39,7 @@ import authenticate from "services/authenticate"
 import httpClient from "utils/httpClient"
 import formatNumber from "utils/formatNumber"
 import Select from "components/Select"
+import SegmentedControl from "components/SegmentedControl"
 
 const CHART_COLORS = [
   ["#db7093", "#555579", "#ff8c00", "#228b22"],
@@ -59,17 +60,21 @@ function DataExplorer(props) {
       "/traffic_reports/top_users",
       "msp",
       props.mspId,
+      props.reportType,
       props.timeframe,
       searchText,
+      props.securityReport,
     ],
     () =>
       httpClient
         .get("/traffic_reports/top_users", {
           params: {
             "organization_ids": props.mspStats.data.organization_ids.join(","),
+            "type": props.reportType,
             "name": searchText,
             "from": props.timeframe[0],
             "to": props.timeframe[1],
+            "security_report": props.securityReport,
             "page[number]": 1,
             "page[size]": 20,
           },
@@ -205,6 +210,8 @@ function DataExplorer(props) {
 
 export default function ReportingAllOrganizationsScreen() {
   const [organization, setOrganization] = React.useState(null)
+  const [reportType, setReportType] = React.useState("all")
+  const [securityReport, setSecurityReport] = React.useState(false)
   const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
   React.useEffect(() => {
@@ -413,15 +420,19 @@ export default function ReportingAllOrganizationsScreen() {
       "/traffic_reports/top_users?page[number]=1&page[size]=5",
       "msp",
       mspId,
+      reportType,
       timeframe,
+      securityReport,
     ],
     () =>
       httpClient
         .get("/traffic_reports/top_users", {
           params: {
             "organization_ids": mspStats.data.organization_ids.join(","),
+            "type": reportType,
             "from": timeframe[0],
             "to": timeframe[1],
+            "security_report": securityReport,
             "page[number]": 1,
             "page[size]": 5,
           },
@@ -438,15 +449,19 @@ export default function ReportingAllOrganizationsScreen() {
       "/traffic_reports/top_categories?page[number]=1&page[size]=5",
       "msp",
       mspId,
+      reportType,
       timeframe,
+      securityReport,
     ],
     () =>
       httpClient
         .get("/traffic_reports/top_categories", {
           params: {
             "organization_ids": mspStats.data.organization_ids.join(","),
+            "type": reportType,
             "from": timeframe[0],
             "to": timeframe[1],
+            "security_report": securityReport,
             "page[number]": 1,
             "page[size]": 5,
           },
@@ -650,10 +665,47 @@ export default function ReportingAllOrganizationsScreen() {
         <div className="mt-6 bg-white rounded-md shadow-md">
           <div className="p-6 rounded-t-md shadow-md">
             <h3 className="text-gray-900 text-base font-semibold">
-              Requests by user
+              {_.upperFirst(reportType)}{" "}
+              {securityReport ? "threats" : "requests"} by user
             </h3>
           </div>
           <div className="p-6">
+            <div className="flex items-center space-x-4">
+              <SegmentedControl
+                variant="primary"
+                options={[
+                  {
+                    label: "Requests",
+                    value: false,
+                  },
+                  {
+                    label: "Threats",
+                    value: true,
+                  },
+                ]}
+                value={securityReport}
+                onChange={setSecurityReport}
+              />
+              <SegmentedControl
+                variant="primary"
+                options={[
+                  {
+                    label: "All",
+                    value: "all",
+                  },
+                  {
+                    label: "Allowed",
+                    value: "allowed",
+                  },
+                  {
+                    label: "Blocked",
+                    value: "blocked",
+                  },
+                ]}
+                value={reportType}
+                onChange={setReportType}
+              />
+            </div>
             {/* <div className="flex items-center p-5 space-x-4">
               <span className="flex items-center justify-center py-1 w-40 text-xs bg-gray-100 rounded-md space-x-3">
                 <p className="text-gray-600">All Requests</p>
@@ -780,7 +832,9 @@ export default function ReportingAllOrganizationsScreen() {
             <div className="mt-6">
               <DataExplorer
                 mspId={mspId}
+                reportType={reportType}
                 timeframe={timeframe}
+                securityReport={securityReport}
                 mspStats={mspStats}
               />
             </div>
