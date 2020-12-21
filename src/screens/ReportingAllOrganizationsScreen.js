@@ -142,8 +142,13 @@ function DataExplorer(props) {
       <div className="relative mb-6">
         <input
           type="search"
-          className="placeholder-gray-400 pl-10 pr-4 py-1.5 w-96 text-gray-900 text-sm border border-gray-300 rounded-full"
+          className={`${
+            props.breakdown === "category"
+              ? "bg-gray-100 cursor-not-allowed"
+              : ""
+          } placeholder-gray-400 pl-10 pr-4 py-1.5 w-96 text-gray-900 text-sm border border-gray-300 rounded-full`}
           placeholder="Filter"
+          disabled={props.breakdown === "category"}
           onChange={(e) => setSearchText(e.target.value)}
         />
         <MdSearch className="absolute left-4 top-1/2 w-5 h-5 text-gray-600 transform -translate-y-1/2" />
@@ -183,10 +188,9 @@ function DataExplorer(props) {
             return (
               <div
                 key={virtualRow.index}
-                // className={
-                //   virtualRow.index % 2 ? "ListItemOdd" : "ListItemEven"
-                // }
-                className="absolute left-0 top-0 w-full"
+                className={`${
+                  virtualRow.index % 2 ? "" : "bg-gray-50"
+                } absolute left-0 top-0 w-full`}
                 style={{
                   height: virtualRow.size,
                   transform: `translateY(${virtualRow.start}px)`,
@@ -706,7 +710,7 @@ export default function ReportingAllOrganizationsScreen() {
             </h3>
           </div>
           <div className="p-6">
-            <div className="flex items-center space-x-4">
+            <div className="flex space-x-4">
               <SegmentedControl
                 variant="primary"
                 options={[
@@ -873,16 +877,14 @@ export default function ReportingAllOrganizationsScreen() {
                 </PieChart>
               </div>
             </div>
-            <div className="mt-6">
-              <DataExplorer
-                mspId={mspId}
-                reportType={reportType}
-                breakdown={breakdown}
-                timeframe={timeframe}
-                securityReport={securityReport}
-                mspStats={mspStats}
-              />
-            </div>
+            <DataExplorer
+              mspId={mspId}
+              reportType={reportType}
+              breakdown={breakdown}
+              timeframe={timeframe}
+              securityReport={securityReport}
+              mspStats={mspStats}
+            />
           </div>
         </div>
         <div className="grid gap-4 grid-cols-3 mt-6">
