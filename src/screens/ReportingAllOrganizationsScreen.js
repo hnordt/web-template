@@ -11,6 +11,9 @@ import {
   MdLocationCity,
   MdSettingsEthernet,
   MdWidgets,
+  MdFolderOpen,
+  MdPublic,
+  MdLaptop,
 } from "react-icons/md"
 import { IoIosPerson } from "react-icons/io"
 import { DiWindows, DiApple, DiAndroid, DiChrome } from "react-icons/di"
@@ -57,28 +60,42 @@ function DataExplorer(props) {
 
   const query = useInfiniteQuery(
     [
-      "/traffic_reports/top_users",
+      "ui:data-explorer",
       "msp",
       props.mspId,
+      props.breakdown,
       props.reportType,
       props.timeframe,
       searchText,
       props.securityReport,
     ],
-    () =>
+    (context) =>
       httpClient
-        .get("/traffic_reports/top_users", {
-          params: {
-            "organization_ids": props.mspStats.data.organization_ids.join(","),
-            "type": props.reportType,
-            "name": searchText,
-            "from": props.timeframe[0],
-            "to": props.timeframe[1],
-            "security_report": props.securityReport,
-            "page[number]": 1,
-            "page[size]": 20,
-          },
-        })
+        .get(
+          `/traffic_reports/${
+            {
+              category: "top_categories",
+              domain: "top_domains",
+              user: "top_users",
+              rc: "top_agents",
+              collection: "top_collections",
+            }[props.breakdown]
+          }`,
+          {
+            params: {
+              "organization_ids": props.mspStats.data.organization_ids.join(
+                ","
+              ),
+              "type": props.reportType,
+              [props.breakdown === "domain" ? "domain" : "name"]: searchText,
+              "from": props.timeframe[0],
+              "to": props.timeframe[1],
+              "security_report": props.securityReport,
+              "page[number]": context.pageParam,
+              "page[size]": 20,
+            },
+          }
+        )
         .then((response) => response.data),
     {
       getNextPageParam: (lastPage) => lastPage.data.page.next ?? undefined,
@@ -186,18 +203,35 @@ function DataExplorer(props) {
                     ) : (
                       <span className="flex items-center">
                         <MdPerson className="mr-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
-                        <span>{item.user_name}</span>
+                        <span>
+                          {
+                            item[
+                              {
+                                category: "category_name",
+                                domain: "domain",
+                                user: "user_name",
+                                rc: "agent_name",
+                                collection: "collection_name",
+                              }[props.breakdown]
+                            ]
+                          }
+                        </span>
                       </span>
                     )}
                   </span>
-                  <span className="block px-4 text-gray-900 text-sm">
-                    {formatNumber(item.total)}
-                  </span>
-                  <span className="block px-4 text-gray-900 text-sm">
-                    {formatNumber(item.percentage, {
-                      style: "percent",
-                    })}
-                  </span>
+                  {virtualRow.index > flatData.length - 1 ? null : (
+                    <>
+                      <span className="block px-4 text-gray-900 text-sm">
+                        {formatNumber(item.total)}
+                      </span>
+                      <span className="block px-4 text-gray-900 text-sm">
+                        {formatNumber(item.percentage, {
+                          style: "percent",
+                          maximumFractionDigits: 1,
+                        })}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
             )
@@ -211,6 +245,7 @@ function DataExplorer(props) {
 export default function ReportingAllOrganizationsScreen() {
   const [organization, setOrganization] = React.useState(null)
   const [reportType, setReportType] = React.useState("all")
+  const [breakdown, setBreakdown] = React.useState("category")
   const [securityReport, setSecurityReport] = React.useState(false)
   const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
@@ -562,6 +597,7 @@ export default function ReportingAllOrganizationsScreen() {
                     stats.data.total_requests / mspStats.data.total_requests,
                     {
                       style: "percent",
+                      maximumFractionDigits: 1,
                     }
                   )}
                   )
@@ -705,26 +741,34 @@ export default function ReportingAllOrganizationsScreen() {
                 value={reportType}
                 onChange={setReportType}
               />
+              <SegmentedControl
+                variant="primary"
+                options={[
+                  {
+                    icon: MdWidgets,
+                    value: "category",
+                  },
+                  {
+                    icon: MdPublic,
+                    value: "domain",
+                  },
+                  {
+                    icon: MdPerson,
+                    value: "user",
+                  },
+                  {
+                    icon: MdLaptop,
+                    value: "rc",
+                  },
+                  {
+                    icon: MdFolderOpen,
+                    value: "collection",
+                  },
+                ]}
+                value={breakdown}
+                onChange={setBreakdown}
+              />
             </div>
-            {/* <div className="flex items-center p-5 space-x-4">
-              <span className="flex items-center justify-center py-1 w-40 text-xs bg-gray-100 rounded-md space-x-3">
-                <p className="text-gray-600">All Requests</p>
-                <p className="px-2 py-1 text-gray-50 bg-blue-500 rounded-md">
-                  Threats
-                </p>
-              </span>
-              <span className="flex items-center justify-between py-0.5 w-36 text-xs bg-gray-100 rounded-md">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="ml-auto py-1 w-7 h-7 text-gray-400 fill-current"
-                >
-                  <path d="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z" />
-                </svg>
-                <IoIosPerson className="m-auto py-1 w-7 h-7 text-gray-50 bg-blue-500" />
-                <MdDesktopWindows className="m-auto py-1 w-7 h-7 text-gray-400 fill-current" />
-                <MdDashboard className="m-auto py-1 w-7 h-7 text-gray-400 fill-current" />
-              </span>
-            </div> */}
             <div className="flex justify-evenly">
               <div className="flex items-center">
                 <h3 className="text-gray-900 whitespace-nowrap text-base font-semibold transform -rotate-90">
@@ -833,6 +877,7 @@ export default function ReportingAllOrganizationsScreen() {
               <DataExplorer
                 mspId={mspId}
                 reportType={reportType}
+                breakdown={breakdown}
                 timeframe={timeframe}
                 securityReport={securityReport}
                 mspStats={mspStats}
@@ -889,6 +934,7 @@ export default function ReportingAllOrganizationsScreen() {
                   <span className="absolute left-1/2 top-1/2 text-xl font-semibold transform -translate-x-1/2 -translate-y-1/2">
                     {formatNumber(active / total, {
                       style: "percent",
+                      maximumFractionDigits: 1,
                     })}
                   </span>
                 </div>
