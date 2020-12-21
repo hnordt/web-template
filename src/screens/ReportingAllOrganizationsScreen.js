@@ -1,23 +1,17 @@
 import React from "react"
-import { useQueries, useQuery } from "react-query"
+import { useQueries, useQuery, useInfiniteQuery } from "react-query"
+import { useVirtual } from "react-virtual"
 import {
-  MdFlag,
   MdDevices,
   MdGroupWork,
-  MdDesktopWindows,
-  MdSync,
-  MdLanguage,
-  MdKeyboardArrowLeft,
   MdSearch,
-  MdKeyboardArrowRight,
-  MdDashboard,
   MdPerson,
   MdComputer,
-  MdArrowDownward,
   MdLocationCity,
-  MdDateRange,
   MdSettingsEthernet,
+  MdWidgets,
 } from "react-icons/md"
+import { IoIosPerson } from "react-icons/io"
 import { DiWindows, DiApple, DiAndroid, DiChrome } from "react-icons/di"
 import {
   ResponsiveContainer,
@@ -35,6 +29,7 @@ import {
   YAxis,
   CartesianGrid,
   LineChart,
+  Label,
 } from "recharts"
 import _ from "lodash/fp"
 import dayjs from "dayjs"
@@ -44,8 +39,172 @@ import httpClient from "utils/httpClient"
 import formatNumber from "utils/formatNumber"
 import Select from "components/Select"
 
+const CHART_COLORS = [
+  ["#db7093", "#555579", "#ff8c00", "#228b22"],
+  ["#ffa500", "#a022ad", "#1e90ff", "#87cefa", "#483d8b"],
+]
+
 function getMSPIdFromOrganization(organization) {
   return organization?.owned_msp_id ?? organization?.managed_by_msp_id ?? null
+}
+
+function DataExplorer(props) {
+  const ROW_HEIGHT = 44
+
+  const requestsByUser = useInfiniteQuery(
+    [
+      "/traffic_reports/total_requests_users",
+      "msp",
+      props.mspId,
+      props.timeframe,
+    ],
+    () =>
+      httpClient
+        .get("/traffic_reports/total_requests_users", {
+          params: {
+            organization_ids: props.mspStats.data.organization_ids.join(","),
+            from: props.timeframe[0],
+            to: props.timeframe[1],
+            show_individual_users: true,
+          },
+        })
+        .then((response) => {
+          const total = _.sumBy("total", response.data.data.values)
+
+          return Object.values(
+            response.data.data.values.reduce((acc, item) => {
+              const _total = (acc[item.user_name]?.total ?? 0) + item.total
+
+              return {
+                ...acc,
+                [item.user_name]: {
+                  user_name: item.user_name,
+                  total: _total,
+                  percentage: _total / total,
+                },
+              }
+            }, {})
+          )
+        }),
+    {
+      getNextPageParam: () => undefined,
+      enabled: Array.isArray(props.mspStats.data.organization_ids),
+    }
+  )
+  const flatRequestsByUser = requestsByUser.data
+    ? requestsByUser.data.pages.flat(1)
+    : []
+
+  const parentRef = React.useRef()
+  const rowVirtualizer = useVirtual({
+    parentRef,
+    estimateSize: React.useCallback(() => ROW_HEIGHT, [ROW_HEIGHT]),
+    size: requestsByUser.isFetchingNextPage
+      ? flatRequestsByUser.length + 1
+      : flatRequestsByUser.length,
+  })
+
+  React.useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.virtualItems].reverse()
+
+    if (!lastItem) {
+      return
+    }
+
+    if (
+      lastItem.index === flatRequestsByUser.length - 1 &&
+      requestsByUser.hasNextPage &&
+      !requestsByUser.isFetchingNextPage
+    ) {
+      requestsByUser.fetchNextPage()
+    }
+  }, [requestsByUser, flatRequestsByUser.length, rowVirtualizer.virtualItems])
+
+  if (requestsByUser.status === "loading") {
+    return <p>Loading...</p>
+  }
+
+  if (requestsByUser.status === "error") {
+    return <p>Error: {requestsByUser.error.message}</p>
+  }
+
+  return (
+    <>
+      <div
+        ref={parentRef}
+        className="relative border border-gray-200 rounded-md overflow-y-auto"
+        style={{
+          height: ROW_HEIGHT * 11,
+        }}
+      >
+        <div
+          className="sticky z-10 left-0 right-0 top-0 grid grid-cols-4 items-center bg-white border-b border-gray-200"
+          style={{
+            height: ROW_HEIGHT,
+          }}
+        >
+          <span className="block col-span-2 px-4 text-gray-400 text-xs uppercase">
+            User
+          </span>
+          <span className="block px-4 text-gray-400 text-xs uppercase">
+            # of requests
+          </span>
+          <span className="block px-4 text-gray-400 text-xs uppercase">
+            % of requests
+          </span>
+        </div>
+        <div
+          className="relative"
+          style={{
+            height: rowVirtualizer.totalSize,
+          }}
+        >
+          {rowVirtualizer.virtualItems.map((virtualRow) => {
+            const item = flatRequestsByUser[virtualRow.index]
+
+            return (
+              <div
+                key={virtualRow.index}
+                // className={
+                //   virtualRow.index % 2 ? "ListItemOdd" : "ListItemEven"
+                // }
+                className="absolute left-0 top-0 w-full"
+                style={{
+                  height: virtualRow.size,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                <div
+                  className={`${
+                    virtualRow.index === 0 ? "" : "border-t"
+                  } grid grid-cols-4 items-center h-full border-gray-200`}
+                >
+                  <span className="block col-span-2 px-4 text-gray-900 text-sm">
+                    {virtualRow.index > flatRequestsByUser.length - 1 ? (
+                      "Loading more..."
+                    ) : (
+                      <span className="flex items-center">
+                        <MdPerson className="mr-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+                        <span>{item.user_name}</span>
+                      </span>
+                    )}
+                  </span>
+                  <span className="block px-4 text-gray-900 text-sm">
+                    {formatNumber(item.total)}
+                  </span>
+                  <span className="block px-4 text-gray-900 text-sm">
+                    {formatNumber(item.percentage, {
+                      style: "percent",
+                    })}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default function ReportingAllOrganizationsScreen() {
@@ -267,6 +426,48 @@ export default function ReportingAllOrganizationsScreen() {
     (item) => String(item.organization_id) === String(qpsOrganizationId)
   )
 
+  // TODO: remove
+  const top5Users = [
+    {
+      name: "Edward Collins",
+      value: 400,
+    },
+    {
+      name: "Elisha Huber",
+      value: 300,
+    },
+    {
+      name: "Hayden Wilkson",
+      value: 300,
+    },
+    {
+      name: "Eliza Kenedy",
+      value: 200,
+    },
+  ]
+  const top5Categories = [
+    {
+      name: "P2P & Illegal",
+      value: 400,
+    },
+    {
+      name: "Malware",
+      value: 200,
+    },
+    {
+      name: "Pishing & Deception",
+      value: 300,
+    },
+    {
+      name: "Botnet",
+      value: 200,
+    },
+    {
+      name: "Adult Content",
+      value: 200,
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-gray-200">
       <div className="flex items-center justify-between px-8 py-4 bg-white shadow-md">
@@ -442,6 +643,147 @@ export default function ReportingAllOrganizationsScreen() {
             </LineChart>
           </ResponsiveContainer>
         </div>
+        <div className="mt-6 bg-white rounded-md shadow-md">
+          <div className="p-6 rounded-t-md shadow-md">
+            <h3 className="text-gray-900 text-base font-semibold">
+              Requests by user
+            </h3>
+          </div>
+          <div className="p-6">
+            {/* <div className="flex items-center p-5 space-x-4">
+              <span className="flex items-center justify-center py-1 w-40 text-xs bg-gray-100 rounded-md space-x-3">
+                <p className="text-gray-600">All Requests</p>
+                <p className="px-2 py-1 text-gray-50 bg-blue-500 rounded-md">
+                  Threats
+                </p>
+              </span>
+              <span className="flex items-center justify-between py-0.5 w-36 text-xs bg-gray-100 rounded-md">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="ml-auto py-1 w-7 h-7 text-gray-400 fill-current"
+                >
+                  <path d="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z" />
+                </svg>
+                <IoIosPerson className="m-auto py-1 w-7 h-7 text-gray-50 bg-blue-500" />
+                <MdDesktopWindows className="m-auto py-1 w-7 h-7 text-gray-400 fill-current" />
+                <MdDashboard className="m-auto py-1 w-7 h-7 text-gray-400 fill-current" />
+              </span>
+            </div> */}
+            <div className="flex justify-evenly">
+              <div className="flex items-center">
+                <h3 className="text-gray-900 whitespace-nowrap text-base font-semibold transform -rotate-90">
+                  Top 5 users
+                </h3>
+                <PieChart
+                  className="-ml-14 text-sm leading-10"
+                  width={500}
+                  height={340}
+                  margin={{
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <Legend
+                    layout="vertical"
+                    verticalAlign="middle"
+                    align="right"
+                    iconType="circle"
+                    iconSize={12}
+                  />
+                  <Pie
+                    data={top5Users}
+                    dataKey="value"
+                    innerRadius={100}
+                    outerRadius={120}
+                  >
+                    <Label
+                      content={(props) => (
+                        <IoIosPerson
+                          className="text-gray-400"
+                          size="4em"
+                          x={`calc(${props.viewBox.cx}px - 2em)`}
+                          y={`calc(${props.viewBox.cy}px - 2em)`}
+                        />
+                      )}
+                      position="center"
+                    />
+                    {top5Users.map((_, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={CHART_COLORS[0][index % CHART_COLORS[0].length]}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </div>
+              <div className="flex items-center">
+                <h3 className="text-gray-900 whitespace-nowrap text-base font-semibold transform -rotate-90">
+                  Top 5 categories
+                </h3>
+                <PieChart
+                  className="-ml-14 text-sm leading-10"
+                  width={500}
+                  height={340}
+                  margin={{
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <Legend
+                    layout="vertical"
+                    verticalAlign="middle"
+                    align="right"
+                    iconType="circle"
+                    iconSize={12}
+                  />
+                  <Pie
+                    data={top5Categories}
+                    dataKey="value"
+                    innerRadius={100}
+                    outerRadius={120}
+                  >
+                    <Label
+                      content={(props) => (
+                        <MdWidgets
+                          className="text-gray-400"
+                          size="4em"
+                          x={`calc(${props.viewBox.cx}px - 2em)`}
+                          y={`calc(${props.viewBox.cy}px - 2em)`}
+                        />
+                      )}
+                      position="center"
+                    />
+                    {top5Categories.map((_, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={CHART_COLORS[1][index % CHART_COLORS[1].length]}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </div>
+            </div>
+            {/* <div className="flex mt-1">
+            <MdSearch className="relative left-9 top-1 w-6 h-6 text-gray-700" />
+            <input
+              type="search"
+              className="realtive pl-10 w-1/3 h-8 text-sm rounded-full"
+              placeholder="Filter"
+            ></input>
+          </div> */}
+            <div className="mt-6">
+              <DataExplorer
+                mspId={mspId}
+                timeframe={timeframe}
+                mspStats={mspStats}
+              />
+            </div>
+          </div>
+        </div>
         <div className="grid gap-4 grid-cols-3 mt-6">
           {[
             {
@@ -511,7 +853,7 @@ export default function ReportingAllOrganizationsScreen() {
         </div>
         <div className="grid gap-4 grid-cols-3 mt-6">
           <div className="p-6 bg-white rounded-md shadow-md">
-            <h3 className="text-base font-semibold">Depoyments</h3>
+            <h3 className="text-base font-semibold">Deployments</h3>
             <div className="grid gap-6 grid-cols-2 mt-6">
               <div className="flex items-center space-x-2">
                 <div className="flex items-center justify-center w-14 h-14 bg-blue-100 rounded-full">
