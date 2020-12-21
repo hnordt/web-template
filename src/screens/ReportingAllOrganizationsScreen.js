@@ -1,6 +1,7 @@
 import React from "react"
 import { useQueries, useQuery, useInfiniteQuery } from "react-query"
 import { useVirtual } from "react-virtual"
+import { useDebounce } from "@react-hook/debounce"
 import {
   MdDevices,
   MdGroupWork,
@@ -51,13 +52,22 @@ function getMSPIdFromOrganization(organization) {
 function DataExplorer(props) {
   const ROW_HEIGHT = 44
 
+  const [searchText, setSearchText] = useDebounce("", 1000)
+
   const query = useInfiniteQuery(
-    ["/traffic_reports/top_users", "msp", props.mspId, props.timeframe],
+    [
+      "/traffic_reports/top_users",
+      "msp",
+      props.mspId,
+      props.timeframe,
+      searchText,
+    ],
     () =>
       httpClient
         .get("/traffic_reports/top_users", {
           params: {
             "organization_ids": props.mspStats.data.organization_ids.join(","),
+            "name": searchText,
             "from": props.timeframe[0],
             "to": props.timeframe[1],
             "page[number]": 1,
@@ -107,6 +117,15 @@ function DataExplorer(props) {
 
   return (
     <>
+      <div className="relative mb-6">
+        <input
+          type="search"
+          className="placeholder-gray-400 pl-10 pr-4 py-1.5 w-96 text-gray-900 text-sm border border-gray-300 rounded-full"
+          placeholder="Filter"
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <MdSearch className="absolute left-4 top-1/2 w-5 h-5 text-gray-600 transform -translate-y-1/2" />
+      </div>
       <div
         ref={parentRef}
         className="relative border border-gray-200 rounded-md overflow-y-auto"
@@ -758,14 +777,6 @@ export default function ReportingAllOrganizationsScreen() {
                 </PieChart>
               </div>
             </div>
-            {/* <div className="flex mt-1">
-            <MdSearch className="relative left-9 top-1 w-6 h-6 text-gray-700" />
-            <input
-              type="search"
-              className="realtive pl-10 w-1/3 h-8 text-sm rounded-full"
-              placeholder="Filter"
-            ></input>
-          </div> */}
             <div className="mt-6">
               <DataExplorer
                 mspId={mspId}
