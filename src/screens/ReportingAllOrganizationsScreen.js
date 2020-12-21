@@ -412,6 +412,56 @@ export default function ReportingAllOrganizationsScreen() {
     }
   )
 
+  const top5Users = useQuery(
+    [
+      "/traffic_reports/top_users?page[number]=1&page[size]=5",
+      "msp",
+      mspId,
+      timeframe,
+    ],
+    () =>
+      httpClient
+        .get("/traffic_reports/top_users", {
+          params: {
+            "organization_ids": mspStats.data.organization_ids.join(","),
+            "from": timeframe[0],
+            "to": timeframe[1],
+            "page[number]": 1,
+            "page[size]": 5,
+          },
+        })
+        .then((response) => response.data.data.values),
+    {
+      initialData: [],
+      enabled: Array.isArray(mspStats.data.organization_ids),
+    }
+  )
+
+  const top5Categories = useQuery(
+    [
+      "/traffic_reports/top_categories?page[number]=1&page[size]=5",
+      "msp",
+      mspId,
+      timeframe,
+    ],
+    () =>
+      httpClient
+        .get("/traffic_reports/top_categories", {
+          params: {
+            "organization_ids": mspStats.data.organization_ids.join(","),
+            "from": timeframe[0],
+            "to": timeframe[1],
+            "page[number]": 1,
+            "page[size]": 5,
+          },
+        })
+        .then((response) => response.data.data.values),
+    {
+      initialData: [],
+      enabled: Array.isArray(mspStats.data.organization_ids),
+    }
+  )
+
   React.useEffect(() => {
     if (
       qpsOrganizationId === null &&
@@ -425,48 +475,6 @@ export default function ReportingAllOrganizationsScreen() {
   const mspQPSData = mspQPS.data.filter(
     (item) => String(item.organization_id) === String(qpsOrganizationId)
   )
-
-  // TODO: remove
-  const top5Users = [
-    {
-      name: "Edward Collins",
-      value: 400,
-    },
-    {
-      name: "Elisha Huber",
-      value: 300,
-    },
-    {
-      name: "Hayden Wilkson",
-      value: 300,
-    },
-    {
-      name: "Eliza Kenedy",
-      value: 200,
-    },
-  ]
-  const top5Categories = [
-    {
-      name: "P2P & Illegal",
-      value: 400,
-    },
-    {
-      name: "Malware",
-      value: 200,
-    },
-    {
-      name: "Pishing & Deception",
-      value: 300,
-    },
-    {
-      name: "Botnet",
-      value: 200,
-    },
-    {
-      name: "Adult Content",
-      value: 200,
-    },
-  ]
 
   return (
     <div className="min-h-screen bg-gray-200">
@@ -693,8 +701,11 @@ export default function ReportingAllOrganizationsScreen() {
                     iconSize={12}
                   />
                   <Pie
-                    data={top5Users}
-                    dataKey="value"
+                    data={top5Users.data}
+                    nameKey="user_name"
+                    dataKey="total"
+                    startAngle={90}
+                    endAngle={-270}
                     innerRadius={100}
                     outerRadius={120}
                   >
@@ -709,7 +720,7 @@ export default function ReportingAllOrganizationsScreen() {
                       )}
                       position="center"
                     />
-                    {top5Users.map((_, index) => (
+                    {top5Users.data.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={CHART_COLORS[0][index % CHART_COLORS[0].length]}
@@ -741,8 +752,11 @@ export default function ReportingAllOrganizationsScreen() {
                     iconSize={12}
                   />
                   <Pie
-                    data={top5Categories}
-                    dataKey="value"
+                    data={top5Categories.data}
+                    nameKey="category_name"
+                    dataKey="total"
+                    startAngle={90}
+                    endAngle={-270}
                     innerRadius={100}
                     outerRadius={120}
                   >
@@ -757,7 +771,7 @@ export default function ReportingAllOrganizationsScreen() {
                       )}
                       position="center"
                     />
-                    {top5Categories.map((_, index) => (
+                    {top5Categories.data.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={CHART_COLORS[1][index % CHART_COLORS[1].length]}
