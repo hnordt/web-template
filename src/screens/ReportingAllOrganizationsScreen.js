@@ -258,6 +258,8 @@ export default function ReportingAllOrganizationsScreen() {
   const [securityReport, setSecurityReport] = React.useState(false)
   const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
+  const timeframeDiff = dayjs(timeframe[1]).diff(timeframe[0], "day")
+
   React.useEffect(() => {
     async function init() {
       await login()
@@ -347,6 +349,7 @@ export default function ReportingAllOrganizationsScreen() {
         .then((response) => response.data.data.values),
     {
       initialData: [],
+      refetchInterval: timeframeDiff > 1 ? undefined : 60_000,
       enabled: !!mspId && !!timeframe,
     }
   )
@@ -658,11 +661,7 @@ export default function ReportingAllOrganizationsScreen() {
                   strokeWidth: 2,
                 }}
                 tickFormatter={(v) =>
-                  dayjs(v).format(
-                    dayjs(timeframe[1]).diff(timeframe[0], "day") > 1
-                      ? "ll"
-                      : "lll"
-                  )
+                  dayjs(v).format(timeframeDiff > 1 ? "ll" : "lll")
                 }
                 tickMargin={8}
                 tickLine={false}
@@ -681,11 +680,7 @@ export default function ReportingAllOrganizationsScreen() {
               />
               <Tooltip
                 labelFormatter={(label) =>
-                  dayjs(label).format(
-                    dayjs(timeframe[1]).diff(timeframe[0], "day") > 1
-                      ? "ll"
-                      : "lll"
-                  )
+                  dayjs(label).format(timeframeDiff > 1 ? "ll" : "lll")
                 }
                 formatter={formatNumber}
                 separator=": "
