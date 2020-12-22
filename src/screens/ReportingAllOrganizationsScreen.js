@@ -656,6 +656,13 @@ export default function ReportingAllOrganizationsScreen() {
                   stroke: "#e5e9ea",
                   strokeWidth: 2,
                 }}
+                tickFormatter={(v) =>
+                  dayjs(v).format(
+                    dayjs(timeframe[1]).diff(timeframe[0], "day") > 1
+                      ? "ll"
+                      : "lll"
+                  )
+                }
                 tickMargin={8}
                 tickLine={false}
               />
@@ -664,10 +671,27 @@ export default function ReportingAllOrganizationsScreen() {
                   stroke: "#e5e9ea",
                   strokeWidth: 2,
                 }}
+                tickFormatter={(v) =>
+                  formatNumber(v, {
+                    notation: "compact",
+                  })
+                }
                 tickLine={false}
               />
               <Tooltip
+                labelFormatter={(label) =>
+                  dayjs(label).format(
+                    dayjs(timeframe[1]).diff(timeframe[0], "day") > 1
+                      ? "ll"
+                      : "lll"
+                  )
+                }
+                formatter={formatNumber}
                 separator=": "
+                labelStyle={{
+                  fontWeight: 600,
+                  marginBottom: 5,
+                }}
                 cursor={{
                   stroke: "#e5e9ea",
                   strokeWidth: 2,
@@ -710,7 +734,16 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="p-6 rounded-t-md shadow-md">
             <h3 className="text-gray-900 text-base font-semibold">
               {_.upperFirst(reportType)}{" "}
-              {securityReport ? "threats" : "requests"} by user
+              {securityReport ? "threats" : "requests"} by{" "}
+              {
+                {
+                  category: "category",
+                  domain: "domain",
+                  user: "user",
+                  rc: "roaming client",
+                  collection: "collection",
+                }[breakdown]
+              }
             </h3>
           </div>
           <div className="p-6">
@@ -1136,9 +1169,15 @@ export default function ReportingAllOrganizationsScreen() {
               4%
             </span> */}
             <ResponsiveContainer width="100%" height={340}>
-              <AreaChart data={mspQPSData}>
+              <AreaChart className="text-sm" data={mspQPSData}>
                 <XAxis dataKey="bucket" hide />
-                <Tooltip separator=": " />
+                <Tooltip
+                  labelFormatter={(label) => dayjs(label).format("lll")}
+                  separator=": "
+                  labelStyle={{
+                    fontWeight: 600,
+                  }}
+                />
                 <Area
                   name="QPS"
                   dataKey="qps"
