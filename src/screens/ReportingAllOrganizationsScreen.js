@@ -46,11 +46,26 @@ import formatNumber from "utils/formatNumber"
 import Select from "components/Select"
 import SegmentedControl from "components/SegmentedControl"
 import DatePicker from "components/DatePicker"
+import Loader from "components/Loader"
 
 const CHART_COLORS = [
   ["#db7093", "#555579", "#ff8c00", "#228b22"],
   ["#ffa500", "#a022ad", "#1e90ff", "#87cefa", "#483d8b"],
 ]
+
+function ChartLoader(props) {
+  if (props.minimal) {
+    return (
+      <div className="absolute z-10 inset-0 flex items-center justify-center">
+        <Loader variant="dark" size="sm" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="absolute z-10 inset-0 flex items-center justify-center bg-gray-200 rounded-md animate-pulse" />
+  )
+}
 
 function getMSPIdFromOrganization(organization) {
   return organization?.owned_msp_id ?? organization?.managed_by_msp_id ?? null
@@ -102,7 +117,7 @@ function DataExplorer(props) {
         .then((response) => response.data),
     {
       getNextPageParam: (lastPage) => lastPage.data.page.next ?? undefined,
-      enabled: Array.isArray(props.mspStats.data.organization_ids),
+      enabled: Array.isArray(props.mspStats.data?.organization_ids),
     }
   )
   const flatData = query.data
@@ -185,6 +200,16 @@ function DataExplorer(props) {
             height: rowVirtualizer.totalSize,
           }}
         >
+          {query.status.match(/idle|loading/) && (
+            <>
+              <div className="absolute z-10 left-4 top-4 w-1/3 h-7 bg-gray-200 rounded animate-pulse" />
+              <div className="absolute z-10 left-4 top-14 w-2/3 h-7 bg-gray-200 rounded animate-pulse" />
+              <div className="absolute z-10 left-4 top-24 w-1/4 h-7 bg-gray-200 rounded animate-pulse" />
+            </>
+          )}
+          {rowVirtualizer.virtualItems.length === 0 && (
+            <p className="p-4 text-gray-400 text-sm">No results found</p>
+          )}
           {rowVirtualizer.virtualItems.map((virtualRow) => {
             const item = flatData[virtualRow.index]
 
@@ -204,30 +229,30 @@ function DataExplorer(props) {
                     virtualRow.index === 0 ? "" : "border-t"
                   } grid grid-cols-4 items-center h-full border-gray-200`}
                 >
-                  <span className="block col-span-2 px-4 text-gray-900 text-sm">
-                    {virtualRow.index > flatData.length - 1 ? (
-                      "Loading more..."
-                    ) : (
-                      <span className="flex items-center">
-                        <MdPerson className="mr-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
-                        <span>
-                          {
-                            item[
-                              {
-                                category: "category_name",
-                                domain: "domain",
-                                user: "user_name",
-                                rc: "agent_name",
-                                collection: "collection_name",
-                              }[props.breakdown]
-                            ]
-                          }
+                  {virtualRow.index > flatData.length - 1 ? (
+                    <div className="col-span-4 px-4 text-gray-900 text-sm">
+                      Loading more...
+                    </div>
+                  ) : (
+                    <>
+                      <span className="block col-span-2 px-4 text-gray-900 text-sm">
+                        <span className="flex items-center">
+                          <MdPerson className="mr-2 p-1.5 w-7 h-7 text-blue-500 bg-blue-100 rounded-full" />
+                          <span>
+                            {
+                              item[
+                                {
+                                  category: "category_name",
+                                  domain: "domain",
+                                  user: "user_name",
+                                  rc: "agent_name",
+                                  collection: "collection_name",
+                                }[props.breakdown]
+                              ]
+                            }
+                          </span>
                         </span>
                       </span>
-                    )}
-                  </span>
-                  {virtualRow.index > flatData.length - 1 ? null : (
-                    <>
                       <span className="block px-4 text-gray-900 text-sm">
                         {formatNumber(item.total)}
                       </span>
@@ -313,13 +338,6 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data),
     {
-      initialData: {
-        organization_ids: null,
-        total_requests: 0,
-        allowed_requests: 0,
-        blocked_requests: 0,
-        threat_requests: 0,
-      },
       enabled: !!mspId && !!timeframe,
     }
   )
@@ -337,13 +355,12 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      initialData: [],
       enabled: !!mspId && !!timeframe,
     }
   )
 
   const topOrganizationsStats = useQueries(
-    topOrganizations.data.slice(0, 3).map((item) => ({
+    (topOrganizations.data ?? []).slice(0, 3).map((item) => ({
       queryKey: [
         "/traffic_reports/total_organizations_stats",
         "org",
@@ -377,7 +394,6 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      initialData: [],
       refetchInterval: timeframeDiff > 1 ? undefined : 60_000,
       enabled: !!mspId && !!timeframe,
     }
@@ -484,7 +500,7 @@ export default function ReportingAllOrganizationsScreen() {
     {
       initialData: [],
       refetchInterval: 60_000,
-      enabled: Array.isArray(mspStats.data.organization_ids),
+      enabled: Array.isArray(mspStats.data?.organization_ids),
     }
   )
 
@@ -512,8 +528,7 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      initialData: [],
-      enabled: Array.isArray(mspStats.data.organization_ids),
+      enabled: Array.isArray(mspStats.data?.organization_ids),
     }
   )
 
@@ -541,20 +556,19 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      initialData: [],
-      enabled: Array.isArray(mspStats.data.organization_ids),
+      enabled: Array.isArray(mspStats.data?.organization_ids),
     }
   )
 
   React.useEffect(() => {
     if (
       qpsOrganizationId === null &&
-      Array.isArray(mspStats.data.organization_ids) &&
-      !!mspStats.data.organization_ids[0]
+      Array.isArray(mspStats.data?.organization_ids) &&
+      !!mspStats.data?.organization_ids[0]
     ) {
       setQPSOrganizationId(mspStats.data.organization_ids[0])
     }
-  }, [qpsOrganizationId, mspStats.data.organization_ids])
+  }, [qpsOrganizationId, mspStats.data?.organization_ids])
 
   const mspQPSData = mspQPS.data.filter(
     (item) => String(item.organization_id) === String(qpsOrganizationId)
@@ -583,33 +597,57 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Total requests</dt>
             <dd className="text-gray-500 text-2xl font-semibold">
-              {formatNumber(mspStats.data.total_requests, {
-                notation: "compact",
-              })}
+              {mspStats.status.match(/idle|loading/) ? (
+                <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                  0...
+                </span>
+              ) : (
+                formatNumber(mspStats.data?.total_requests, {
+                  notation: "compact",
+                })
+              )}
             </dd>
           </div>
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Allowed requests</dt>
             <dd className="text-blue-500 text-2xl font-semibold">
-              {formatNumber(mspStats.data.allowed_requests, {
-                notation: "compact",
-              })}
+              {mspStats.status.match(/idle|loading/) ? (
+                <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                  0...
+                </span>
+              ) : (
+                formatNumber(mspStats.data?.allowed_requests, {
+                  notation: "compact",
+                })
+              )}
             </dd>
           </div>
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Blocked requests</dt>
             <dd className="text-yellow-500 text-2xl font-semibold">
-              {formatNumber(mspStats.data.blocked_requests, {
-                notation: "compact",
-              })}
+              {mspStats.status.match(/idle|loading/) ? (
+                <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                  0...
+                </span>
+              ) : (
+                formatNumber(mspStats.data?.blocked_requests, {
+                  notation: "compact",
+                })
+              )}
             </dd>
           </div>
           <div className="flex flex-col-reverse items-end">
             <dt className="text-gray-400 text-xs">Threats</dt>
             <dd className="text-red-500 text-2xl font-semibold">
-              {formatNumber(mspStats.data.threat_requests, {
-                notation: "compact",
-              })}
+              {mspStats.status.match(/idle|loading/) ? (
+                <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                  0...
+                </span>
+              ) : (
+                formatNumber(mspStats.data?.threat_requests, {
+                  notation: "compact",
+                })
+              )}
             </dd>
           </div>
         </dl>
@@ -625,135 +663,183 @@ export default function ReportingAllOrganizationsScreen() {
           </button>
         </div>
         <div className="grid gap-4 grid-cols-3">
-          {topOrganizationsStats
-            .filter((stats) => !!stats.data)
-            .map((stats) => (
-              <div
-                key={stats.data.organization_ids[0]}
-                className="p-6 bg-white rounded-md shadow-sm"
-              >
-                <h3 className="mb-3 text-gray-700 text-sm">
-                  {stats.data.organization_names[0]} (
-                  {formatNumber(
-                    stats.data.total_requests / mspStats.data.total_requests,
-                    {
-                      style: "percent",
-                      maximumFractionDigits: 1,
-                    }
-                  )}
-                  )
-                </h3>
-                <div className="flex space-x-6">
-                  <div>
-                    <h1 className="text-lg font-semibold">
-                      {formatNumber(stats.data.allowed_requests, {
+          {(topOrganizations.status.match(/idle|loading/)
+            ? [
+                {
+                  status: "loading",
+                },
+                {
+                  status: "loading",
+                },
+                {
+                  status: "loading",
+                },
+              ]
+            : topOrganizationsStats
+          ).map((stats, statsIndex) => (
+            <div
+              key={stats.data?.organization_ids[0] ?? statsIndex}
+              className="p-6 bg-white rounded-md shadow-sm"
+            >
+              <h3 className="mb-3 text-gray-700 text-sm">
+                {stats.status.match(/idle|loading/) ? (
+                  <span
+                    className={`${
+                      statsIndex === 0
+                        ? "w-1/3"
+                        : statsIndex === 1
+                        ? "w-1/4"
+                        : "w-2/4"
+                    } inline-block text-gray-200 bg-gray-200 rounded animate-pulse`}
+                  >
+                    ...
+                  </span>
+                ) : (
+                  <>
+                    {stats.data.organization_names[0]} (
+                    {formatNumber(
+                      stats.data.total_requests / mspStats.data?.total_requests,
+                      {
+                        style: "percent",
+                        maximumFractionDigits: 1,
+                      }
+                    )}
+                    )
+                  </>
+                )}
+              </h3>
+              <div className="flex space-x-6">
+                <div>
+                  <h1 className="text-lg font-semibold">
+                    {stats.status.match(/idle|loading/) ? (
+                      <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                        0...
+                      </span>
+                    ) : (
+                      formatNumber(stats.data?.allowed_requests, {
                         notation: "compact",
-                      })}
-                    </h1>
-                    <p className="text-blue-500 whitespace-nowrap text-xs font-semibold">
-                      Allowed Requests
-                    </p>
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-semibold">
-                      {formatNumber(stats.data.blocked_requests, {
+                      })
+                    )}
+                  </h1>
+                  <p className="text-blue-500 whitespace-nowrap text-xs font-semibold">
+                    Allowed requests
+                  </p>
+                </div>
+                <div>
+                  <h1 className="text-lg font-semibold">
+                    {stats.status.match(/idle|loading/) ? (
+                      <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                        0...
+                      </span>
+                    ) : (
+                      formatNumber(stats.data?.blocked_requests, {
                         notation: "compact",
-                      })}
-                    </h1>
-                    <p className="text-yellow-500 whitespace-nowrap text-xs font-semibold">
-                      Blocked Requests
-                    </p>
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-semibold">
-                      {formatNumber(stats.data.threat_requests, {
+                      })
+                    )}
+                  </h1>
+                  <p className="text-yellow-500 whitespace-nowrap text-xs font-semibold">
+                    Blocked requests
+                  </p>
+                </div>
+                <div>
+                  <h1 className="text-lg font-semibold">
+                    {stats.status.match(/idle|loading/) ? (
+                      <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                        0...
+                      </span>
+                    ) : (
+                      formatNumber(stats.data?.threat_requests, {
                         notation: "compact",
-                      })}
-                    </h1>
-                    <p className="text-red-500 whitespace-nowrap text-xs font-semibold">
-                      Threats
-                    </p>
-                  </div>
+                      })
+                    )}
+                  </h1>
+                  <p className="text-red-500 whitespace-nowrap text-xs font-semibold">
+                    Threats
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
         <div className="mt-6 p-6 bg-white rounded-md shadow-md">
           <h3 className="mb-6 text-base font-semibold">Requests over time</h3>
-          <ResponsiveContainer width="100%" height={340}>
-            <LineChart className="text-xs" data={mspRequests.data}>
-              <CartesianGrid stroke="#e5e9ea" strokeDasharray="4 4" />
-              <XAxis
-                dataKey="bucket"
-                axisLine={{
-                  stroke: "#e5e9ea",
-                  strokeWidth: 2,
-                }}
-                tickFormatter={(v) =>
-                  dayjs(v).format(timeframeDiff > 1 ? "ll" : "lll")
-                }
-                tickMargin={8}
-                tickLine={false}
-              />
-              <YAxis
-                axisLine={{
-                  stroke: "#e5e9ea",
-                  strokeWidth: 2,
-                }}
-                tickFormatter={(v) =>
-                  formatNumber(v, {
-                    notation: "compact",
-                  })
-                }
-                tickLine={false}
-              />
-              <Tooltip
-                labelFormatter={(label) =>
-                  dayjs(label).format(timeframeDiff > 1 ? "ll" : "lll")
-                }
-                formatter={formatNumber}
-                separator=": "
-                labelStyle={{
-                  fontWeight: 600,
-                  marginBottom: 5,
-                }}
-                cursor={{
-                  stroke: "#e5e9ea",
-                  strokeWidth: 2,
-                }}
-              />
-              <Line
-                type="monotone"
-                name="Allowed requests"
-                dataKey="allowed_requests"
-                stroke="#2b98f0"
-                strokeWidth={2}
-                activeDot={{
-                  r: 8,
-                }}
-              />
-              <Line
-                type="monotone"
-                name="Blocked requests"
-                dataKey="blocked_requests"
-                stroke="#ef5350"
-                strokeWidth={2}
-                activeDot={{
-                  r: 8,
-                }}
-              />
-              <Line
-                type="monotone"
-                name="Threats"
-                dataKey="threat_requests"
-                stroke="#ffb300"
-                strokeWidth={2}
-                activeDot={{
-                  r: 8,
-                }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="relative">
+            {mspRequests.status.match(/idle|loading/) && <ChartLoader />}
+            <ResponsiveContainer width="100%" height={340}>
+              <LineChart className="text-xs" data={mspRequests.data}>
+                <CartesianGrid stroke="#e5e9ea" strokeDasharray="4 4" />
+                <XAxis
+                  dataKey="bucket"
+                  axisLine={{
+                    stroke: "#e5e9ea",
+                    strokeWidth: 2,
+                  }}
+                  tickFormatter={(v) =>
+                    dayjs(v).format(timeframeDiff > 1 ? "ll" : "lll")
+                  }
+                  tickMargin={8}
+                  tickLine={false}
+                />
+                <YAxis
+                  axisLine={{
+                    stroke: "#e5e9ea",
+                    strokeWidth: 2,
+                  }}
+                  tickFormatter={(v) =>
+                    formatNumber(v, {
+                      notation: "compact",
+                    })
+                  }
+                  tickLine={false}
+                />
+                <Tooltip
+                  labelFormatter={(label) =>
+                    dayjs(label).format(timeframeDiff > 1 ? "ll" : "lll")
+                  }
+                  formatter={formatNumber}
+                  separator=": "
+                  labelStyle={{
+                    fontWeight: 600,
+                    marginBottom: 5,
+                  }}
+                  cursor={{
+                    stroke: "#e5e9ea",
+                    strokeWidth: 2,
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  name="Allowed requests"
+                  dataKey="allowed_requests"
+                  stroke="#2b98f0"
+                  strokeWidth={2}
+                  activeDot={{
+                    r: 8,
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  name="Blocked requests"
+                  dataKey="blocked_requests"
+                  stroke="#ef5350"
+                  strokeWidth={2}
+                  activeDot={{
+                    r: 8,
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  name="Threats"
+                  dataKey="threat_requests"
+                  stroke="#ffb300"
+                  strokeWidth={2}
+                  activeDot={{
+                    r: 8,
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
         <div className="mt-6 bg-white rounded-md shadow-md">
           <div className="p-6 rounded-t-md shadow-md">
@@ -840,108 +926,118 @@ export default function ReportingAllOrganizationsScreen() {
                 onChange={setBreakdown}
               />
             </div>
-            <div className="flex justify-evenly">
+            <div className="flex justify-evenly my-6">
               <div className="flex items-center">
                 <h3 className="text-gray-900 whitespace-nowrap text-base font-semibold transform -rotate-90">
                   Top 5 users
                 </h3>
-                <PieChart
-                  className="-ml-14 text-sm leading-10"
-                  width={500}
-                  height={340}
-                  margin={{
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <Legend
-                    layout="vertical"
-                    verticalAlign="middle"
-                    align="right"
-                    iconType="circle"
-                    iconSize={12}
-                  />
-                  <Pie
-                    data={top5Users.data}
-                    nameKey="user_name"
-                    dataKey="total"
-                    startAngle={90}
-                    endAngle={-270}
-                    innerRadius={100}
-                    outerRadius={120}
+                <div className="relative">
+                  {top5Users.status.match(/idle|loading/) && (
+                    <ChartLoader minimal />
+                  )}
+                  <PieChart
+                    className="-ml-14 text-sm leading-10"
+                    width={500}
+                    height={340}
+                    margin={{
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                    }}
                   >
-                    <Label
-                      content={(props) => (
-                        <IoIosPerson
-                          className="text-gray-400"
-                          size="4em"
-                          x={`calc(${props.viewBox.cx}px - 2em)`}
-                          y={`calc(${props.viewBox.cy}px - 2em)`}
-                        />
-                      )}
-                      position="center"
+                    <Legend
+                      layout="vertical"
+                      verticalAlign="middle"
+                      align="right"
+                      iconType="circle"
+                      iconSize={12}
                     />
-                    {top5Users.data.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={CHART_COLORS[0][index % CHART_COLORS[0].length]}
+                    <Pie
+                      data={top5Users.data}
+                      nameKey="user_name"
+                      dataKey="total"
+                      startAngle={90}
+                      endAngle={-270}
+                      innerRadius={100}
+                      outerRadius={120}
+                    >
+                      <Label
+                        content={(props) => (
+                          <IoIosPerson
+                            className="text-gray-400"
+                            size="4em"
+                            x={`calc(${props.viewBox.cx}px - 2em)`}
+                            y={`calc(${props.viewBox.cy}px - 2em)`}
+                          />
+                        )}
+                        position="center"
                       />
-                    ))}
-                  </Pie>
-                </PieChart>
+                      {top5Users.data?.map((_, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={CHART_COLORS[0][index % CHART_COLORS[0].length]}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </div>
               </div>
               <div className="flex items-center">
                 <h3 className="text-gray-900 whitespace-nowrap text-base font-semibold transform -rotate-90">
                   Top 5 categories
                 </h3>
-                <PieChart
-                  className="-ml-14 text-sm leading-10"
-                  width={500}
-                  height={340}
-                  margin={{
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <Legend
-                    layout="vertical"
-                    verticalAlign="middle"
-                    align="right"
-                    iconType="circle"
-                    iconSize={12}
-                  />
-                  <Pie
-                    data={top5Categories.data}
-                    nameKey="category_name"
-                    dataKey="total"
-                    startAngle={90}
-                    endAngle={-270}
-                    innerRadius={100}
-                    outerRadius={120}
+                <div className="relative">
+                  {top5Categories.status.match(/idle|loading/) && (
+                    <ChartLoader minimal />
+                  )}
+                  <PieChart
+                    className="-ml-14 text-sm leading-10"
+                    width={500}
+                    height={340}
+                    margin={{
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                    }}
                   >
-                    <Label
-                      content={(props) => (
-                        <MdWidgets
-                          className="text-gray-400"
-                          size="4em"
-                          x={`calc(${props.viewBox.cx}px - 2em)`}
-                          y={`calc(${props.viewBox.cy}px - 2em)`}
-                        />
-                      )}
-                      position="center"
+                    <Legend
+                      layout="vertical"
+                      verticalAlign="middle"
+                      align="right"
+                      iconType="circle"
+                      iconSize={12}
                     />
-                    {top5Categories.data.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={CHART_COLORS[1][index % CHART_COLORS[1].length]}
+                    <Pie
+                      data={top5Categories.data}
+                      nameKey="category_name"
+                      dataKey="total"
+                      startAngle={90}
+                      endAngle={-270}
+                      innerRadius={100}
+                      outerRadius={120}
+                    >
+                      <Label
+                        content={(props) => (
+                          <MdWidgets
+                            className="text-gray-400"
+                            size="4em"
+                            x={`calc(${props.viewBox.cx}px - 2em)`}
+                            y={`calc(${props.viewBox.cy}px - 2em)`}
+                          />
+                        )}
+                        position="center"
                       />
-                    ))}
-                  </Pie>
-                </PieChart>
+                      {top5Categories.data?.map((_, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={CHART_COLORS[1][index % CHART_COLORS[1].length]}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </div>
               </div>
             </div>
             <DataExplorer
@@ -1172,7 +1268,7 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="col-span-2 p-6 bg-white rounded-md shadow-md">
             <div className="relative">
               <h3 className="text-base font-semibold">Queries per second</h3>
-              {Array.isArray(mspStats.data.organization_ids) &&
+              {Array.isArray(mspStats.data?.organization_ids) &&
                 qpsOrganizationId !== null && (
                   <div className="absolute right-0 top-0">
                     <Select
