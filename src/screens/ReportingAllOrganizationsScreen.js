@@ -255,21 +255,21 @@ export default function ReportingAllOrganizationsScreen() {
 
   const [organization, setOrganization] = React.useState(null)
   const [reportType, setReportType] = React.useState(
-    searchParams.reportType ?? "all"
+    searchParams["report-type"] ?? "all"
   )
   const [breakdown, setBreakdown] = React.useState(
     searchParams.breakdown ?? "user"
   )
   const [timeframe, setTimeframe] = React.useState(() => [
-    searchParams.dateStart
-      ? dayjs(searchParams.dateStart).startOf("day").toDate()
+    searchParams["date-start"]
+      ? dayjs(searchParams["date-start"]).startOf("day").toDate()
       : dayjs().subtract(6, "day").startOf("day").toDate(),
-    searchParams.dateEnd
-      ? dayjs(searchParams.dateEnd).endOf("day").toDate()
+    searchParams["date-end"]
+      ? dayjs(searchParams["date-end"]).endOf("day").toDate()
       : dayjs().endOf("day").toDate(),
   ])
   const [securityReport, setSecurityReport] = React.useState(
-    searchParams.securityReport === "true" ? true : false
+    searchParams["security-report"] === "true" ? true : false
   )
   const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
@@ -280,11 +280,11 @@ export default function ReportingAllOrganizationsScreen() {
       history.location.pathname +
         "?" +
         qs.stringify({
-          reportType,
-          breakdown,
-          dateStart: dayjs(timeframe[0]).toISOString(),
-          dateEnd: dayjs(timeframe[1]).toISOString(),
-          securityReport,
+          "report-type": reportType,
+          "breakdown": breakdown,
+          "date-start": dayjs(timeframe[0]).toISOString(),
+          "date-end": dayjs(timeframe[1]).toISOString(),
+          "security-report": securityReport,
         })
     )
   }, [history, reportType, breakdown, timeframe, securityReport])
