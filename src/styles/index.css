@@ -3,6 +3,29 @@
 @tailwind utilities;
 
 :root {
+  --reach-listbox: 1;
   --reach-tooltip: 1;
   --reach-dialog: 1;
+}
+
+[data-reach-listbox-popover] {
+  width: auto !important;
+}
+
+.DayPicker-wrapper.DayPicker-wrapper {
+  padding-bottom: 0;
+}
+
+.DayPicker-NavButton.DayPicker-NavButton {
+  top: 0;
+  right: 0;
+}
+
+.DayPicker-Month.DayPicker-Month {
+  margin: 0;
+}
+
+.DayPicker-Day.DayPicker-Day {
+  padding-left: 10px;
+  padding-right: 10px;
 }

@@ -43,6 +43,7 @@ import httpClient from "utils/httpClient"
 import formatNumber from "utils/formatNumber"
 import Select from "components/Select"
 import SegmentedControl from "components/SegmentedControl"
+import DatePicker from "components/DatePicker"
 
 const CHART_COLORS = [
   ["#db7093", "#555579", "#ff8c00", "#228b22"],
@@ -250,6 +251,10 @@ export default function ReportingAllOrganizationsScreen() {
   const [organization, setOrganization] = React.useState(null)
   const [reportType, setReportType] = React.useState("all")
   const [breakdown, setBreakdown] = React.useState("category")
+  const [timeframe, setTimeframe] = React.useState([
+    dayjs().subtract(6, "day").startOf("day").toDate(),
+    dayjs().endOf("day").toDate(),
+  ])
   const [securityReport, setSecurityReport] = React.useState(false)
   const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
@@ -263,10 +268,6 @@ export default function ReportingAllOrganizationsScreen() {
   }, [])
 
   const mspId = getMSPIdFromOrganization(organization)
-  const timeframe = [
-    dayjs.utc().startOf("month").toISOString(),
-    dayjs.utc().endOf("day").toISOString(),
-  ]
 
   const mspStats = useQuery(
     ["/traffic_reports/total_organizations_stats", "msp", mspId, timeframe],
@@ -357,8 +358,8 @@ export default function ReportingAllOrganizationsScreen() {
         .get("/traffic_reports/total_client_stats", {
           params: {
             msp_id: mspId,
-            from: dayjs.utc().subtract(15, "minute").toISOString(),
-            to: dayjs.utc().toISOString(),
+            from: dayjs().subtract(15, "minute").toISOString(),
+            to: dayjs().toISOString(),
           },
         })
         .then((response) => response.data.data),
@@ -443,8 +444,8 @@ export default function ReportingAllOrganizationsScreen() {
         .get("/traffic_reports/qps_active_organizations", {
           params: {
             organization_ids: mspStats.data.organization_ids.join(","),
-            from: dayjs.utc().subtract(15, "minute").toISOString(),
-            to: dayjs.utc().toISOString(),
+            from: dayjs().subtract(15, "minute").toISOString(),
+            to: dayjs().toISOString(),
           },
         })
         .then((response) => response.data.data.values),
@@ -528,7 +529,10 @@ export default function ReportingAllOrganizationsScreen() {
 
   return (
     <div className="min-h-screen bg-gray-200">
-      <div className="flex items-center justify-between px-8 py-4 bg-white shadow-md">
+      <div className="flex items-center px-8 py-5 bg-white border-b border-gray-200">
+        <DatePicker defaultValue={timeframe} onChange={setTimeframe} />
+      </div>
+      <div className="flex items-center justify-between px-8 py-5 bg-white shadow-md">
         <div className="flex items-center space-x-4">
           <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
             <MdLocationCity className="w-8 h-8 text-gray-600" />
@@ -1105,20 +1109,21 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="col-span-2 p-6 bg-white rounded-md shadow-md">
             <div className="relative">
               <h3 className="text-base font-semibold">Queries per second</h3>
-              {qpsOrganizationId !== null && (
-                <div className="absolute right-0 top-0">
-                  <Select
-                    options={mspStats.data.organization_ids.map(
-                      (id, index) => ({
-                        label: mspStats.data.organization_names[index],
-                        value: id,
-                      })
-                    )}
-                    value={qpsOrganizationId}
-                    onChange={setQPSOrganizationId}
-                  />
-                </div>
-              )}
+              {Array.isArray(mspStats.data.organization_ids) &&
+                qpsOrganizationId !== null && (
+                  <div className="absolute right-0 top-0">
+                    <Select
+                      options={mspStats.data.organization_ids.map(
+                        (id, index) => ({
+                          label: mspStats.data.organization_names[index],
+                          value: id,
+                        })
+                      )}
+                      value={qpsOrganizationId}
+                      onChange={setQPSOrganizationId}
+                    />
+                  </div>
+                )}
             </div>
             <h1 className="mt-6 text-2xl font-bold">
               {formatNumber(_.sumBy("qps", mspQPSData) / mspQPSData.length, {
