@@ -112,7 +112,7 @@ export default function DatePicker(props) {
                       shortcut.id === shortcutId
                         ? "bg-blue-500 text-white"
                         : "hover:bg-gray-50"
-                    } px-4 py-2 border-b border-gray-200 cursor-pointer`}
+                    } px-4 py-2 border-b border-gray-200 cursor-pointer text-sm`}
                     value={shortcut.id}
                     onClick={() => handleChange(shortcut.id)}
                   >
