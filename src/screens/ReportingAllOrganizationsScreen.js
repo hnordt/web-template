@@ -451,6 +451,7 @@ export default function ReportingAllOrganizationsScreen() {
         .then((response) => response.data.data.values),
     {
       initialData: [],
+      refetchInterval: 60_000,
       enabled: Array.isArray(mspStats.data.organization_ids),
     }
   )
