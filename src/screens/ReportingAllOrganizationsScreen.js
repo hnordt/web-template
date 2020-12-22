@@ -250,7 +250,7 @@ function DataExplorer(props) {
 export default function ReportingAllOrganizationsScreen() {
   const [organization, setOrganization] = React.useState(null)
   const [reportType, setReportType] = React.useState("all")
-  const [breakdown, setBreakdown] = React.useState("category")
+  const [breakdown, setBreakdown] = React.useState("user")
   const [timeframe, setTimeframe] = React.useState([
     dayjs().subtract(6, "day").startOf("day").toDate(),
     dayjs().endOf("day").toDate(),
@@ -786,24 +786,29 @@ export default function ReportingAllOrganizationsScreen() {
                 variant="primary"
                 options={[
                   {
-                    icon: MdWidgets,
-                    value: "category",
+                    icon: MdPerson,
+                    value: "user",
+                    helpText: "Breakdown by user",
                   },
                   {
                     icon: MdPublic,
                     value: "domain",
-                  },
-                  {
-                    icon: MdPerson,
-                    value: "user",
+                    helpText: "Breakdown by domain",
                   },
                   {
                     icon: MdLaptop,
                     value: "rc",
+                    helpText: "Breakdown by romaing client",
                   },
                   {
                     icon: MdFolderOpen,
                     value: "collection",
+                    helpText: "Breakdown by collection",
+                  },
+                  {
+                    icon: MdWidgets,
+                    value: "category",
+                    helpText: "Breakdown by category",
                   },
                 ]}
                 value={breakdown}
