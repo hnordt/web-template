@@ -1,4 +1,5 @@
 import React from "react"
+import { useHistory } from "react-router-dom"
 import { useQueries, useQuery, useInfiniteQuery } from "react-query"
 import { useVirtual } from "react-virtual"
 import { useDebounce } from "@react-hook/debounce"
@@ -37,6 +38,7 @@ import {
 } from "recharts"
 import _ from "lodash/fp"
 import dayjs from "dayjs"
+import qs from "query-string"
 import login from "services/login"
 import authenticate from "services/authenticate"
 import httpClient from "utils/httpClient"
@@ -248,17 +250,44 @@ function DataExplorer(props) {
 }
 
 export default function ReportingAllOrganizationsScreen() {
+  const history = useHistory()
+  const searchParams = qs.parse(history.location.search)
+
   const [organization, setOrganization] = React.useState(null)
-  const [reportType, setReportType] = React.useState("all")
-  const [breakdown, setBreakdown] = React.useState("user")
-  const [timeframe, setTimeframe] = React.useState([
-    dayjs().subtract(6, "day").startOf("day").toDate(),
-    dayjs().endOf("day").toDate(),
+  const [reportType, setReportType] = React.useState(
+    searchParams.reportType ?? "all"
+  )
+  const [breakdown, setBreakdown] = React.useState(
+    searchParams.breakdown ?? "user"
+  )
+  const [timeframe, setTimeframe] = React.useState(() => [
+    searchParams.dateStart
+      ? dayjs(searchParams.dateStart).startOf("day").toDate()
+      : dayjs().subtract(6, "day").startOf("day").toDate(),
+    searchParams.dateEnd
+      ? dayjs(searchParams.dateEnd).endOf("day").toDate()
+      : dayjs().endOf("day").toDate(),
   ])
-  const [securityReport, setSecurityReport] = React.useState(false)
+  const [securityReport, setSecurityReport] = React.useState(
+    searchParams.securityReport === "true" ? true : false
+  )
   const [qpsOrganizationId, setQPSOrganizationId] = React.useState(null)
 
   const timeframeDiff = dayjs(timeframe[1]).diff(timeframe[0], "day")
+
+  React.useEffect(() => {
+    history.push(
+      history.location.pathname +
+        "?" +
+        qs.stringify({
+          reportType,
+          breakdown,
+          dateStart: dayjs(timeframe[0]).toISOString(),
+          dateEnd: dayjs(timeframe[1]).toISOString(),
+          securityReport,
+        })
+    )
+  }, [history, reportType, breakdown, timeframe, securityReport])
 
   React.useEffect(() => {
     async function init() {

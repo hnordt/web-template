@@ -6,9 +6,8 @@ export default function SegmentedControl(props) {
   return (
     <div className="inline-flex items-center justify-center h-8 bg-gray-100 rounded-md">
       {props.options.map((option, optionIndex) => (
-        <Tooltip content={option.helpText}>
+        <Tooltip key={option.value} content={option.helpText}>
           <button
-            key={option.value}
             className={cn(
               "border-white px-6 h-full focus:outline-none focus:ring focus:ring-inset text-sm transition ease-in-out duration-500",
               {
