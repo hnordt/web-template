@@ -377,7 +377,6 @@ export default function ReportingAllOrganizationsScreen() {
             },
           })
           .then((response) => response.data.data),
-      // TODO: initialData
     }))
   )
 
@@ -412,16 +411,6 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data),
     {
-      initialData: {
-        total_sites: 0,
-        active_sites: 0,
-        total_roaming_clients: 0,
-        active_roaming_clients: 0,
-        total_relays: 0,
-        active_relays: 0,
-        total_users: 0,
-        active_users: 0,
-      },
       enabled: !!mspId && !!timeframe,
     }
   )
@@ -437,13 +426,6 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data),
     {
-      initialData: {
-        collections: 0,
-        user_agents: 0,
-        users: 0,
-        sync_tools: 0,
-        relays: 0,
-      },
       enabled: !!mspId,
     }
   )
@@ -459,28 +441,6 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      initialData: [
-        {
-          os: "windows",
-          total: 0,
-        },
-        {
-          os: "macos",
-          total: 0,
-        },
-        {
-          os: "android",
-          total: 0,
-        },
-        {
-          os: "ios",
-          total: 0,
-        },
-        {
-          os: "chrome",
-          total: 0,
-        },
-      ],
       enabled: !!mspId,
     }
   )
@@ -498,7 +458,6 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      initialData: [],
       refetchInterval: 60_000,
       enabled: Array.isArray(mspStats.data?.organization_ids),
     }
@@ -570,9 +529,10 @@ export default function ReportingAllOrganizationsScreen() {
     }
   }, [qpsOrganizationId, mspStats.data?.organization_ids])
 
-  const mspQPSData = mspQPS.data.filter(
-    (item) => String(item.organization_id) === String(qpsOrganizationId)
-  )
+  const mspQPSData =
+    mspQPS.data?.filter(
+      (item) => String(item.organization_id) === String(qpsOrganizationId)
+    ) ?? []
 
   return (
     <div className="min-h-screen bg-gray-200">
@@ -1065,8 +1025,8 @@ export default function ReportingAllOrganizationsScreen() {
               keys: ["total_relays", "active_relays"],
             },
           ].map((item) => {
-            const total = mspClients.data[item.keys[0]]
-            const active = mspClients.data[item.keys[1]]
+            const total = mspClients.data?.[item.keys[0]]
+            const active = mspClients.data?.[item.keys[1]]
             const inactive = total - active
 
             return (
@@ -1097,21 +1057,41 @@ export default function ReportingAllOrganizationsScreen() {
                     <RadialBar dataKey="uv" background />
                   </RadialBarChart>
                   <span className="absolute left-1/2 top-1/2 text-xl font-semibold transform -translate-x-1/2 -translate-y-1/2">
-                    {formatNumber(active / total, {
-                      style: "percent",
-                      maximumFractionDigits: 1,
-                    })}
+                    {mspClients.status.match(/idle|loading/) ? (
+                      <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                        0...
+                      </span>
+                    ) : (
+                      formatNumber(active / total, {
+                        style: "percent",
+                        maximumFractionDigits: 1,
+                      })
+                    )}
                   </span>
                 </div>
                 <div>
                   <h3 className="text-blue-500 text-base font-semibold">
-                    {formatNumber(active)} {item.label.toLowerCase()}
+                    {mspClients.status.match(/idle|loading/) ? (
+                      <span className="inline-block w-20 text-gray-200 bg-gray-200 rounded animate-pulse">
+                        ...
+                      </span>
+                    ) : (
+                      <>
+                        {formatNumber(active)} {item.label.toLowerCase()}
+                      </>
+                    )}
                   </h3>
-                  <p>
-                    <span className="text-gray-500 text-sm">
-                      Out of {formatNumber(total)} ({formatNumber(inactive)}{" "}
-                      inactive)
-                    </span>
+                  <p className="text-gray-500 text-sm">
+                    {mspClients.status.match(/idle|loading/) ? (
+                      <span className="inline-block mt-1 w-40 text-gray-200 bg-gray-200 rounded animate-pulse">
+                        ...
+                      </span>
+                    ) : (
+                      <>
+                        Out of {formatNumber(total)} ({formatNumber(inactive)}{" "}
+                        inactive)
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
@@ -1130,7 +1110,13 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Collections</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(mspDeployments.data.collections)}
+                      {mspDeployments.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(mspDeployments.data.collections)
+                      )}
                     </dd>
                   </div>
                 </dl>
@@ -1143,7 +1129,13 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Users</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(mspDeployments.data.users)}
+                      {mspDeployments.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(mspDeployments.data.users)
+                      )}
                     </dd>
                   </div>
                 </dl>
@@ -1156,7 +1148,13 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Sync tools</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(mspDeployments.data.sync_tools)}
+                      {mspDeployments.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(mspDeployments.data.sync_tools)
+                      )}
                     </dd>
                   </div>
                 </dl>
@@ -1169,7 +1167,13 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Relays</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(mspDeployments.data.relays)}
+                      {mspDeployments.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(mspDeployments.data.relays)
+                      )}
                     </dd>
                   </div>
                 </dl>
@@ -1187,10 +1191,16 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Windows</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(
-                        mspRoamingClients.data.find(
-                          (item) => item.os === "windows"
-                        )?.total ?? 0
+                      {mspRoamingClients.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(
+                          mspRoamingClients.data.find(
+                            (item) => item.os === "windows"
+                          )?.total ?? 0
+                        )
                       )}
                     </dd>
                   </div>
@@ -1204,10 +1214,16 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">macOS</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(
-                        mspRoamingClients.data.find(
-                          (item) => item.os === "macos"
-                        )?.total ?? 0
+                      {mspRoamingClients.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(
+                          mspRoamingClients.data.find(
+                            (item) => item.os === "macos"
+                          )?.total ?? 0
+                        )
                       )}
                     </dd>
                   </div>
@@ -1221,9 +1237,16 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">iOS</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(
-                        mspRoamingClients.data.find((item) => item.os === "ios")
-                          ?.total ?? 0
+                      {mspRoamingClients.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(
+                          mspRoamingClients.data.find(
+                            (item) => item.os === "ios"
+                          )?.total ?? 0
+                        )
                       )}
                     </dd>
                   </div>
@@ -1237,10 +1260,16 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Android</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(
-                        mspRoamingClients.data.find(
-                          (item) => item.os === "android"
-                        )?.total ?? 0
+                      {mspRoamingClients.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(
+                          mspRoamingClients.data.find(
+                            (item) => item.os === "android"
+                          )?.total ?? 0
+                        )
                       )}
                     </dd>
                   </div>
@@ -1254,10 +1283,16 @@ export default function ReportingAllOrganizationsScreen() {
                   <div className="flex flex-col-reverse">
                     <dt className="text-gray-900 text-xs">Chrome</dt>
                     <dd className="text-gray-600 text-base font-bold">
-                      {formatNumber(
-                        mspRoamingClients.data.find(
-                          (item) => item.os === "chrome"
-                        )?.total ?? 0
+                      {mspRoamingClients.status.match(/idle|loading/) ? (
+                        <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                          0...
+                        </span>
+                      ) : (
+                        formatNumber(
+                          mspRoamingClients.data.find(
+                            (item) => item.os === "chrome"
+                          )?.total ?? 0
+                        )
                       )}
                     </dd>
                   </div>
@@ -1265,7 +1300,7 @@ export default function ReportingAllOrganizationsScreen() {
               </div>
             </div>
           </div>
-          <div className="col-span-2 p-6 bg-white rounded-md shadow-md">
+          <div className="flex flex-col col-span-2 p-6 bg-white rounded-md shadow-md">
             <div className="relative">
               <h3 className="text-base font-semibold">Queries per second</h3>
               {Array.isArray(mspStats.data?.organization_ids) &&
@@ -1285,40 +1320,49 @@ export default function ReportingAllOrganizationsScreen() {
                 )}
             </div>
             <h1 className="mt-6 text-2xl font-bold">
-              {formatNumber(_.sumBy("qps", mspQPSData) / mspQPSData.length, {
-                maximumFractionDigits: 1,
-              })}{" "}
+              {mspRoamingClients.status.match(/idle|loading/) ? (
+                <span className="text-gray-200 bg-gray-200 rounded animate-pulse">
+                  0...
+                </span>
+              ) : (
+                formatNumber(_.sumBy("qps", mspQPSData) / mspQPSData.length, {
+                  maximumFractionDigits: 1,
+                })
+              )}{" "}
               <span className="text-gray-500 text-sm font-normal">average</span>
             </h1>
-            {/* <span className="flex items-center justify-between mt-2 px-1.5 w-14 text-blue-500 font-bold bg-blue-50">
-              <MdArrowDownward />
-              4%
-            </span> */}
-            <ResponsiveContainer width="100%" height={340}>
-              <AreaChart className="text-sm" data={mspQPSData}>
-                <XAxis dataKey="bucket" hide />
-                <Tooltip
-                  labelFormatter={(label) => dayjs(label).format("lll")}
-                  separator=": "
-                  labelStyle={{
-                    fontWeight: 600,
-                  }}
-                />
-                <Area
-                  name="QPS"
-                  dataKey="qps"
-                  stroke="#c4c4c4"
-                  strokeWidth={2}
-                  fill="url(#gradient)"
-                />
-                <defs>
-                  <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="25%" stopColor="#03D1F4" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#03D1F4" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className="relative flex-1 mt-6">
+              {mspQPS.status.match(/idle|loading/) && <ChartLoader />}
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart className="text-sm" data={mspQPSData}>
+                  <XAxis dataKey="bucket" hide />
+                  <Tooltip
+                    labelFormatter={(label) => dayjs(label).format("lll")}
+                    separator=": "
+                    labelStyle={{
+                      fontWeight: 600,
+                    }}
+                  />
+                  <Area
+                    name="QPS"
+                    dataKey="qps"
+                    stroke="#c4c4c4"
+                    strokeWidth={2}
+                    fill="url(#gradient)"
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop
+                        offset="25%"
+                        stopColor="#03D1F4"
+                        stopOpacity={0.4}
+                      />
+                      <stop offset="100%" stopColor="#03D1F4" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
