@@ -40,7 +40,6 @@ import _ from "lodash/fp"
 import dayjs from "dayjs"
 import qs from "query-string"
 import login from "services/login"
-import authenticate from "services/authenticate"
 import httpClient from "utils/httpClient"
 import formatNumber from "utils/formatNumber"
 import Select from "components/Select"
@@ -101,9 +100,7 @@ function DataExplorer(props) {
           }`,
           {
             params: {
-              "organization_ids": props.mspStats.data.organization_ids.join(
-                ","
-              ),
+              "organization_ids": props.currentUserOrganizationIds.join(","),
               "type": props.reportType,
               [props.breakdown === "domain" ? "domain" : "name"]: searchText,
               "from": props.timeframe[0],
@@ -117,7 +114,7 @@ function DataExplorer(props) {
         .then((response) => response.data),
     {
       getNextPageParam: (lastPage) => lastPage.data.page.next ?? undefined,
-      enabled: Array.isArray(props.mspStats.data?.organization_ids),
+      enabled: !!props.currentUserOrganizationIds,
     }
   )
   const flatData = query.data
@@ -157,20 +154,17 @@ function DataExplorer(props) {
 
   return (
     <>
-      <div className="relative mb-6">
-        <input
-          type="search"
-          className={`${
-            props.breakdown === "category"
-              ? "bg-gray-100 cursor-not-allowed"
-              : ""
-          } placeholder-gray-400 pl-10 pr-4 py-1.5 w-96 text-gray-900 text-sm border border-gray-300 rounded-full`}
-          placeholder="Filter"
-          disabled={props.breakdown === "category"}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <MdSearch className="absolute left-4 top-1/2 w-5 h-5 text-gray-600 transform -translate-y-1/2" />
-      </div>
+      {props.breakdown !== "category" && (
+        <div className="relative mb-6">
+          <input
+            type="search"
+            className="placeholder-gray-400 pl-10 pr-4 py-1.5 w-96 text-gray-900 text-sm border border-gray-300 rounded-full"
+            placeholder="Filter"
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <MdSearch className="absolute left-4 top-1/2 w-5 h-5 text-gray-600 transform -translate-y-1/2" />
+        </div>
+      )}
       <div
         ref={parentRef}
         className="relative border border-gray-200 rounded-md overflow-y-auto"
@@ -229,8 +223,8 @@ function DataExplorer(props) {
                   } grid grid-cols-4 items-center h-full border-gray-200`}
                 >
                   {virtualRow.index > flatData.length - 1 ? (
-                    <div className="col-span-4 px-4 text-gray-900 text-sm">
-                      Loading more...
+                    <div className="col-span-4 px-4">
+                      <Loader className="w-7" variant="dark" />
                     </div>
                   ) : (
                     <>
@@ -277,7 +271,6 @@ export default function ReportingAllOrganizationsScreen() {
   const history = useHistory()
   const searchParams = qs.parse(history.location.search)
 
-  const [organization, setOrganization] = React.useState(null)
   const [reportType, setReportType] = React.useState(
     searchParams["report-type"] ?? "all"
   )
@@ -313,16 +306,21 @@ export default function ReportingAllOrganizationsScreen() {
     )
   }, [history, reportType, breakdown, timeframe, securityReport])
 
-  React.useEffect(() => {
-    async function init() {
-      await login()
-      setOrganization((await authenticate()).organizations[0])
+  // TODO: remove?
+  const auth = useQuery(
+    ["/authenticate"],
+    () =>
+      login().then(() =>
+        httpClient.post("/authenticate").then((response) => response.data)
+      ),
+    {
+      onSuccess: (data) => setQPSOrganizationId(data.organizations[0].id),
     }
-
-    init()
-  }, [])
-
-  const mspId = getMSPIdFromOrganization(organization)
+  )
+  const mspId = getMSPIdFromOrganization(auth.data?.organizations[0])
+  const currentUserOrganizationIds = auth.data?.organizations.map(
+    (organization) => organization.id
+  )
 
   const mspStats = useQuery(
     ["/traffic_reports/total_organizations_stats", "msp", mspId, timeframe],
@@ -450,7 +448,7 @@ export default function ReportingAllOrganizationsScreen() {
       httpClient
         .get("/traffic_reports/qps_active_organizations", {
           params: {
-            organization_ids: mspStats.data.organization_ids.join(","),
+            organization_ids: currentUserOrganizationIds.join(","),
             from: dayjs().subtract(15, "minute").toISOString(),
             to: dayjs().toISOString(),
           },
@@ -458,7 +456,7 @@ export default function ReportingAllOrganizationsScreen() {
         .then((response) => response.data.data.values),
     {
       refetchInterval: 60_000,
-      enabled: Array.isArray(mspStats.data?.organization_ids),
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
@@ -475,7 +473,7 @@ export default function ReportingAllOrganizationsScreen() {
       httpClient
         .get("/traffic_reports/top_users", {
           params: {
-            "organization_ids": mspStats.data.organization_ids.join(","),
+            "organization_ids": currentUserOrganizationIds.join(","),
             "type": reportType,
             "from": timeframe[0],
             "to": timeframe[1],
@@ -486,7 +484,7 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      enabled: Array.isArray(mspStats.data?.organization_ids),
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
@@ -503,7 +501,7 @@ export default function ReportingAllOrganizationsScreen() {
       httpClient
         .get("/traffic_reports/top_categories", {
           params: {
-            "organization_ids": mspStats.data.organization_ids.join(","),
+            "organization_ids": currentUserOrganizationIds.join(","),
             "type": reportType,
             "from": timeframe[0],
             "to": timeframe[1],
@@ -514,19 +512,9 @@ export default function ReportingAllOrganizationsScreen() {
         })
         .then((response) => response.data.data.values),
     {
-      enabled: Array.isArray(mspStats.data?.organization_ids),
+      enabled: !!currentUserOrganizationIds,
     }
   )
-
-  React.useEffect(() => {
-    if (
-      qpsOrganizationId === null &&
-      Array.isArray(mspStats.data?.organization_ids) &&
-      !!mspStats.data?.organization_ids[0]
-    ) {
-      setQPSOrganizationId(mspStats.data.organization_ids[0])
-    }
-  }, [qpsOrganizationId, mspStats.data?.organization_ids])
 
   const mspQPSData =
     mspQPS.data?.filter(
@@ -1005,7 +993,7 @@ export default function ReportingAllOrganizationsScreen() {
               breakdown={breakdown}
               timeframe={timeframe}
               securityReport={securityReport}
-              mspStats={mspStats}
+              currentUserOrganizationIds={currentUserOrganizationIds}
             />
           </div>
         </div>
@@ -1302,21 +1290,18 @@ export default function ReportingAllOrganizationsScreen() {
           <div className="flex flex-col col-span-2 p-6 bg-white rounded-md shadow-md">
             <div className="relative">
               <h3 className="text-base font-semibold">Queries per second</h3>
-              {Array.isArray(mspStats.data?.organization_ids) &&
-                qpsOrganizationId !== null && (
-                  <div className="absolute right-0 top-0">
-                    <Select
-                      options={mspStats.data.organization_ids.map(
-                        (id, index) => ({
-                          label: mspStats.data.organization_names[index],
-                          value: id,
-                        })
-                      )}
-                      value={qpsOrganizationId}
-                      onChange={setQPSOrganizationId}
-                    />
-                  </div>
-                )}
+              {auth.data && qpsOrganizationId !== null && (
+                <div className="absolute right-0 top-0">
+                  <Select
+                    options={auth.data.organizations.map((organization) => ({
+                      label: organization.name,
+                      value: organization.id,
+                    }))}
+                    value={qpsOrganizationId}
+                    onChange={setQPSOrganizationId}
+                  />
+                </div>
+              )}
             </div>
             <h1 className="mt-6 text-2xl font-bold">
               {mspRoamingClients.status.match(/idle|loading/) ? (

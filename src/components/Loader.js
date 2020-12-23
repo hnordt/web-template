@@ -9,7 +9,8 @@ export default function Loader(props) {
         props.variant === "light" && "text-white",
         props.variant === "dark" && "text-gray-900",
         props.size === "sm" && "w-8",
-        props.size === "md" && "w-10"
+        props.size === "md" && "w-10",
+        props.className
       )}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 120 30"
