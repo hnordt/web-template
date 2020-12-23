@@ -39,7 +39,6 @@ import {
 import _ from "lodash/fp"
 import dayjs from "dayjs"
 import qs from "query-string"
-import login from "services/login"
 import httpClient from "utils/httpClient"
 import formatNumber from "utils/formatNumber"
 import Select from "components/Select"
@@ -302,13 +301,9 @@ export default function ReportingAllOrganizationsScreen() {
     )
   }, [history, reportType, breakdown, timeframe, securityReport])
 
-  // TODO: remove?
   const auth = useQuery(
     ["/authenticate"],
-    () =>
-      login().then(() =>
-        httpClient.post("/authenticate").then((response) => response.data)
-      ),
+    () => httpClient.post("/authenticate").then((response) => response.data),
     {
       onSuccess: (data) => setQPSOrganizationId(data.organizations[0].id),
     }

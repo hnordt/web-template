@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const httpClient = axios.create({
-  baseURL: "https://dev-api.dnsfilter.com/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 120_000,
 })
 
