@@ -66,10 +66,6 @@ function ChartLoader(props) {
   )
 }
 
-function getMSPIdFromOrganization(organization) {
-  return organization?.owned_msp_id ?? organization?.managed_by_msp_id ?? null
-}
-
 function DataExplorer(props) {
   const ROW_HEIGHT = 44
 
@@ -79,7 +75,7 @@ function DataExplorer(props) {
     [
       "ui:data-explorer",
       "msp",
-      props.mspId,
+      props.currentUserOrganizationIds,
       props.breakdown,
       props.reportType,
       props.timeframe,
@@ -317,42 +313,53 @@ export default function ReportingAllOrganizationsScreen() {
       onSuccess: (data) => setQPSOrganizationId(data.organizations[0].id),
     }
   )
-  const mspId = getMSPIdFromOrganization(auth.data?.organizations[0])
   const currentUserOrganizationIds = auth.data?.organizations.map(
     (organization) => organization.id
   )
 
   const mspStats = useQuery(
-    ["/traffic_reports/total_organizations_stats", "msp", mspId, timeframe],
+    [
+      "/traffic_reports/total_organizations_stats",
+      {
+        currentUserOrganizationIds,
+        timeframe,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/total_organizations_stats", {
           params: {
-            msp_id: mspId,
+            organization_ids: currentUserOrganizationIds.join(","),
             from: timeframe[0],
             to: timeframe[1],
           },
         })
         .then((response) => response.data.data),
     {
-      enabled: !!mspId && !!timeframe,
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
   const topOrganizations = useQuery(
-    ["/traffic_reports/top_organizations_requests", "msp", mspId, timeframe],
+    [
+      "/traffic_reports/top_organizations_requests",
+      {
+        currentUserOrganizationIds,
+        timeframe,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/top_organizations_requests", {
           params: {
-            msp_id: mspId,
+            organization_ids: currentUserOrganizationIds.join(","),
             from: timeframe[0],
             to: timeframe[1],
           },
         })
         .then((response) => response.data.data.values),
     {
-      enabled: !!mspId && !!timeframe,
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
@@ -360,9 +367,10 @@ export default function ReportingAllOrganizationsScreen() {
     (topOrganizations.data ?? []).slice(0, 3).map((item) => ({
       queryKey: [
         "/traffic_reports/total_organizations_stats",
-        "org",
-        item.organization_id,
-        timeframe,
+        {
+          organizationId: item.organization_id,
+          timeframe,
+        },
       ],
       queryFn: () =>
         httpClient
@@ -378,12 +386,18 @@ export default function ReportingAllOrganizationsScreen() {
   )
 
   const mspRequests = useQuery(
-    ["/traffic_reports/total_organizations_requests", "msp", mspId, timeframe],
+    [
+      "/traffic_reports/total_organizations_requests",
+      {
+        currentUserOrganizationIds,
+        timeframe,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/total_organizations_requests", {
           params: {
-            msp_id: mspId,
+            organization_ids: currentUserOrganizationIds.join(","),
             from: timeframe[0],
             to: timeframe[1],
           },
@@ -391,59 +405,80 @@ export default function ReportingAllOrganizationsScreen() {
         .then((response) => response.data.data.values),
     {
       refetchInterval: timeframeDiff > 1 ? undefined : 60_000,
-      enabled: !!mspId && !!timeframe,
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
   const mspClients = useQuery(
-    ["/traffic_reports/total_client_stats", "msp", mspId, timeframe],
+    [
+      "/traffic_reports/total_client_stats",
+      "msp",
+      {
+        currentUserOrganizationIds,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/total_client_stats", {
           params: {
-            msp_id: mspId,
+            organization_ids: currentUserOrganizationIds.join(","),
             from: dayjs().subtract(15, "minute").toISOString(),
             to: dayjs().toISOString(),
           },
         })
         .then((response) => response.data.data),
     {
-      enabled: !!mspId && !!timeframe,
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
   const mspDeployments = useQuery(
-    ["/traffic_reports/total_deployments", "msp", mspId],
+    [
+      "/traffic_reports/total_deployments",
+      {
+        currentUserOrganizationIds,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/total_deployments", {
           params: {
-            msp_id: mspId,
+            organization_ids: currentUserOrganizationIds.join(","),
           },
         })
         .then((response) => response.data.data),
     {
-      enabled: !!mspId,
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
   const mspRoamingClients = useQuery(
-    ["/traffic_reports/total_roaming_clients", "msp", mspId],
+    [
+      "/traffic_reports/total_roaming_clients",
+      {
+        currentUserOrganizationIds,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/total_roaming_clients", {
           params: {
-            msp_id: mspId,
+            organization_ids: currentUserOrganizationIds.join(","),
           },
         })
         .then((response) => response.data.data.values),
     {
-      enabled: !!mspId,
+      enabled: !!currentUserOrganizationIds,
     }
   )
 
   const mspQPS = useQuery(
-    ["/traffic_reports/qps_active_organizations", "msp", mspId],
+    [
+      "/traffic_reports/qps_active_organizations",
+      {
+        currentUserOrganizationIds,
+      },
+    ],
     () =>
       httpClient
         .get("/traffic_reports/qps_active_organizations", {
@@ -463,11 +498,12 @@ export default function ReportingAllOrganizationsScreen() {
   const top5Users = useQuery(
     [
       "/traffic_reports/top_users?page[number]=1&page[size]=5",
-      "msp",
-      mspId,
-      reportType,
-      timeframe,
-      securityReport,
+      {
+        currentUserOrganizationIds,
+        reportType,
+        timeframe,
+        securityReport,
+      },
     ],
     () =>
       httpClient
@@ -491,11 +527,12 @@ export default function ReportingAllOrganizationsScreen() {
   const top5Categories = useQuery(
     [
       "/traffic_reports/top_categories?page[number]=1&page[size]=5",
-      "msp",
-      mspId,
-      reportType,
-      timeframe,
-      securityReport,
+      {
+        currentUserOrganizationIds,
+        reportType,
+        timeframe,
+        securityReport,
+      },
     ],
     () =>
       httpClient
@@ -988,12 +1025,11 @@ export default function ReportingAllOrganizationsScreen() {
               </div>
             </div>
             <DataExplorer
-              mspId={mspId}
+              currentUserOrganizationIds={currentUserOrganizationIds}
               reportType={reportType}
               breakdown={breakdown}
               timeframe={timeframe}
               securityReport={securityReport}
-              currentUserOrganizationIds={currentUserOrganizationIds}
             />
           </div>
         </div>
