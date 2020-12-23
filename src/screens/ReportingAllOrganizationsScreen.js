@@ -200,16 +200,15 @@ function DataExplorer(props) {
             height: rowVirtualizer.totalSize,
           }}
         >
-          {query.status.match(/idle|loading/) && (
+          {query.status.match(/idle|loading/) ? (
             <>
               <div className="absolute z-10 left-4 top-4 w-1/3 h-7 bg-gray-200 rounded animate-pulse" />
               <div className="absolute z-10 left-4 top-14 w-2/3 h-7 bg-gray-200 rounded animate-pulse" />
               <div className="absolute z-10 left-4 top-24 w-1/4 h-7 bg-gray-200 rounded animate-pulse" />
             </>
-          )}
-          {rowVirtualizer.virtualItems.length === 0 && (
+          ) : rowVirtualizer.virtualItems.length === 0 ? (
             <p className="p-4 text-gray-400 text-sm">No results found</p>
-          )}
+          ) : null}
           {rowVirtualizer.virtualItems.map((virtualRow) => {
             const item = flatData[virtualRow.index]
 
