@@ -1,6 +1,4 @@
-# Web Template
-
-A template for creating web apps
+# Insights Reporting
 
 ## Available scripts
 
