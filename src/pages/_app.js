@@ -19,7 +19,7 @@ export default function App(props) {
         />
       </Head>
       <div suppressHydrationWarning>
-        {typeof window === "undefined" ? null : (
+        {typeof window !== "undefined" && (
           <>
             <BrowserRouter>
               <props.Component {...props.pageProps} />

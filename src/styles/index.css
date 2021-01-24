@@ -1,8 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --reach-tooltip: 1;
-  --reach-dialog: 1;
-}
