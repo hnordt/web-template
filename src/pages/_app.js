@@ -1,10 +1,17 @@
 import React from "react"
 import Head from "next/head"
 import { BrowserRouter } from "react-router-dom"
+import { QueryClientProvider, QueryClient } from "react-query"
 import { ToastContainer, Slide, toast } from "react-toastify"
+import dayjs from "dayjs"
 import "focus-visible"
 import "react-toastify/dist/ReactToastify.css"
 import "styles/index.css"
+
+const queryClient = new QueryClient()
+
+dayjs.extend(require("dayjs/plugin/utc"))
+dayjs.extend(require("dayjs/plugin/localizedFormat"))
 
 export default function App(props) {
   return (
@@ -22,11 +29,12 @@ export default function App(props) {
         {typeof window !== "undefined" && (
           <>
             <BrowserRouter>
-              <props.Component {...props.pageProps} />
+              <QueryClientProvider client={queryClient}>
+                <props.Component {...props.pageProps} />
+              </QueryClientProvider>
             </BrowserRouter>
             <ToastContainer
               toastClassName="pl-5"
-              closeButton={null}
               position={toast.POSITION.TOP_RIGHT}
               transition={Slide}
             />
