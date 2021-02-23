@@ -2,10 +2,9 @@ import React from "react"
 import Head from "next/head"
 import { BrowserRouter } from "react-router-dom"
 import { QueryClientProvider, QueryClient } from "react-query"
-import { ToastContainer, Slide, toast } from "react-toastify"
+import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
 import "focus-visible"
-import "react-toastify/dist/ReactToastify.css"
 import "styles/index.css"
 
 const queryClient = new QueryClient()
@@ -33,10 +32,10 @@ export default function App(props) {
                 <props.Component {...props.pageProps} />
               </QueryClientProvider>
             </BrowserRouter>
-            <ToastContainer
-              toastClassName="pl-5"
-              position={toast.POSITION.TOP_RIGHT}
-              transition={Slide}
+            <Toaster
+              toastOptions={{
+                className: "text-sm",
+              }}
             />
           </>
         )}
