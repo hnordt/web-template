@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .react-calendar {
+    @apply !important text-sm border-none;
+  }
+
+  .react-calendar__navigation {
+    @apply !important mb-0;
+  }
+
+  .react-calendar__tile--now,
+  .react-calendar__tile--now:enabled:hover,
+  .react-calendar__tile--now:enabled:focus {
+    @apply !important bg-yellow-100;
+  }
+
+  .react-calendar__tile--active {
+    @apply !important bg-blue-500;
+  }
+
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    @apply !important bg-blue-400;
+  }
+
+  .react-daterange-picker {
+    @apply !important w-full text-sm;
+  }
+
+  .react-daterange-picker__wrapper {
+    @apply !important px-3 py-2 border-gray-300 rounded-md;
+  }
+
+  .react-daterange-picker__range-divider {
+    @apply !important mr-1;
+  }
+}

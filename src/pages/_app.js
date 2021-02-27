@@ -4,8 +4,10 @@ import { BrowserRouter } from "react-router-dom"
 import { QueryClientProvider, QueryClient } from "react-query"
 import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
-import "focus-visible"
 import "styles/index.css"
+import "react-calendar/dist/Calendar.css"
+import "@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css"
+import "focus-visible"
 
 const queryClient = new QueryClient()
 
