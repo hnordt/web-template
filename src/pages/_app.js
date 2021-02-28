@@ -17,11 +17,11 @@ export default function App(props) {
     <>
       <Head>
         <meta name="description" content="" />
-        <title></title>
+        <title>Daffe</title>
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900&amp;display=swap"
+          href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&amp;display=swap"
         />
       </Head>
       <div suppressHydrationWarning>
