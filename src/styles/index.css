@@ -34,7 +34,7 @@
     @apply !important px-3 py-2 border-gray-300 rounded-md;
   }
 
-  .react-daterange-picker__range-divider {
-    @apply !important mr-1;
+  .react-daterange-picker__inputGroup {
+    @apply !important text-center;
   }
 }
