@@ -1,4 +1,5 @@
 import React from "react"
+import PropTypes from "prop-types"
 import { PopoverDisclosure, Popover, usePopoverState } from "reakit"
 import Calendar from "react-calendar"
 import dayjs from "dayjs"
@@ -180,4 +181,18 @@ export default function DateRangePicker(props) {
       </Popover>
     </div>
   )
+}
+
+DateRangePicker.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]).isRequired,
+  onValueChange: PropTypes.func,
 }
