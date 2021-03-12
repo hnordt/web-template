@@ -6,7 +6,6 @@ import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
 import "styles/index.css"
 import "react-calendar/dist/Calendar.css"
-import "@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css"
 import "focus-visible"
 
 const queryClient = new QueryClient()

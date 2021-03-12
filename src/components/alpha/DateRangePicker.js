@@ -1,6 +1,5 @@
 import React from "react"
 import { PopoverDisclosure, Popover, usePopoverState } from "reakit"
-import BaseDateRangePicker from "@wojtekmaj/react-daterange-picker/dist/entry.nostyle"
 import Calendar from "react-calendar"
 import dayjs from "dayjs"
 import cn from "classnames"
@@ -154,34 +153,17 @@ export default function DateRangePicker(props) {
           {custom && (
             <li>
               {Array.isArray(props.value) ? (
-                <>
-                  <div className="relative pb-1 pt-4 px-4">
-                    <BaseDateRangePicker
-                      calendarClassName="mt-1 ring-black ring-opacity-10 ring-1 rounded-md shadow-lg"
-                      format="MMM d, y"
-                      value={props.value}
-                      clearIcon={null}
-                      required
-                      disableCalendar
-                      onChange={(value) =>
-                        props.onValueChange?.(
-                          value.map((date) => dayjs(date).format("YYYY-MM-DD"))
-                        )
-                      }
-                    />
-                  </div>
-                  <Calendar
-                    className="rounded-b-md"
-                    tileClassName="focus:outline-none"
-                    value={props.value.map((date) => dayjs(date).toDate())}
-                    selectRange
-                    onChange={(value) =>
-                      props.onValueChange?.(
-                        value.map((date) => dayjs(date).format("YYYY-MM-DD"))
-                      )
-                    }
-                  />
-                </>
+                <Calendar
+                  className="rounded-b-md"
+                  tileClassName="focus:outline-none"
+                  value={props.value.map((date) => dayjs(date).toDate())}
+                  selectRange
+                  onChange={(value) =>
+                    props.onValueChange?.(
+                      value.map((date) => dayjs(date).format("YYYY-MM-DD"))
+                    )
+                  }
+                />
               ) : (
                 <Calendar
                   className="rounded-b-md"
