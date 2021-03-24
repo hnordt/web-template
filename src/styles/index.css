@@ -1,28 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "~tailwindcss/tailwind.css";
+@import "~react-calendar/dist/Calendar.css";
 
-@layer base {
-  .react-calendar {
-    @apply !important text-sm border-none;
-  }
+.react-calendar {
+  @apply text-sm border-none;
+}
 
-  .react-calendar__navigation {
-    @apply !important mb-0;
-  }
+.react-calendar__navigation {
+  @apply mb-0;
+}
 
-  .react-calendar__tile--now,
-  .react-calendar__tile--now:enabled:hover,
-  .react-calendar__tile--now:enabled:focus {
-    @apply !important bg-yellow-100;
-  }
+.react-calendar__tile--now,
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  @apply bg-yellow-100;
+}
 
-  .react-calendar__tile--active {
-    @apply !important bg-blue-500;
-  }
+.react-calendar__tile--active {
+  @apply bg-blue-500;
+}
 
-  .react-calendar__tile--active:enabled:hover,
-  .react-calendar__tile--active:enabled:focus {
-    @apply !important bg-blue-400;
-  }
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  @apply bg-blue-400;
 }
