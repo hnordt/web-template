@@ -98,5 +98,12 @@ export function Tab(props) {
 export function TabPanel(props) {
   const tabs = React.useContext(TabsContext)
 
-  return <BaseTabPanel {...tabs.tabState}>{props.children}</BaseTabPanel>
+  return (
+    <BaseTabPanel
+      {...tabs.tabState}
+      className="focus:outline-none focus-visible:ring"
+    >
+      {props.children}
+    </BaseTabPanel>
+  )
 }
