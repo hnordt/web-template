@@ -21,13 +21,22 @@ export function CardColumn(props) {
   return (
     <div
       className={cn(
-        "p-6",
+        // "p-6",
         !props.basis && "flex-1",
+        props.basis === "sm" && "w-64",
         props.basis === "md" && "w-80",
         props.basis === "lg" && "w-96"
       )}
     >
       {props.children}
+    </div>
+  )
+}
+
+export function CardFooter(props) {
+  return (
+    <div className="px-6 py-5 border-t">
+      <div className="flex items-center justify-between">{props.children}</div>
     </div>
   )
 }

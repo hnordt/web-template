@@ -14,4 +14,7 @@ module.exports = {
   devIndicators: {
     autoPrerender: false,
   },
+  future: {
+    webpack5: true,
+  },
 }

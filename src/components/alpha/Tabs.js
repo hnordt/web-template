@@ -18,6 +18,7 @@ export default function Tabs(props) {
     <TabsContext.Provider
       value={{
         tabState,
+        unmount: props.unmount,
       }}
     >
       {props.children}
@@ -66,6 +67,7 @@ export function Tab(props) {
       }
       id={props.id}
       disabled={props.disabled}
+      onClick={props.onClick}
     >
       {props.icon &&
         React.createElement(props.icon, {
@@ -85,9 +87,10 @@ export function Tab(props) {
                 ),
         })}
       <span
-        className={
+        className={cn(
+          "flex-1",
           tabs.tabState.orientation === "vertical" ? "truncate" : undefined
-        }
+        )}
       >
         {props.children}
       </span>
@@ -103,7 +106,9 @@ export function TabPanel(props) {
       {...tabs.tabState}
       className="focus:outline-none focus-visible:ring"
     >
-      {props.children}
+      {tabs.unmount
+        ? props.tabId === tabs.tabState.selectedId && props.children
+        : props.children}
     </BaseTabPanel>
   )
 }
