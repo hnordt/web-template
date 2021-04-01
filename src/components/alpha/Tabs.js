@@ -1,43 +1,29 @@
 import React from "react"
 import {
+  Tabs as BaseTabs,
   TabList as BaseTabList,
   Tab as BaseTab,
+  TabPanels,
   TabPanel as BaseTabPanel,
-  useTabState,
-} from "reakit"
+} from "@reach/tabs"
 import cn from "classnames"
 
-const TabsContext = React.createContext()
+const OrientationContext = React.createContext()
 
 export default function Tabs(props) {
-  const tabState = useTabState({
-    orientation: props.orientation,
-  })
-
   return (
-    <TabsContext.Provider
-      value={{
-        tabState,
-        unmount: props.unmount,
-      }}
-    >
-      {props.children}
-    </TabsContext.Provider>
+    <OrientationContext.Provider value={props.orientation}>
+      <BaseTabs {...props} />
+    </OrientationContext.Provider>
   )
 }
 
 export function TabList(props) {
-  const tabs = React.useContext(TabsContext)
+  const orientation = React.useContext(OrientationContext)
 
   return (
     <BaseTabList
-      {...tabs.tabState}
-      className={
-        tabs.tabState.orientation === "vertical"
-          ? "space-y-1"
-          : "flex space-x-4"
-      }
-      aria-label={props["aria-label"]}
+      className={orientation === "vertical" ? "space-y-1" : "flex space-x-4"}
     >
       {props.children}
     </BaseTabList>
@@ -45,43 +31,40 @@ export function TabList(props) {
 }
 
 export function Tab(props) {
-  const tabs = React.useContext(TabsContext)
+  const orientation = React.useContext(OrientationContext)
 
   return (
     <BaseTab
-      {...tabs.tabState}
       className={
-        tabs.tabState.orientation === "vertical"
+        orientation === "vertical"
           ? cn(
               "group flex items-center px-3 py-2 w-full text-sm font-medium rounded-md focus:outline-none focus-visible:ring",
-              props.id === tabs.tabState.selectedId
+              props.isSelected
                 ? "text-gray-900 bg-gray-100"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
             )
           : cn(
               "inline-flex items-center px-3 py-2 text-sm font-medium rounded-md focus:outline-none focus-visible:ring",
-              props.id === tabs.tabState.selectedId
+              props.isSelected
                 ? "text-gray-700 bg-gray-100"
                 : "group text-gray-500 hover:text-gray-700"
             )
       }
-      id={props.id}
       disabled={props.disabled}
-      onClick={props.onClick}
     >
       {props.icon &&
         React.createElement(props.icon, {
           className:
-            tabs.tabState.orientation === "vertical"
+            orientation === "vertical"
               ? cn(
                   "flex-shrink-0 -ml-1 mr-3 w-6 h-6",
-                  props.id === tabs.tabState.selectedId
+                  props.isSelected
                     ? "text-gray-500"
                     : "text-gray-400 group-hover:text-gray-500"
                 )
               : cn(
                   "flex-shrink-0 mr-2 w-5 h-5",
-                  props.id === tabs.tabState.selectedId
+                  props.isSelected
                     ? "text-gray-500"
                     : "text-gray-400 group-hover:text-gray-500"
                 ),
@@ -89,7 +72,7 @@ export function Tab(props) {
       <span
         className={cn(
           "flex-1",
-          tabs.tabState.orientation === "vertical" ? "truncate" : undefined
+          orientation === "vertical" ? "text-left truncate" : undefined
         )}
       >
         {props.children}
@@ -98,17 +81,12 @@ export function Tab(props) {
   )
 }
 
-export function TabPanel(props) {
-  const tabs = React.useContext(TabsContext)
+export { TabPanels }
 
+export function TabPanel(props) {
   return (
-    <BaseTabPanel
-      {...tabs.tabState}
-      className="focus:outline-none focus-visible:ring"
-    >
-      {tabs.unmount
-        ? props.tabId === tabs.tabState.selectedId && props.children
-        : props.children}
+    <BaseTabPanel className="focus:outline-none focus-visible:ring">
+      {props.children}
     </BaseTabPanel>
   )
 }

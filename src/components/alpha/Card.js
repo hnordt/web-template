@@ -21,7 +21,6 @@ export function CardColumn(props) {
   return (
     <div
       className={cn(
-        // "p-6",
         !props.basis && "flex-1",
         props.basis === "sm" && "w-64",
         props.basis === "md" && "w-80",
@@ -34,9 +33,5 @@ export function CardColumn(props) {
 }
 
 export function CardFooter(props) {
-  return (
-    <div className="px-6 py-5 border-t">
-      <div className="flex items-center justify-between">{props.children}</div>
-    </div>
-  )
+  return <div className="px-6 py-5 border-t">{props.children}</div>
 }
