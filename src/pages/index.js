@@ -752,7 +752,7 @@ export default function Index() {
               <Button
                 type="button"
                 variant="secondary"
-                // disabled={!form.formState.isDirty}
+                disabled={!form.formState.isDirty}
                 onClick={() => form.reset()}
               >
                 Cancel
@@ -760,7 +760,7 @@ export default function Index() {
               <Button
                 type="submit"
                 variant="primary"
-                // disabled={!form.formState.isDirty}
+                disabled={!form.formState.isDirty}
               >
                 Save changes
               </Button>
