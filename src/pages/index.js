@@ -548,7 +548,7 @@ export default function Index() {
                             secondaryNavTabIndex
                           ]?.component[0].setting.map(
                             (setting, settingIndex) => (
-                              <tr>
+                              <tr key={setting.id}>
                                 <td className="px-6 py-4 text-gray-500 whitespace-nowrap text-sm">
                                   {setting.label}
                                 </td>
