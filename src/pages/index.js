@@ -453,7 +453,7 @@ export default function Index() {
                   {...popover}
                   className={`z-10 ${
                     settings[mainNavTabIndex].child[secondaryNavTabIndex]
-                      .component.length === 0
+                      ?.component.length === 0
                       ? "max-w-3xl"
                       : "max-w-7xl"
                   } bg-white border border-gray-100 rounded-lg focus:outline-none shadow-xl overflow-hidden`}

@@ -3,9 +3,8 @@
 ## Planned for v1 (this week)
 
 - [x] Support components (e.g. biocide timers)
-- [ ] Component global view
-- [ ] Duration field
 - [x] Modifiers
+- [ ] Duration field
 - [ ] Save settings (send data to the backend)
 
 - [ ] Screen unload warning
