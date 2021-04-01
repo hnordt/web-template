@@ -472,39 +472,43 @@ export default function Index() {
                             </a>
                           </div>
                         </li>
-                        <li>
-                          <div className="flex items-center">
-                            <svg
-                              className="flex-shrink-0 w-5 h-5 text-gray-400"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <a
-                              href="#todo"
-                              className="ml-4 text-gray-500 hover:text-gray-700 text-sm font-medium"
-                            >
-                              {
-                                settings[mainNavTabIndex].child[
-                                  secondaryNavTabIndex
-                                ].category
-                              }
-                            </a>
-                          </div>
-                        </li>
+                        {settings[mainNavTabIndex].child[
+                          secondaryNavTabIndex
+                        ] && (
+                          <li>
+                            <div className="flex items-center">
+                              <svg
+                                className="flex-shrink-0 w-5 h-5 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                              <a
+                                href="#todo"
+                                className="ml-4 text-gray-500 hover:text-gray-700 text-sm font-medium"
+                              >
+                                {
+                                  settings[mainNavTabIndex].child[
+                                    secondaryNavTabIndex
+                                  ].category
+                                }
+                              </a>
+                            </div>
+                          </li>
+                        )}
                       </ol>
                     </nav>
                   </div>
                   <div className="border-t border-gray-200">
                     {settings[mainNavTabIndex].child[secondaryNavTabIndex]
-                      .component.length === 0 ? (
+                      ?.component.length === 0 ? (
                       <dl className="divide-gray-200 divide-y">
                         {settings[mainNavTabIndex].child[
                           secondaryNavTabIndex
@@ -528,7 +532,7 @@ export default function Index() {
                             </th>
                             {settings[mainNavTabIndex].child[
                               secondaryNavTabIndex
-                            ].component.map((component) => (
+                            ]?.component.map((component) => (
                               <th
                                 key={component.component}
                                 className="px-6 py-3 text-center text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
@@ -542,7 +546,7 @@ export default function Index() {
                         <tbody className="bg-white divide-gray-200 divide-y">
                           {settings[mainNavTabIndex].child[
                             secondaryNavTabIndex
-                          ].component[0].setting.map(
+                          ]?.component[0].setting.map(
                             (setting, settingIndex) => (
                               <tr>
                                 <td className="px-6 py-4 text-gray-500 whitespace-nowrap text-sm">
