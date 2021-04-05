@@ -1,5 +1,5 @@
 import React from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import dayjs from "dayjs"
 import Card, {
   CardHeader,
@@ -25,6 +25,7 @@ import {
   RiSave3Fill,
 } from "react-icons/ri"
 import { PopoverDisclosure, Popover, usePopoverState } from "reakit"
+import DurationInput from "components/alpha/DurationInput"
 
 function enforceSeconds(value) {
   if (typeof value === "string" && value.includes(":")) {
@@ -176,7 +177,19 @@ function Field(props) {
               .format("HH:mm")}
           />
         ) : props.config.value_type === "duration" ? (
-          <Input id={props.config.id} type="text" defaultValue="" disabled />
+          <Controller
+            control={props.form.control}
+            name={String(props.config.id)}
+            rules={{
+              required: "This field is required",
+            }}
+            render={(props) => (
+              <DurationInput
+                {...props.field}
+                onValueChange={props.field.onChange}
+              />
+            )}
+          />
         ) : (
           <Input
             id={props.config.id}
@@ -525,7 +538,7 @@ export default function Index() {
                         <thead className="bg-gray-50">
                           <tr>
                             <th
-                              className="px-6 py-3 text-center text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
+                              className="px-6 py-3 text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
                               scope="col"
                             >
                               Property
@@ -535,7 +548,7 @@ export default function Index() {
                             ]?.component.map((component) => (
                               <th
                                 key={component.component}
-                                className="px-6 py-3 text-center text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
+                                className="px-6 py-3 text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
                                 scope="col"
                               >
                                 {component.component}
