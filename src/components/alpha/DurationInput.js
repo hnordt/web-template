@@ -3,7 +3,12 @@ import IMask from "imask"
 import Input from "components/alpha/Input"
 
 function DurationInput(props, ref) {
-  const { value, onChange, onValueChange, ...rest } = props
+  const {
+    value,
+    onChange, // onChange is ignored in favor of onValueChange
+    onValueChange,
+    ...rest
+  } = props
 
   const imaskRef = React.useRef(null)
   const inputRef = React.useRef(null)
@@ -43,13 +48,14 @@ function DurationInput(props, ref) {
 
   React.useLayoutEffect(() => {
     imaskRef.current.value = value
+    imaskRef.current.updateValue() // Avoids a warning
   }, [value])
 
   return (
     <Input
       {...rest}
       ref={(_ref) => {
-        // TODO: ref?.(_ref)
+        ref(_ref)
         inputRef.current = _ref
       }}
       type="text"
