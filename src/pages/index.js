@@ -243,16 +243,16 @@ function Field(props) {
               <span className="inline-flex items-center px-2.5 py-0.5 text-green-800 text-sm font-medium bg-green-100 rounded-md">
                 {props.config.value_type === "key_value" ? (
                   _.invert(props.config.value_lower)[
-                    props.form.watch(String(props.config.id))
+                    props.currentValues[props.config.id]
                   ] ?? "N/D"
                 ) : props.config.value_type === "boolean" ? (
-                  props.form.watch(String(props.config.id)) ? (
+                  props.currentValues[props.config.id] ? (
                     <RiCheckboxLine className="w-4 h-4" />
                   ) : (
                     <RiCheckboxBlankLine className="w-4 h-4" />
                   )
                 ) : (
-                  props.form.watch(String(props.config.id)) ?? "N/D"
+                  props.currentValues[props.config.id] ?? "N/D"
                 )}
               </span>
             </div>
@@ -726,6 +726,7 @@ export default function Index() {
                                                 ...modifiers[setting.id],
                                               }}
                                               defaultValues={defaultValues}
+                                              currentValues={currentValues}
                                               form={form}
                                             />
                                           ))}
@@ -743,6 +744,7 @@ export default function Index() {
                                                     ...modifiers[setting.id],
                                                   }}
                                                   defaultValues={defaultValues}
+                                                  currentValues={currentValues}
                                                   form={form}
                                                 />
                                               )
