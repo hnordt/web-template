@@ -26,6 +26,8 @@ import {
 } from "react-icons/ri"
 import { PopoverDisclosure, Popover, usePopoverState } from "reakit"
 import DurationInput from "components/alpha/DurationInput"
+import { useMutation } from "react-query"
+import toast from "react-hot-toast"
 
 function enforceSeconds(value) {
   if (typeof value === "string" && value.includes(":")) {
@@ -364,6 +366,25 @@ export default function Index() {
     placement: "bottom-end",
   })
 
+  const mutation = useMutation(
+    (values) =>
+      new Promise((resolve, reject) =>
+        setTimeout(() => {
+          // const data = Object.entries(values).map(([id, value]) => ({
+          //   id: fields.find((field) => String(field.id) === String(id)).value
+          //     .id,
+          //   value,
+          // }))
+
+          reject(new Error("Foobar"))
+        }, 1500)
+      ),
+    {
+      onSuccess: () => toast.success("Settings updated successfully!"),
+      onError: (error) => toast.error(error.message),
+    }
+  )
+
   return (
     <main className="p-6">
       <form
@@ -419,12 +440,12 @@ export default function Index() {
             }
 
             setTimeout(
-              async () =>
-                form.handleSubmit((values) => {
-                  form.reset(values)
-
-                  console.log(values)
-                })(),
+              () =>
+                form.handleSubmit((values) =>
+                  mutation.mutate(values, {
+                    onSuccess: () => form.reset(values),
+                  })
+                )(),
               500
             )
           }
@@ -771,7 +792,9 @@ export default function Index() {
               <Button
                 type="button"
                 variant="secondary"
-                disabled={!form.formState.isDirty}
+                disabled={
+                  !form.formState.isDirty || mutation.status === "loading"
+                }
                 onClick={() => form.reset()}
               >
                 Cancel
@@ -779,6 +802,7 @@ export default function Index() {
               <Button
                 type="submit"
                 variant="primary"
+                loading={mutation.status === "loading"}
                 disabled={!form.formState.isDirty}
               >
                 Save changes
