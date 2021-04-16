@@ -1,7 +1,7 @@
 import React from "react"
 import Head from "next/head"
-import { BrowserRouter } from "react-router-dom"
 import { QueryClientProvider, QueryClient } from "react-query"
+import { BrowserRouter } from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
 import "styles/index.css"
@@ -27,11 +27,11 @@ export default function App(props) {
       <div suppressHydrationWarning>
         {typeof window !== "undefined" && (
           <>
-            <BrowserRouter>
-              <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+              <BrowserRouter>
                 <props.Component {...props.pageProps} />
-              </QueryClientProvider>
-            </BrowserRouter>
+              </BrowserRouter>
+            </QueryClientProvider>
             <Toaster
               toastOptions={{
                 className: "text-sm",
