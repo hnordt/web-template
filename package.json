@@ -9,7 +9,6 @@
     "release": "semantic-release"
   },
   "dependencies": {
-    "@accessible/use-id": "1.1.2",
     "@headlessui/react": "1.0.0",
     "@heroicons/react": "1.0.1",
     "@reach/tabs": "0.14.0",
