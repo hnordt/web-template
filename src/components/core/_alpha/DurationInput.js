@@ -1,6 +1,6 @@
 import React from "react"
 import IMask from "imask"
-import Input from "components/core/__alpha/Input"
+import Input from "components/core/_alpha/Input"
 
 function DurationInput(props, ref) {
   const {
