@@ -1,7 +1,6 @@
 import React from "react"
 import Head from "next/head"
 import { QueryClientProvider, QueryClient } from "react-query"
-import { BrowserRouter } from "react-router-dom"
 import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
 import "styles/index.css"
@@ -35,9 +34,7 @@ export default function App(props) {
         />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <props.Component {...props.pageProps} />
-        </BrowserRouter>
+        <props.Component {...props.pageProps} />
       </QueryClientProvider>
       <Toaster
         toastOptions={{

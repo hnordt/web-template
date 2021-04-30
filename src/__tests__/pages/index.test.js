@@ -1,8 +1,8 @@
 import React from "react"
 import { render, screen } from "@testing-library/react"
-import Home from "pages/[[... pathname]]"
+import HomeScreen from "screens/HomeScreen"
 
 test("renders Home", () => {
-  render(<Home />)
+  render(<HomeScreen />)
   expect(screen.getByText(/it works/i)).toBeInTheDocument()
 })
