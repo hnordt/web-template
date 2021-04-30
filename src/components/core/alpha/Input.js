@@ -8,13 +8,13 @@ const Input = React.forwardRef(function Input(props, ref) {
   const {
     id: baseId,
     label,
-    description,
     hint,
     leadingIcon,
     leadingAddon,
     trailingIcon,
     trailingAddon,
     inlineTrailingAddon,
+    info,
     error,
     size,
     ...rest
@@ -91,14 +91,14 @@ const Input = React.forwardRef(function Input(props, ref) {
           )
         )}
       </div>
-      {(description || error) && (
+      {(info || error) && (
         <p
           className={cn(
             "mt-1.5 text-sm",
             error ? "text-red-600" : "text-gray-500"
           )}
         >
-          {error ?? description}
+          {error ?? info}
         </p>
       )}
     </div>
@@ -108,7 +108,6 @@ const Input = React.forwardRef(function Input(props, ref) {
 Input.propTypes = {
   type: PropTypes.string.isRequired,
   label: PropTypes.string,
-  description: PropTypes.string,
   hint: PropTypes.string,
   leadingIcon: PropTypes.elementType,
   leadingAddon: PropTypes.node,
@@ -119,6 +118,7 @@ Input.propTypes = {
   value: PropTypes.any,
   defaultValue: PropTypes.any,
   placeholder: PropTypes.string,
+  info: PropTypes.string,
   error: PropTypes.string,
   size: PropTypes.oneOf(["md"]),
   disabled: PropTypes.bool,
