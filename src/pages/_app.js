@@ -28,10 +28,10 @@ export default function App(props) {
       <Head>
         <meta name="description" content="" />
         <title></title>
-        <link rel="icon" href="/favicon.ico" />
+        <link href="/favicon.ico" rel="icon" />
         <link
+          href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900"
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900&amp;display=swap"
         />
       </Head>
       <QueryClientProvider client={queryClient}>
