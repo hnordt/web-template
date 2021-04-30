@@ -13,6 +13,16 @@ dayjs.extend(require("dayjs/plugin/utc"))
 dayjs.extend(require("dayjs/plugin/localizedFormat"))
 
 export default function App(props) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
   return (
     <>
       <Head>
@@ -24,22 +34,16 @@ export default function App(props) {
           href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900&amp;display=swap"
         />
       </Head>
-      <div suppressHydrationWarning>
-        {typeof window !== "undefined" && (
-          <>
-            <QueryClientProvider client={queryClient}>
-              <BrowserRouter>
-                <props.Component {...props.pageProps} />
-              </BrowserRouter>
-            </QueryClientProvider>
-            <Toaster
-              toastOptions={{
-                className: "text-sm",
-              }}
-            />
-          </>
-        )}
-      </div>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <props.Component {...props.pageProps} />
+        </BrowserRouter>
+      </QueryClientProvider>
+      <Toaster
+        toastOptions={{
+          className: "text-sm",
+        }}
+      />
     </>
   )
 }
