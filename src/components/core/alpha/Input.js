@@ -27,7 +27,7 @@ const Input = React.forwardRef(function Input(props, ref) {
       {label && (
         <div className="flex justify-between mb-1">
           <label
-            className="block text-gray-700 text-sm font-medium"
+            className="block text-gray-700 text-sm font-medium truncate"
             htmlFor={id}
           >
             {label}
@@ -94,7 +94,7 @@ const Input = React.forwardRef(function Input(props, ref) {
       {(info || error) && (
         <p
           className={cn(
-            "mt-1.5 text-sm",
+            "mt-1.5 text-sm truncate",
             error ? "text-red-600" : "text-gray-500"
           )}
         >
