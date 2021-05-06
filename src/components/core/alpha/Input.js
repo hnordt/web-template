@@ -2,7 +2,37 @@ import React from "react"
 import PropTypes from "prop-types"
 import { useId } from "@reach/auto-id"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
+import IMask from "imask"
 import cn from "classnames"
+
+// TODO: extract
+export function DurationInput(props) {
+  return (
+    <Input
+      {...props}
+      mask={{
+        mask: "H{:}mm",
+        blocks: {
+          H: {
+            mask: IMask.MaskedRange,
+            from: 0,
+            to: 24,
+            placeholderChar: "0",
+          },
+          mm: {
+            mask: IMask.MaskedRange,
+            from: 0,
+            to: 59,
+            placeholderChar: "0",
+          },
+        },
+        overwrite: true,
+        lazy: false,
+      }}
+      inputMode="numeric"
+    />
+  )
+}
 
 const Input = React.forwardRef(function Input(props, ref) {
   const {
@@ -14,13 +44,47 @@ const Input = React.forwardRef(function Input(props, ref) {
     trailingIcon,
     trailingAddon,
     inlineTrailingAddon,
+    mask,
+    value,
     info,
     error,
     size,
+    onValueChange,
     ...rest
   } = props
 
   const id = useId(baseId)
+
+  const inputRef = React.useRef(null)
+  const imaskRef = React.useRef(null)
+
+  const onValueChangeRef = React.useRef(onValueChange)
+  React.useEffect(() => {
+    onValueChangeRef.current = onValueChange
+  })
+
+  React.useLayoutEffect(() => {
+    if (!mask) {
+      return
+    }
+
+    imaskRef.current = IMask(inputRef.current, mask)
+
+    const imask = imaskRef.current
+
+    imask.on("accept", () => onValueChangeRef.current?.(imask.value))
+
+    return () => imask.destroy()
+  }, [mask])
+
+  React.useLayoutEffect(() => {
+    if (!imaskRef.current) {
+      return
+    }
+
+    imaskRef.current.value = value ?? ""
+    imaskRef.current.updateValue() // avoids a warning
+  }, [value])
 
   return (
     <div>
@@ -55,7 +119,10 @@ const Input = React.forwardRef(function Input(props, ref) {
         )}
         <input
           {...rest}
-          ref={ref}
+          ref={(_ref) => {
+            ref(_ref)
+            inputRef.current = _ref
+          }}
           className={cn(
             "block w-full sm:text-sm flex-1 min-w-0",
             !leadingAddon && !trailingAddon && "rounded-md",
@@ -68,6 +135,7 @@ const Input = React.forwardRef(function Input(props, ref) {
               : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           )}
           id={id}
+          value={value}
           aria-invalid={!!error}
         />
         {error ? (
@@ -115,6 +183,7 @@ Input.propTypes = {
   trailingIcon: PropTypes.elementType,
   trailingAddon: PropTypes.node,
   inlineTrailingAddon: PropTypes.node,
+  mask: PropTypes.any,
   value: PropTypes.any,
   defaultValue: PropTypes.any,
   placeholder: PropTypes.string,
@@ -122,6 +191,8 @@ Input.propTypes = {
   error: PropTypes.string,
   size: PropTypes.oneOf(["md"]),
   disabled: PropTypes.bool,
+  onChange: PropTypes.func,
+  onValueChange: PropTypes.func,
 }
 
 export default Input

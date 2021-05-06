@@ -3,16 +3,14 @@ import { Controller, useForm } from "react-hook-form"
 import {
   BellIcon,
   CalendarIcon,
-  CheckCircleIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   CogIcon,
   CursorClickIcon,
   DocumentReportIcon,
-  MinusCircleIcon,
   SaveIcon,
 } from "@heroicons/react/solid"
-import Input from "components/core/alpha/Input"
+import Input, { DurationInput } from "components/core/alpha/Input"
 import Button from "components/core/alpha/Button"
 import cn from "classnames"
 import data from "data/settings"
@@ -189,17 +187,16 @@ function SettingsWidget() {
               childIndex: childIndex,
             },
           })),
-          // TODO
-          // ...child.component.flatMap((component) =>
-          //   component.setting.map((field) => ({
-          //     ...field,
-          //     meta: {
-          //       settingId: setting.id,
-          //       childId: child.id,
-          //       componentId: component.component,
-          //     },
-          //   }))
-          // ),
+          ...child.component.flatMap((component) =>
+            component.setting.map((field) => ({
+              ...field,
+              meta: {
+                settingId: setting.id,
+                childId: child.id,
+                childIndex: childIndex,
+              },
+            }))
+          ),
         ],
         []
       )
@@ -400,19 +397,12 @@ function SettingsWidget() {
                                                 "asc",
                                                 child.setting
                                               ).map((setting) => {
-                                                let field = fields.find(
-                                                  (field) =>
-                                                    field.id === setting.id
-                                                )
-
-                                                // TODO: remove
-                                                if (!field) {
-                                                  return null
-                                                }
-
-                                                field = applyModifierToField(
-                                                  field,
-                                                  modifiers[field.id]
+                                                const field = applyModifierToField(
+                                                  fields.find(
+                                                    (field) =>
+                                                      field.id === setting.id
+                                                  ),
+                                                  modifiers[setting.id]
                                                 )
 
                                                 return (
@@ -612,32 +602,7 @@ function SettingsWidget() {
                                                           )
                                                         }
 
-                                                        // TODO
                                                         case "time": {
-                                                          // <Input
-                                                          //   {...props.form.register(
-                                                          //     String(props.config.id),
-                                                          //     {
-                                                          //       required: "This field is required",
-                                                          //     }
-                                                          //   )}
-                                                          //   id={props.config.id}
-                                                          //   type="time"
-                                                          //   min={dayjs()
-                                                          //     .startOf("day")
-                                                          //     .add(
-                                                          //       enforceSeconds(props.config.value_lower),
-                                                          //       "seconds"
-                                                          //     )
-                                                          //     .format("HH:mm")}
-                                                          //   max={dayjs()
-                                                          //     .startOf("day")
-                                                          //     .add(
-                                                          //       enforceSeconds(props.config.value_upper),
-                                                          //       "seconds"
-                                                          //     )
-                                                          //     .format("HH:mm")}
-                                                          // />
                                                           return (
                                                             <Input
                                                               {...form.register(
@@ -654,10 +619,32 @@ function SettingsWidget() {
                                                                     ),
                                                                 }
                                                               )}
-                                                              type="text"
+                                                              type="time"
                                                               label={
                                                                 field.label
                                                               }
+                                                              min={dayjs()
+                                                                .startOf("day")
+                                                                .add(
+                                                                  enforceSeconds(
+                                                                    field.value_lower
+                                                                  ),
+                                                                  "seconds"
+                                                                )
+                                                                .format(
+                                                                  "HH:mm"
+                                                                )}
+                                                              max={dayjs()
+                                                                .startOf("day")
+                                                                .add(
+                                                                  enforceSeconds(
+                                                                    field.value_upper
+                                                                  ),
+                                                                  "seconds"
+                                                                )
+                                                                .format(
+                                                                  "HH:mm"
+                                                                )}
                                                               error={
                                                                 form.formState
                                                                   .errors?.[
@@ -670,45 +657,44 @@ function SettingsWidget() {
 
                                                         // TODO
                                                         case "duration": {
-                                                          // <Controller
-                                                          //   control={props.form.control}
-                                                          //   name={String(props.config.id)}
-                                                          //   rules={{
-                                                          //     required: "This field is required",
-                                                          //   }}
-                                                          //   render={(props) => (
-                                                          //     <DurationInput
-                                                          //       {...props.field}
-                                                          //       onValueChange={props.field.onChange}
-                                                          //     />
-                                                          //   )}
-                                                          // />
                                                           return (
-                                                            <Input
-                                                              {...form.register(
-                                                                String(
-                                                                  field.id
-                                                                ),
-                                                                {
-                                                                  setValueAs: (
-                                                                    v
-                                                                  ) =>
-                                                                    normalizeFieldValue(
-                                                                      field,
-                                                                      v
-                                                                    ),
-                                                                }
+                                                            <Controller
+                                                              control={
+                                                                form.control
+                                                              }
+                                                              name={String(
+                                                                field.id
                                                               )}
-                                                              type="text"
-                                                              label={
-                                                                field.label
-                                                              }
-                                                              error={
-                                                                form.formState
-                                                                  .errors?.[
-                                                                  field.id
-                                                                ]?.message
-                                                              }
+                                                              rules={{
+                                                                setValueAs: (
+                                                                  v
+                                                                ) =>
+                                                                  normalizeFieldValue(
+                                                                    field,
+                                                                    v
+                                                                  ),
+                                                              }}
+                                                              render={(
+                                                                props
+                                                              ) => (
+                                                                <DurationInput
+                                                                  ref={
+                                                                    props.field
+                                                                      .ref
+                                                                  }
+                                                                  label={
+                                                                    field.label
+                                                                  }
+                                                                  value={
+                                                                    props.field
+                                                                      .value
+                                                                  }
+                                                                  onValueChange={
+                                                                    props.field
+                                                                      .onChange
+                                                                  }
+                                                                />
+                                                              )}
                                                             />
                                                           )
                                                         }
