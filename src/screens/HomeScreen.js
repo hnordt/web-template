@@ -289,7 +289,7 @@ function SettingsWidget() {
                                   <div className="flex-shrink-0">
                                     <div
                                       className={cn(
-                                        "inline-flex items-center justify-center w-12 h-12 text-white bg-gradient-to-bl rounded-xl shadow-lg",
+                                        "relative inline-flex items-center justify-center w-12 h-12 text-white bg-gradient-to-bl rounded-xl shadow-lg",
                                         open
                                           ? "from-blue-500 to-blue-700 group-hover:from-blue-600 group-hover:to-blue-800"
                                           : "from-gray-400 to-gray-500 group-hover:from-gray-500 group-hover:to-gray-600"
@@ -299,6 +299,13 @@ function SettingsWidget() {
                                         className="w-6 h-6 text-white"
                                         aria-hidden
                                       />
+                                      {fields.some(
+                                        (field) =>
+                                          field.meta.settingId === result.id &&
+                                          form.formState.dirtyFields[field.id]
+                                      ) && (
+                                        <span className="absolute -right-0.5 -top-0.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full" />
+                                      )}
                                     </div>
                                   </div>
                                   <div className="flex-1 px-4">
@@ -312,17 +319,7 @@ function SettingsWidget() {
                                     </p>
                                   </div>
                                 </div>
-                                <div className="flex items-center space-x-4">
-                                  {fields.some(
-                                    (field) =>
-                                      field.meta.settingId === result.id &&
-                                      form.formState.dirtyFields[field.id]
-                                  ) && (
-                                    <span className="relative">
-                                      <SaveIcon className="w-4 h-4 text-blue-500" />
-                                      <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
-                                    </span>
-                                  )}
+                                <div>
                                   {open ? (
                                     <ChevronDownIcon
                                       className="w-5 h-5 text-gray-400"
@@ -427,7 +424,7 @@ function SettingsWidget() {
                                                       field.id
                                                     ] && (
                                                       <div className="absolute right-0 top-0">
-                                                        <span className="relative text-red-700 line-through text-sm font-medium">
+                                                        <span className="relative text-red-600 line-through text-sm font-medium">
                                                           {field.value_type ===
                                                           "key_value" ? (
                                                             _.invert(
