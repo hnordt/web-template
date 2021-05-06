@@ -36,6 +36,7 @@ function enforceSeconds(value) {
   return value
 }
 
+// TODO: remove
 function Form(props) {
   const form = useForm({
     defaultValues: props.defaultValues,
@@ -54,56 +55,28 @@ function Form(props) {
   )
 }
 
-function applyModifierToField(field, modifier) {
-  const modifiedField = {
-    ...field,
-    ...modifier,
-  }
-
-  modifiedField.value = {
-    ...modifiedField.value,
-    value: normalizeFieldValue(modifiedField, modifiedField.value.value),
-  }
-
-  return modifiedField
-}
-
-function applyModifiersToFields(fields) {
-  const currentValues = fields.reduce(
-    (acc, field) => ({
-      ...acc,
-      [field.id]: field.value.value,
-    }),
-    {}
+function applyModifierToField(field, modifiers, currentValues) {
+  const _modifier = modifiers.find(
+    (modifier) =>
+      modifier._condition.applyTo === field.id &&
+      currentValues[modifier._condition.fieldId] === modifier._condition.value
   )
 
-  const modifiers = fields.reduce(
-    (acc, field) => ({
-      ...acc,
-      ...field.child.reduce(
-        (acc, child) =>
-          String(JSON.parse(child.condition).value) ===
-          String(currentValues[field.id])
-            ? {
-                ...acc,
-                [child.setting_definition_child]: _.omit(
-                  ["condition", "setting_definition_child"],
-                  child
-                ),
-              }
-            : acc,
-        {}
-      ),
-    }),
-    {}
-  )
+  if (_modifier) {
+    return {
+      ...field,
+      ..._modifier,
+    }
+  }
 
-  return fields.map((field) => applyModifierToField(field, modifiers[field.id]))
+  return field
 }
 
-function getAppliableModifiersByField(field, value) {
-  return field.child.filter(
-    (child) => String(JSON.parse(child.condition).value) === String(value)
+function getAppliableModifiersByField(modifiers, field, value) {
+  return modifiers.filter(
+    (modifier) =>
+      modifier._condition.fieldId === field.id &&
+      modifier._condition.value === value
   )
 }
 
@@ -158,9 +131,10 @@ function normalizeFieldValue(field, value) {
       .format("HH:mm")
   }
 
-  if (field.value_type === "duration") {
-    return "0" // TODO
-  }
+  // TODO
+  // if (field.value_type === "duration") {
+  //   return "0"
+  // }
 
   if (field.value_type === "boolean") {
     return Boolean(value)
@@ -194,6 +168,7 @@ function SettingsWidget() {
                 settingId: setting.id,
                 childId: child.id,
                 childIndex: childIndex,
+                component: component.component,
               },
             }))
           ),
@@ -203,7 +178,30 @@ function SettingsWidget() {
     )
     .map(normalizeField)
 
-  fields = applyModifiersToFields(fields)
+  const modifiers = fields.reduce(
+    (acc, field) => [
+      ...acc,
+      ...field.child.reduce(
+        (acc, child) => [
+          ...acc,
+          {
+            ...child,
+            default: normalizeFieldValue(child, child.default),
+            _condition: {
+              fieldId: field.id,
+              value: normalizeFieldValue(
+                field,
+                JSON.parse(child.condition).value
+              ),
+              applyTo: child.setting_definition_child,
+            },
+          },
+        ],
+        []
+      ),
+    ],
+    []
+  )
 
   const defaultValues = fields.reduce(
     (acc, field) => ({
@@ -211,6 +209,10 @@ function SettingsWidget() {
       [field.id]: field.value.value ?? field.default ?? "",
     }),
     {}
+  )
+
+  fields = fields.map((field) =>
+    applyModifierToField(field, modifiers, defaultValues)
   )
 
   return (
@@ -232,27 +234,6 @@ function SettingsWidget() {
         const changeCount = Object.keys(form.formState.dirtyFields).length
 
         const currentValues = form.watch()
-
-        const modifiers = fields.reduce(
-          (acc, field) => ({
-            ...acc,
-            ...field.child.reduce(
-              (acc, child) =>
-                String(JSON.parse(child.condition).value) ===
-                String(currentValues[field.id])
-                  ? {
-                      ...acc,
-                      [child.setting_definition_child]: _.omit(
-                        ["condition", "setting_definition_child"],
-                        child
-                      ),
-                    }
-                  : acc,
-              {}
-            ),
-          }),
-          {}
-        )
 
         return (
           <>
@@ -338,6 +319,7 @@ function SettingsWidget() {
                                   !form.formState.isDirty &&
                                   "rounded-b-md"
                               )}
+                              unmount={false}
                             >
                               <Tabs
                                 index={tabIndexes[result.id] ?? 0}
@@ -392,499 +374,78 @@ function SettingsWidget() {
                                         {result.child.map((child) => (
                                           <TabPanel key={child.id}>
                                             <div className="grid gap-8 grid-cols-4">
-                                              {_.orderBy(
-                                                "order",
-                                                "asc",
-                                                child.setting
-                                              ).map((setting) => {
-                                                const field = applyModifierToField(
-                                                  fields.find(
-                                                    (field) =>
-                                                      field.id === setting.id
-                                                  ),
-                                                  modifiers[setting.id]
+                                              {_.orderBy("order", "asc", fields)
+                                                .filter(
+                                                  (field) =>
+                                                    field.meta.settingId ===
+                                                      result.id &&
+                                                    field.meta.childId ===
+                                                      child.id &&
+                                                    !field.meta.component
                                                 )
+                                                .map((field) => {
+                                                  // TODO: avoid mutation
+                                                  field = applyModifierToField(
+                                                    field,
+                                                    modifiers,
+                                                    currentValues
+                                                  )
 
-                                                return (
+                                                  return (
+                                                    <div key={field.id}>
+                                                      {renderField(
+                                                        field,
+                                                        form,
+                                                        defaultValues,
+                                                        modifiers
+                                                      )}
+                                                    </div>
+                                                  )
+                                                })}
+                                              {child.component.map(
+                                                (component) => (
                                                   <div
-                                                    key={field.id}
-                                                    className={cn(
-                                                      "relative",
-                                                      field.span === 2 &&
-                                                        "col-span-2",
-                                                      field.span === 3 &&
-                                                        "col-span-3",
-                                                      field.span === 4 &&
-                                                        "col-span-4",
-                                                      field.display === false &&
-                                                        "hidden"
-                                                    )}
+                                                    key={component.component}
                                                   >
-                                                    {form.formState.dirtyFields[
-                                                      field.id
-                                                    ] && (
-                                                      <div className="absolute right-0 top-0">
-                                                        <span className="relative text-red-600 line-through text-sm font-medium">
-                                                          {field.value_type ===
-                                                          "key_value"
-                                                            ? _.invert(
-                                                                field.value_lower
-                                                              )[
-                                                                defaultValues[
-                                                                  field.id
-                                                                ]
-                                                              ] ?? "N/D"
-                                                            : field.value_type ===
-                                                              "boolean"
-                                                            ? defaultValues[
-                                                                field.id
-                                                              ]
-                                                              ? "On"
-                                                              : "Off"
-                                                            : defaultValues[
-                                                                field.id
-                                                              ] ?? "N/D"}
-                                                        </span>
-                                                      </div>
-                                                    )}
-                                                    {(() => {
-                                                      switch (
-                                                        field.value_type
-                                                      ) {
-                                                        case "string": {
-                                                          return (
-                                                            <Input
-                                                              {...form.register(
-                                                                String(
-                                                                  field.id
-                                                                ),
-                                                                {
-                                                                  maxLength: {
-                                                                    value:
-                                                                      field.value_max,
-                                                                    message: `The maximum length for this field is ${field.value_max}`,
-                                                                  },
-                                                                  setValueAs: (
-                                                                    v
-                                                                  ) =>
-                                                                    normalizeFieldValue(
-                                                                      field,
-                                                                      v
-                                                                    ),
-                                                                }
-                                                              )}
-                                                              type="text"
-                                                              label={
-                                                                field.label
-                                                              }
-                                                              placeholder={
-                                                                field.value_lower
-                                                              }
-                                                              error={
-                                                                form.formState
-                                                                  .errors?.[
-                                                                  field.id
-                                                                ]?.message
-                                                              }
-                                                            />
-                                                          )
-                                                        }
+                                                    {component.component}
+                                                    {_.orderBy(
+                                                      "order",
+                                                      "asc",
+                                                      fields
+                                                    )
+                                                      .filter(
+                                                        (field) =>
+                                                          field.meta
+                                                            .settingId ===
+                                                            result.id &&
+                                                          field.meta.childId ===
+                                                            child.id &&
+                                                          field.meta
+                                                            .component ===
+                                                            component.component
+                                                      )
+                                                      .map((field) => {
+                                                        // TODO: avoid mutation
+                                                        field = applyModifierToField(
+                                                          field,
+                                                          modifiers,
+                                                          currentValues
+                                                        )
 
-                                                        case "integer": {
-                                                          return (
-                                                            <Input
-                                                              {...form.register(
-                                                                String(
-                                                                  field.id
-                                                                ),
-                                                                {
-                                                                  min: {
-                                                                    value:
-                                                                      field.value_lower,
-                                                                    message: `The minimum value for this field is ${field.value_lower}`,
-                                                                  },
-                                                                  max: {
-                                                                    value:
-                                                                      field.value_upper,
-                                                                    message: `The maximum value for this field is ${field.value_upper}`,
-                                                                  },
-                                                                  validate: (
-                                                                    v
-                                                                  ) =>
-                                                                    v &&
-                                                                    !isInt(
-                                                                      String(v)
-                                                                    )
-                                                                      ? "Invalid value"
-                                                                      : true,
-                                                                  setValueAs: (
-                                                                    v
-                                                                  ) =>
-                                                                    normalizeFieldValue(
-                                                                      field,
-                                                                      v
-                                                                    ),
-                                                                }
-                                                              )}
-                                                              type="number"
-                                                              label={
-                                                                field.label
-                                                              }
-                                                              inlineTrailingAddon={
-                                                                field.value_unit
-                                                              }
-                                                              min={
-                                                                field.value_lower
-                                                              }
-                                                              max={
-                                                                field.value_upper
-                                                              }
-                                                              info={`${field.value_lower}-${field.value_upper} ${field.value_unit}`}
-                                                              error={
-                                                                form.formState
-                                                                  .errors?.[
-                                                                  field.id
-                                                                ]?.message
-                                                              }
-                                                            />
-                                                          )
-                                                        }
-
-                                                        case "float": {
-                                                          return (
-                                                            <Input
-                                                              {...form.register(
-                                                                String(
-                                                                  field.id
-                                                                ),
-                                                                {
-                                                                  min: {
-                                                                    value:
-                                                                      field.value_lower,
-                                                                    message: `The minimum value for this field is ${field.value_lower}`,
-                                                                  },
-                                                                  max: {
-                                                                    value:
-                                                                      field.value_upper,
-                                                                    message: `The maximum value for this field is ${field.value_upper}`,
-                                                                  },
-                                                                  setValueAs: (
-                                                                    v
-                                                                  ) =>
-                                                                    normalizeFieldValue(
-                                                                      field,
-                                                                      v
-                                                                    ),
-                                                                }
-                                                              )}
-                                                              type="number"
-                                                              label={
-                                                                field.label
-                                                              }
-                                                              inlineTrailingAddon={
-                                                                field.value_unit
-                                                              }
-                                                              min={
-                                                                field.value_lower
-                                                              }
-                                                              max={
-                                                                field.value_upper
-                                                              }
-                                                              step={0.1}
-                                                              info={`${field.value_lower}-${field.value_upper} ${field.value_unit}`}
-                                                              error={
-                                                                form.formState
-                                                                  .errors?.[
-                                                                  field.id
-                                                                ]?.message
-                                                              }
-                                                            />
-                                                          )
-                                                        }
-
-                                                        case "time": {
-                                                          return (
-                                                            <Input
-                                                              {...form.register(
-                                                                String(
-                                                                  field.id
-                                                                ),
-                                                                {
-                                                                  setValueAs: (
-                                                                    v
-                                                                  ) =>
-                                                                    normalizeFieldValue(
-                                                                      field,
-                                                                      v
-                                                                    ),
-                                                                }
-                                                              )}
-                                                              type="time"
-                                                              label={
-                                                                field.label
-                                                              }
-                                                              min={dayjs()
-                                                                .startOf("day")
-                                                                .add(
-                                                                  enforceSeconds(
-                                                                    field.value_lower
-                                                                  ),
-                                                                  "seconds"
-                                                                )
-                                                                .format(
-                                                                  "HH:mm"
-                                                                )}
-                                                              max={dayjs()
-                                                                .startOf("day")
-                                                                .add(
-                                                                  enforceSeconds(
-                                                                    field.value_upper
-                                                                  ),
-                                                                  "seconds"
-                                                                )
-                                                                .format(
-                                                                  "HH:mm"
-                                                                )}
-                                                              error={
-                                                                form.formState
-                                                                  .errors?.[
-                                                                  field.id
-                                                                ]?.message
-                                                              }
-                                                            />
-                                                          )
-                                                        }
-
-                                                        // TODO
-                                                        case "duration": {
-                                                          return (
-                                                            <Controller
-                                                              control={
-                                                                form.control
-                                                              }
-                                                              name={String(
-                                                                field.id
-                                                              )}
-                                                              rules={{
-                                                                setValueAs: (
-                                                                  v
-                                                                ) =>
-                                                                  normalizeFieldValue(
-                                                                    field,
-                                                                    v
-                                                                  ),
-                                                              }}
-                                                              render={(
-                                                                props
-                                                              ) => (
-                                                                <DurationInput
-                                                                  ref={
-                                                                    props.field
-                                                                      .ref
-                                                                  }
-                                                                  label={
-                                                                    field.label
-                                                                  }
-                                                                  value={
-                                                                    props.field
-                                                                      .value
-                                                                  }
-                                                                  onValueChange={
-                                                                    props.field
-                                                                      .onChange
-                                                                  }
-                                                                />
-                                                              )}
-                                                            />
-                                                          )
-                                                        }
-
-                                                        case "list": {
-                                                          return (
-                                                            <Controller
-                                                              control={
-                                                                form.control
-                                                              }
-                                                              name={String(
-                                                                field.id
-                                                              )}
-                                                              rules={{
-                                                                setValueAs: (
-                                                                  v
-                                                                ) =>
-                                                                  normalizeFieldValue(
-                                                                    field,
-                                                                    v
-                                                                  ),
-                                                              }}
-                                                              render={(
-                                                                props
-                                                              ) => (
-                                                                <Select
-                                                                  ref={
-                                                                    props.field
-                                                                      .ref
-                                                                  }
-                                                                  label={
-                                                                    field.label
-                                                                  }
-                                                                  options={field.value_lower
-                                                                    .split(",")
-                                                                    .map(
-                                                                      (
-                                                                        value
-                                                                      ) => ({
-                                                                        label: value,
-                                                                        value,
-                                                                      })
-                                                                    )}
-                                                                  value={
-                                                                    props.field
-                                                                      .value
-                                                                  }
-                                                                  onChange={
-                                                                    props.field
-                                                                      .onChange
-                                                                  }
-                                                                />
-                                                              )}
-                                                            />
-                                                          )
-                                                        }
-
-                                                        case "key_value": {
-                                                          return (
-                                                            <Controller
-                                                              control={
-                                                                form.control
-                                                              }
-                                                              name={String(
-                                                                field.id
-                                                              )}
-                                                              rules={{
-                                                                setValueAs: (
-                                                                  v
-                                                                ) =>
-                                                                  normalizeFieldValue(
-                                                                    field,
-                                                                    v
-                                                                  ),
-                                                              }}
-                                                              render={(
-                                                                props
-                                                              ) => (
-                                                                <Select
-                                                                  ref={
-                                                                    props.field
-                                                                      .ref
-                                                                  }
-                                                                  label={
-                                                                    field.label
-                                                                  }
-                                                                  options={Object.entries(
-                                                                    field.value_lower
-                                                                  ).map(
-                                                                    ([
-                                                                      label,
-                                                                      value,
-                                                                    ]) => ({
-                                                                      label,
-                                                                      value,
-                                                                    })
-                                                                  )}
-                                                                  value={
-                                                                    props.field
-                                                                      .value
-                                                                  }
-                                                                  onChange={(
-                                                                    value
-                                                                  ) => {
-                                                                    props.field.onChange(
-                                                                      value
-                                                                    )
-
-                                                                    getAppliableModifiersByField(
-                                                                      field,
-                                                                      value
-                                                                    ).forEach(
-                                                                      (
-                                                                        modifier
-                                                                      ) =>
-                                                                        form.setValue(
-                                                                          String(
-                                                                            modifier.setting_definition_child
-                                                                          ),
-                                                                          modifier.default,
-                                                                          {
-                                                                            shouldDirty: true,
-                                                                          }
-                                                                        )
-                                                                    )
-                                                                  }}
-                                                                />
-                                                              )}
-                                                            />
-                                                          )
-                                                        }
-
-                                                        case "boolean": {
-                                                          return (
-                                                            <div className="bottom-[1px] relative mt-6">
-                                                              <div className="h-[38px] flex px-2 bg-white border border-gray-300 rounded-3xl shadow-sm">
-                                                                <Controller
-                                                                  control={
-                                                                    form.control
-                                                                  }
-                                                                  name={String(
-                                                                    field.id
-                                                                  )}
-                                                                  rules={{
-                                                                    setValueAs: (
-                                                                      v
-                                                                    ) =>
-                                                                      normalizeFieldValue(
-                                                                        field,
-                                                                        v
-                                                                      ),
-                                                                  }}
-                                                                  render={(
-                                                                    props
-                                                                  ) => (
-                                                                    <Switch
-                                                                      ref={
-                                                                        props
-                                                                          .field
-                                                                          .ref
-                                                                      }
-                                                                      label={
-                                                                        field.label
-                                                                      }
-                                                                      value={
-                                                                        props
-                                                                          .field
-                                                                          .value
-                                                                      }
-                                                                      onChange={
-                                                                        props
-                                                                          .field
-                                                                          .onChange
-                                                                      }
-                                                                    />
-                                                                  )}
-                                                                />
-                                                              </div>
-                                                            </div>
-                                                          )
-                                                        }
-
-                                                        default: {
-                                                          return "Unknown field" // TODO
-                                                        }
-                                                      }
-                                                    })()}
+                                                        return (
+                                                          <div key={field.id}>
+                                                            {renderField(
+                                                              field,
+                                                              form,
+                                                              defaultValues,
+                                                              modifiers
+                                                            )}
+                                                          </div>
+                                                        )
+                                                      })}
                                                   </div>
                                                 )
-                                              })}
+                                              )}
                                             </div>
                                           </TabPanel>
                                         ))}
@@ -938,5 +499,260 @@ export default function HomeScreen() {
         <SettingsWidget />
       </div>
     </main>
+  )
+}
+
+function renderField(field, form, defaultValues, modifiers) {
+  return (
+    <div
+      className={cn(
+        "relative",
+        field.span === 2 && "col-span-2",
+        field.span === 3 && "col-span-3",
+        field.span === 4 && "col-span-4",
+        field.display === false && "hidden"
+      )}
+    >
+      {form.formState.dirtyFields[field.id] && (
+        <div className="absolute right-0 top-0">
+          <span className="relative text-red-600 line-through text-sm font-medium">
+            {field.value_type === "key_value"
+              ? _.invert(field.value_lower)[defaultValues[field.id]] ?? "N/D"
+              : field.value_type === "boolean"
+              ? defaultValues[field.id]
+                ? "On"
+                : "Off"
+              : defaultValues[field.id] ?? "N/D"}
+          </span>
+        </div>
+      )}
+      {(() => {
+        switch (field.value_type) {
+          case "string": {
+            return (
+              <Input
+                {...form.register(String(field.id), {
+                  maxLength: {
+                    value: field.value_max,
+                    message: `The maximum length for this field is ${field.value_max}`,
+                  },
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                })}
+                type="text"
+                label={field.label}
+                placeholder={field.value_lower}
+                error={form.formState.errors?.[field.id]?.message}
+              />
+            )
+          }
+
+          case "integer": {
+            return (
+              <Input
+                {...form.register(String(field.id), {
+                  min: {
+                    value: field.value_lower,
+                    message: `The minimum value for this field is ${field.value_lower}`,
+                  },
+                  max: {
+                    value: field.value_upper,
+                    message: `The maximum value for this field is ${field.value_upper}`,
+                  },
+                  validate: (v) =>
+                    v && !isInt(String(v)) ? "Invalid value" : true,
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                })}
+                type="number"
+                label={field.label}
+                inlineTrailingAddon={field.value_unit}
+                min={field.value_lower}
+                max={field.value_upper}
+                info={`${field.value_lower}-${field.value_upper} ${field.value_unit}`}
+                error={form.formState.errors?.[field.id]?.message}
+              />
+            )
+          }
+
+          case "float": {
+            return (
+              <Input
+                {...form.register(String(field.id), {
+                  min: {
+                    value: field.value_lower,
+                    message: `The minimum value for this field is ${field.value_lower}`,
+                  },
+                  max: {
+                    value: field.value_upper,
+                    message: `The maximum value for this field is ${field.value_upper}`,
+                  },
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                })}
+                type="number"
+                label={field.label}
+                inlineTrailingAddon={field.value_unit}
+                min={field.value_lower}
+                max={field.value_upper}
+                step={0.1}
+                info={`${field.value_lower}-${field.value_upper} ${field.value_unit}`}
+                error={form.formState.errors?.[field.id]?.message}
+              />
+            )
+          }
+
+          case "time": {
+            return (
+              <Input
+                {...form.register(String(field.id), {
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                })}
+                type="time"
+                label={field.label}
+                min={dayjs()
+                  .startOf("day")
+                  .add(enforceSeconds(field.value_lower), "seconds")
+                  .format("HH:mm")}
+                max={dayjs()
+                  .startOf("day")
+                  .add(enforceSeconds(field.value_upper), "seconds")
+                  .format("HH:mm")}
+                error={form.formState.errors?.[field.id]?.message}
+              />
+            )
+          }
+
+          // TODO
+          case "duration": {
+            return (
+              <Controller
+                control={form.control}
+                name={String(field.id)}
+                rules={{
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                }}
+                render={(props) => (
+                  <DurationInput
+                    ref={props.field.ref}
+                    label={field.label}
+                    value={props.field.value}
+                    onValueChange={props.field.onChange}
+                  />
+                )}
+              />
+            )
+          }
+
+          case "list": {
+            return (
+              <Controller
+                control={form.control}
+                name={String(field.id)}
+                rules={{
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                }}
+                render={(props) => (
+                  <Select
+                    ref={props.field.ref}
+                    label={field.label}
+                    options={field.value_lower.split(",").map((value) => ({
+                      label: value,
+                      value,
+                    }))}
+                    value={props.field.value}
+                    onChange={props.field.onChange}
+                  />
+                )}
+              />
+            )
+          }
+
+          case "key_value": {
+            return (
+              <Controller
+                control={form.control}
+                name={String(field.id)}
+                rules={{
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                }}
+                render={(props) => (
+                  <Select
+                    ref={props.field.ref}
+                    label={field.label}
+                    options={Object.entries(field.value_lower).map(
+                      ([label, value]) => ({
+                        label,
+                        value,
+                      })
+                    )}
+                    value={props.field.value}
+                    onChange={(value) => {
+                      props.field.onChange(value)
+
+                      getAppliableModifiersByField(
+                        modifiers,
+                        field,
+                        value
+                      ).forEach((modifier) =>
+                        form.setValue(
+                          String(modifier._condition.applyTo),
+                          modifier.default,
+                          {
+                            shouldDirty: true,
+                          }
+                        )
+                      )
+                    }}
+                  />
+                )}
+              />
+            )
+          }
+
+          case "boolean": {
+            return (
+              <div className="bottom-[1px] relative mt-6">
+                <div className="h-[38px] flex px-2 bg-white border border-gray-300 rounded-3xl shadow-sm">
+                  <Controller
+                    control={form.control}
+                    name={String(field.id)}
+                    rules={{
+                      setValueAs: (v) => normalizeFieldValue(field, v),
+                    }}
+                    render={(props) => (
+                      <Switch
+                        ref={props.field.ref}
+                        label={field.label}
+                        value={props.field.value}
+                        // onChange={props.field.onChange}
+                        onChange={(value) => {
+                          props.field.onChange(value)
+
+                          getAppliableModifiersByField(
+                            modifiers,
+                            field,
+                            value
+                          ).forEach((modifier) =>
+                            form.setValue(
+                              String(modifier._condition.applyTo),
+                              modifier.default,
+                              {
+                                shouldDirty: true,
+                              }
+                            )
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            )
+          }
+
+          default: {
+            return "Unknown field" // TODO
+          }
+        }
+      })()}
+    </div>
   )
 }

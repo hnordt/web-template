@@ -64,24 +64,29 @@ const Input = React.forwardRef(function Input(props, ref) {
   const inputRef = React.useRef(null)
   const imaskRef = React.useRef(null)
 
+  const maskRef = React.useRef(mask)
+  React.useEffect(() => {
+    maskRef.current = mask
+  })
+
   const onValueChangeRef = React.useRef(onValueChange)
   React.useEffect(() => {
     onValueChangeRef.current = onValueChange
   })
 
   React.useLayoutEffect(() => {
-    if (!mask) {
+    if (!maskRef.current) {
       return
     }
 
-    imaskRef.current = IMask(inputRef.current, mask)
+    imaskRef.current = IMask(inputRef.current, maskRef.current)
 
     const imask = imaskRef.current
 
     imask.on("accept", () => onValueChangeRef.current?.(imask.value))
 
     return () => imask.destroy()
-  }, [mask])
+  }, [])
 
   React.useLayoutEffect(() => {
     if (!imaskRef.current) {
