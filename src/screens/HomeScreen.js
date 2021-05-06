@@ -22,6 +22,7 @@ import { Disclosure } from "@headlessui/react"
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs"
 import _ from "lodash/fp"
 import { Popover, Transition } from "@headlessui/react"
+import toast from "react-hot-toast"
 
 function enforceSeconds(value) {
   if (typeof value === "string" && value.includes(":")) {
@@ -235,7 +236,10 @@ function SettingsWidget() {
   return (
     <Form
       defaultValues={defaultValues}
-      onSubmit={(values, _, form) => form.reset(values)}
+      onSubmit={(values, _, form) => {
+        form.reset(values)
+        toast.success("Settings saved successfully!")
+      }}
       onError={(errors) => {
         const firstInvalidField = fields.find(
           (field) => String(field.id) === Object.keys(errors)[0]
