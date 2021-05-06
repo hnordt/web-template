@@ -59,7 +59,8 @@ function applyModifierToField(field, modifiers, currentValues) {
   const _modifier = modifiers.find(
     (modifier) =>
       modifier._condition.applyTo === field.id &&
-      currentValues[modifier._condition.fieldId] === modifier._condition.value
+      String(currentValues[modifier._condition.fieldId]) ===
+        String(modifier._condition.value)
   )
 
   if (_modifier) {
@@ -131,11 +132,6 @@ function normalizeFieldValue(field, value) {
       .format("HH:mm")
   }
 
-  // TODO
-  // if (field.value_type === "duration") {
-  //   return "0"
-  // }
-
   if (field.value_type === "boolean") {
     return Boolean(value)
   }
@@ -203,16 +199,36 @@ function SettingsWidget() {
     []
   )
 
-  const defaultValues = fields.reduce(
+  // [FIXME] to be able to apply modifiers we need to get the current values from the api
+  // the problem is that the api will not return the value typed according to the
+  // modifier, instead, it'll return the value typed according to the default field type
+  // for example Control Cycle Time is of type list, but when Control Method is 0,
+  // Control Cycle Time is of type integer, but still the api will return "45" (list)
+  // and not 45 (integer)
+  // so to be able to apply modifiers we'll need to force all values to be String
+  // this is probably gonna cause issues, so we need to return the correct field type
+  // when calculating the var fields
+  // probably we need to apply the modifier while creating the field, so we can
+  // force it to return the correct value type
+  const unsafeValueTypeDefaultValues = fields.reduce(
     (acc, field) => ({
       ...acc,
-      [field.id]: field.value.value ?? field.default ?? "",
+      [field.id]: field.value.value,
     }),
     {}
   )
 
   fields = fields.map((field) =>
-    applyModifierToField(field, modifiers, defaultValues)
+    applyModifierToField(field, modifiers, unsafeValueTypeDefaultValues)
+  )
+
+  // we can only calculate defaultValues after applying all modifiers
+  const defaultValues = fields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.id]: normalizeFieldValue(field, field.value.value),
+    }),
+    {}
   )
 
   return (
@@ -514,7 +530,15 @@ function renderField(field, form, defaultValues, modifiers) {
       )}
     >
       {form.formState.dirtyFields[field.id] && (
-        <div className="absolute right-0 top-0">
+        <button
+          className="absolute right-0 top-0"
+          type="button"
+          onClick={() =>
+            form.setValue(String(field.id), defaultValues[field.id], {
+              shouldDirty: true,
+            })
+          }
+        >
           <span className="relative text-red-600 line-through text-sm font-medium">
             {field.value_type === "key_value"
               ? _.invert(field.value_lower)[defaultValues[field.id]] ?? "N/D"
@@ -524,7 +548,7 @@ function renderField(field, form, defaultValues, modifiers) {
                 : "Off"
               : defaultValues[field.id] ?? "N/D"}
           </span>
-        </div>
+        </button>
       )}
       {(() => {
         switch (field.value_type) {
@@ -722,7 +746,6 @@ function renderField(field, form, defaultValues, modifiers) {
                         ref={props.field.ref}
                         label={field.label}
                         value={props.field.value}
-                        // onChange={props.field.onChange}
                         onChange={(value) => {
                           props.field.onChange(value)
 
