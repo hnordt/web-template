@@ -1,7 +1,8 @@
+import React from "react"
 import { Switch as BaseSwitch } from "@headlessui/react"
 import cn from "classnames"
 
-export default function Switch(props) {
+const Switch = React.forwardRef(function Switch(props, ref) {
   return (
     <BaseSwitch.Group as="div" className="flex items-center">
       <BaseSwitch
@@ -12,7 +13,7 @@ export default function Switch(props) {
         checked={props.value}
         onChange={props.onChange}
       >
-        <spawn
+        <span
           className={cn(
             "inline-block w-5 h-5 bg-white rounded-full shadow pointer-events-none transform transition duration-200 ease-in-out ring-0",
             props.value ? "translate-x-5" : "translate-x-0"
@@ -21,8 +22,12 @@ export default function Switch(props) {
         />
       </BaseSwitch>
       <BaseSwitch.Label as="span" className="ml-3">
-        <span className="text-gray-900 text-sm">{props.label}</span>
+        <span ref={ref} className="text-gray-900 text-sm">
+          {props.label}
+        </span>
       </BaseSwitch.Label>
     </BaseSwitch.Group>
   )
-}
+})
+
+export default Switch
