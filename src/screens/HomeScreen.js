@@ -21,6 +21,7 @@ import dayjs from "dayjs"
 import { Disclosure } from "@headlessui/react"
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs"
 import _ from "lodash/fp"
+import { Popover, Transition } from "@headlessui/react"
 
 function enforceSeconds(value) {
   if (typeof value === "string" && value.includes(":")) {
@@ -408,7 +409,17 @@ function SettingsWidget() {
                                                   )
 
                                                   return (
-                                                    <div key={field.id}>
+                                                    <div
+                                                      key={field.id}
+                                                      className={cn(
+                                                        field.span === 2 &&
+                                                          "col-span-2",
+                                                        field.span === 3 &&
+                                                          "col-span-3",
+                                                        field.span === 4 &&
+                                                          "col-span-4"
+                                                      )}
+                                                    >
                                                       {renderField(
                                                         field,
                                                         form,
@@ -423,42 +434,133 @@ function SettingsWidget() {
                                                   <div
                                                     key={component.component}
                                                   >
-                                                    {component.component}
-                                                    {_.orderBy(
-                                                      "order",
-                                                      "asc",
-                                                      fields
-                                                    )
-                                                      .filter(
-                                                        (field) =>
-                                                          field.meta
-                                                            .settingId ===
-                                                            result.id &&
-                                                          field.meta.childId ===
-                                                            child.id &&
-                                                          field.meta
-                                                            .component ===
-                                                            component.component
-                                                      )
-                                                      .map((field) => {
-                                                        // TODO: avoid mutation
-                                                        field = applyModifierToField(
-                                                          field,
-                                                          modifiers,
-                                                          currentValues
-                                                        )
-
-                                                        return (
-                                                          <div key={field.id}>
-                                                            {renderField(
-                                                              field,
-                                                              form,
-                                                              defaultValues,
-                                                              modifiers
-                                                            )}
+                                                    <Popover className="relative">
+                                                      {({ open }) => (
+                                                        <>
+                                                          <div className="bottom-[1px] relative mt-6">
+                                                            <Popover.Button className="inline-flex justify-center px-4 py-2 w-full text-gray-700 text-smhover:bg-gray-50 bg-white border border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-gray-100 focus:ring-offset-2 focus:ring-2">
+                                                              <span className="inline-flex items-center space-x-2">
+                                                                <span>
+                                                                  {
+                                                                    component.component
+                                                                  }
+                                                                </span>
+                                                                {fields.some(
+                                                                  (field) =>
+                                                                    field.meta
+                                                                      .settingId ===
+                                                                      result.id &&
+                                                                    field.meta
+                                                                      .childId ===
+                                                                      child.id &&
+                                                                    field.meta
+                                                                      .component ===
+                                                                      component.component &&
+                                                                    form
+                                                                      .formState
+                                                                      .dirtyFields[
+                                                                      field.id
+                                                                    ]
+                                                                ) && (
+                                                                  <span className="relative">
+                                                                    <SaveIcon className="w-4 h-4 text-blue-500" />
+                                                                    <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
+                                                                  </span>
+                                                                )}
+                                                              </span>
+                                                              <ChevronDownIcon
+                                                                className={`${
+                                                                  open
+                                                                    ? ""
+                                                                    : "text-opacity-70"
+                                                                }
+                  ml-2 h-5 w-5 text-orange-300 group-hover:text-opacity-80 transition ease-in-out duration-150`}
+                                                                aria-hidden
+                                                              />
+                                                            </Popover.Button>
                                                           </div>
-                                                        )
-                                                      })}
+                                                          <Transition
+                                                            as={React.Fragment}
+                                                            enter="transition ease-out duration-200"
+                                                            enterFrom="opacity-0 translate-y-1"
+                                                            enterTo="opacity-100 translate-y-0"
+                                                            leave="transition ease-in duration-150"
+                                                            leaveFrom="opacity-100 translate-y-0"
+                                                            leaveTo="opacity-0 translate-y-1"
+                                                            show={open}
+                                                            unmount={false}
+                                                          >
+                                                            <Popover.Panel
+                                                              className="absolute z-10 left-1/2 mt-3 px-4 w-screen max-w-sm transform -translate-x-1/2 sm:px-0 lg:max-w-3xl"
+                                                              unmount={false}
+                                                            >
+                                                              <div className="rounded-lg shadow-lg overflow-hidden ring-black ring-opacity-5 ring-1">
+                                                                <div className="relative grid gap-8 grid-cols-4 p-7 bg-white">
+                                                                  {_.orderBy(
+                                                                    "order",
+                                                                    "asc",
+                                                                    fields
+                                                                  )
+                                                                    .filter(
+                                                                      (field) =>
+                                                                        field
+                                                                          .meta
+                                                                          .settingId ===
+                                                                          result.id &&
+                                                                        field
+                                                                          .meta
+                                                                          .childId ===
+                                                                          child.id &&
+                                                                        field
+                                                                          .meta
+                                                                          .component ===
+                                                                          component.component
+                                                                    )
+                                                                    .map(
+                                                                      (
+                                                                        field
+                                                                      ) => {
+                                                                        // TODO: avoid mutation
+                                                                        field = applyModifierToField(
+                                                                          field,
+                                                                          modifiers,
+                                                                          currentValues
+                                                                        )
+
+                                                                        return (
+                                                                          <div
+                                                                            key={
+                                                                              field.id
+                                                                            }
+                                                                            className={cn(
+                                                                              field.span ===
+                                                                                2 &&
+                                                                                "col-span-2",
+                                                                              field.span ===
+                                                                                3 &&
+                                                                                "col-span-3",
+                                                                              field.span ===
+                                                                                4 &&
+                                                                                "col-span-4"
+                                                                            )}
+                                                                          >
+                                                                            {renderField(
+                                                                              field,
+                                                                              form,
+                                                                              defaultValues,
+                                                                              modifiers
+                                                                            )}
+                                                                          </div>
+                                                                        )
+                                                                      }
+                                                                    )}
+                                                                </div>
+                                                              </div>
+                                                            </Popover.Panel>
+                                                          </Transition>
+                                                        </>
+                                                      )}
+                                                    </Popover>
                                                   </div>
                                                 )
                                               )}
@@ -520,15 +622,7 @@ export default function HomeScreen() {
 
 function renderField(field, form, defaultValues, modifiers) {
   return (
-    <div
-      className={cn(
-        "relative",
-        field.span === 2 && "col-span-2",
-        field.span === 3 && "col-span-3",
-        field.span === 4 && "col-span-4",
-        field.display === false && "hidden"
-      )}
-    >
+    <div className={cn("relative", field.display === false && "hidden")}>
       {form.formState.dirtyFields[field.id] && (
         <button
           className="absolute right-0 top-0"
