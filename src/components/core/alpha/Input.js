@@ -6,10 +6,15 @@ import IMask from "imask"
 import cn from "classnames"
 
 // TODO: extract
-export function DurationInput(props) {
+export const DurationInput = React.forwardRef(function DurationInput(
+  props,
+  ref
+) {
   return (
     <Input
       {...props}
+      ref={ref}
+      type="text"
       mask={{
         mask: "H{:}mm",
         blocks: {
@@ -30,9 +35,10 @@ export function DurationInput(props) {
         lazy: false,
       }}
       inputMode="numeric"
+      onChange={() => {}} // avoids a warning
     />
   )
-}
+})
 
 const Input = React.forwardRef(function Input(props, ref) {
   const {
@@ -120,7 +126,7 @@ const Input = React.forwardRef(function Input(props, ref) {
         <input
           {...rest}
           ref={(_ref) => {
-            ref(_ref)
+            ref?.(_ref)
             inputRef.current = _ref
           }}
           className={cn(
