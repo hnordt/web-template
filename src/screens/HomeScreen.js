@@ -426,7 +426,7 @@ function SettingsWidget() {
                                                     {form.formState.dirtyFields[
                                                       field.id
                                                     ] && (
-                                                      <div className="absolute right-0.5 top-0">
+                                                      <div className="absolute right-0 top-0">
                                                         <span className="relative text-red-700 line-through text-sm font-medium">
                                                           {field.value_type ===
                                                           "key_value" ? (
