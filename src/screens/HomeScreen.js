@@ -420,6 +420,12 @@ function SettingsWidget() {
                                                     key={field.id}
                                                     className={cn(
                                                       "relative",
+                                                      field.span === 2 &&
+                                                        "col-span-2",
+                                                      field.span === 3 &&
+                                                        "col-span-3",
+                                                      field.span === 4 &&
+                                                        "col-span-4",
                                                       field.display === false &&
                                                         "hidden"
                                                     )}
