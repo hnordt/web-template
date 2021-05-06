@@ -21,7 +21,7 @@ const Switch = React.forwardRef(function Switch(props, ref) {
           aria-hidden
         />
       </BaseSwitch>
-      <BaseSwitch.Label as="span" className="ml-3">
+      <BaseSwitch.Label as="span" className="ml-3 cursor-pointer">
         <span ref={ref} className="text-gray-900 text-sm">
           {props.label}
         </span>
