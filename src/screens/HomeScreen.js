@@ -3,11 +3,13 @@ import { Controller, useForm } from "react-hook-form"
 import {
   BellIcon,
   CalendarIcon,
+  CheckCircleIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   CogIcon,
   CursorClickIcon,
   DocumentReportIcon,
+  MinusCircleIcon,
   SaveIcon,
 } from "@heroicons/react/solid"
 import Input from "components/core/alpha/Input"
@@ -206,71 +208,70 @@ function SettingsWidget() {
 
   fields = applyModifiersToFields(fields)
 
+  const defaultValues = fields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.id]: field.value.value ?? field.default ?? "",
+    }),
+    {}
+  )
+
   return (
-    <div className="bg-white rounded-md shadow">
-      <ul className="divide-gray-200 divide-y">
-        {settings.map((result, resultIndex) => {
-          const Icon = {
-            "Settings": CogIcon,
-            "Alarms": BellIcon,
-            "Water Usage": DocumentReportIcon,
-            "Event History": CalendarIcon,
-            "Actions": CursorClickIcon,
-          }[result.category]
+    <Form
+      defaultValues={defaultValues}
+      onSubmit={(values, _, form) => form.reset(values)}
+      onError={(errors) => {
+        const firstInvalidField = fields.find(
+          (field) => String(field.id) === Object.keys(errors)[0]
+        )
 
-          const defaultValues = fields
-            .filter((field) => field.meta.settingId === result.id)
-            .reduce(
-              (acc, field) => ({
-                ...acc,
-                [field.id]: field.value.value ?? field.default ?? "",
-              }),
-              {}
-            )
+        setTabIndexes({
+          ...tabIndexes,
+          [firstInvalidField.meta.settingId]: firstInvalidField.meta.childIndex,
+        })
+      }}
+    >
+      {(form) => {
+        const changeCount = Object.keys(form.formState.dirtyFields).length
 
-          return (
-            <li key={result.id}>
-              <Form
-                defaultValues={defaultValues}
-                onSubmit={(values, _, form) => form.reset(values)}
-                onError={(errors) => {
-                  const firstInvalidField = fields.find(
-                    (field) => String(field.id) === Object.keys(errors)[0]
-                  )
+        const currentValues = form.watch()
 
-                  setTabIndexes({
-                    ...tabIndexes,
-                    [firstInvalidField.meta.settingId]:
-                      firstInvalidField.meta.childIndex,
-                  })
-                }}
-              >
-                {(form) => {
-                  const currentValues = form.watch()
-
-                  const modifiers = fields.reduce(
-                    (acc, field) => ({
+        const modifiers = fields.reduce(
+          (acc, field) => ({
+            ...acc,
+            ...field.child.reduce(
+              (acc, child) =>
+                String(JSON.parse(child.condition).value) ===
+                String(currentValues[field.id])
+                  ? {
                       ...acc,
-                      ...field.child.reduce(
-                        (acc, child) =>
-                          String(JSON.parse(child.condition).value) ===
-                          String(currentValues[field.id])
-                            ? {
-                                ...acc,
-                                [child.setting_definition_child]: _.omit(
-                                  ["condition", "setting_definition_child"],
-                                  child
-                                ),
-                              }
-                            : acc,
-                        {}
+                      [child.setting_definition_child]: _.omit(
+                        ["condition", "setting_definition_child"],
+                        child
                       ),
-                    }),
-                    {}
-                  )
+                    }
+                  : acc,
+              {}
+            ),
+          }),
+          {}
+        )
+
+        return (
+          <>
+            <div className="bg-white rounded-md shadow">
+              <ul className="divide-gray-200 divide-y">
+                {settings.map((result, resultIndex) => {
+                  const Icon = {
+                    "Settings": CogIcon,
+                    "Alarms": BellIcon,
+                    "Water Usage": DocumentReportIcon,
+                    "Event History": CalendarIcon,
+                    "Actions": CursorClickIcon,
+                  }[result.category]
 
                   return (
-                    <>
+                    <li key={result.id}>
                       <Disclosure>
                         {({ open }) => (
                           <>
@@ -280,6 +281,7 @@ function SettingsWidget() {
                                   "group flex items-center px-6 py-5 w-full text-left focus:outline-none focus-visible:ring-blue-400 focus-visible:ring focus-visible:ring-inset",
                                   resultIndex === 0 && "rounded-t-md",
                                   resultIndex === settings.length - 1 &&
+                                    !form.formState.isDirty &&
                                     "rounded-b-md"
                                 )}
                               >
@@ -311,46 +313,38 @@ function SettingsWidget() {
                                   </div>
                                 </div>
                                 <div className="flex items-center space-x-4">
+                                  {fields.some(
+                                    (field) =>
+                                      field.meta.settingId === result.id &&
+                                      form.formState.dirtyFields[field.id]
+                                  ) && (
+                                    <span className="relative">
+                                      <SaveIcon className="w-4 h-4 text-blue-500" />
+                                      <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
+                                    </span>
+                                  )}
                                   {open ? (
-                                    !form.formState.isDirty && (
-                                      <ChevronDownIcon
-                                        className="w-5 h-5 text-gray-400"
-                                        aria-hidden
-                                      />
-                                    )
+                                    <ChevronDownIcon
+                                      className="w-5 h-5 text-gray-400"
+                                      aria-hidden
+                                    />
                                   ) : (
-                                    <>
-                                      {fields.some(
-                                        (field) =>
-                                          field.meta.settingId === result.id &&
-                                          form.formState.dirtyFields[field.id]
-                                      ) && (
-                                        <span className="relative">
-                                          <SaveIcon className="w-4 h-4 text-blue-500" />
-                                          <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
-                                        </span>
-                                      )}
-                                      <ChevronRightIcon
-                                        className="w-5 h-5 text-gray-400"
-                                        aria-hidden
-                                      />
-                                    </>
+                                    <ChevronRightIcon
+                                      className="w-5 h-5 text-gray-400"
+                                      aria-hidden
+                                    />
                                   )}
                                 </div>
                               </Disclosure.Button>
-                              {open && form.formState.isDirty && (
-                                <div className="flex mx-6 space-x-2">
-                                  <Button
-                                    variant="secondary"
-                                    onClick={() => form.reset()}
-                                  >
-                                    Discard
-                                  </Button>
-                                  <Button type="submit">Save</Button>
-                                </div>
-                              )}
                             </div>
-                            <Disclosure.Panel className="p-6 bg-gray-50 shadow-inner">
+                            <Disclosure.Panel
+                              className={cn(
+                                "p-6 bg-gray-50 shadow-inner",
+                                resultIndex === settings.length - 1 &&
+                                  !form.formState.isDirty &&
+                                  "rounded-b-md"
+                              )}
+                            >
                               <Tabs
                                 index={tabIndexes[result.id] ?? 0}
                                 onChange={(index) =>
@@ -420,55 +414,49 @@ function SettingsWidget() {
                                                   modifiers[field.id]
                                                 )
 
-                                                // TODO: changes
-                                                // props.form.formState.dirtyFields[props.config.id] ? (
-                                                //   <div className="flex items-center space-x-2">
-                                                //     <span className="relative inline-flex items-center px-2.5 py-0.5 text-red-800 line-through text-sm font-medium bg-red-100 rounded-md">
-                                                //       {props.config.value_type === "key_value" ? (
-                                                //         _.invert(props.config.value_lower)[
-                                                //           props.defaultValues[props.config.id]
-                                                //         ] ?? "N/D"
-                                                //       ) : props.config.value_type === "boolean" ? (
-                                                //         <>
-                                                //           {props.defaultValues[props.config.id] ? (
-                                                //             <RiCheckboxLine className="w-4 h-4" />
-                                                //           ) : (
-                                                //             <RiCheckboxBlankLine className="w-4 h-4" />
-                                                //           )}
-                                                //           <span className="absolute left-2 right-2 top-1/2 h-px bg-red-800" />
-                                                //         </>
-                                                //       ) : (
-                                                //         props.defaultValues[props.config.id] ?? "N/D"
-                                                //       )}
-                                                //     </span>
-                                                //     <RiArrowRightLine className="w-4 h-4 text-gray-500" />
-                                                //     <span className="inline-flex items-center px-2.5 py-0.5 text-green-800 text-sm font-medium bg-green-100 rounded-md">
-                                                //       {props.config.value_type === "key_value" ? (
-                                                //         _.invert(props.config.value_lower)[
-                                                //           props.currentValues[props.config.id]
-                                                //         ] ?? "N/D"
-                                                //       ) : props.config.value_type === "boolean" ? (
-                                                //         props.currentValues[props.config.id] ? (
-                                                //           <RiCheckboxLine className="w-4 h-4" />
-                                                //         ) : (
-                                                //           <RiCheckboxBlankLine className="w-4 h-4" />
-                                                //         )
-                                                //       ) : (
-                                                //         props.currentValues[props.config.id] ?? "N/D"
-                                                //       )}
-                                                //     </span>
-                                                //   </div>
-                                                // ) : null
-
                                                 return (
                                                   <div
                                                     key={field.id}
-                                                    className={
-                                                      field.display === false
-                                                        ? "hidden"
-                                                        : undefined
-                                                    }
+                                                    className={cn(
+                                                      "relative",
+                                                      field.display === false &&
+                                                        "hidden"
+                                                    )}
                                                   >
+                                                    {form.formState.dirtyFields[
+                                                      field.id
+                                                    ] && (
+                                                      <div className="absolute right-0.5 top-0">
+                                                        <span className="relative text-red-700 line-through text-sm font-medium">
+                                                          {field.value_type ===
+                                                          "key_value" ? (
+                                                            _.invert(
+                                                              field.value_lower
+                                                            )[
+                                                              defaultValues[
+                                                                field.id
+                                                              ]
+                                                            ] ?? "N/D"
+                                                          ) : field.value_type ===
+                                                            "boolean" ? (
+                                                            <>
+                                                              {defaultValues[
+                                                                field.id
+                                                              ] ? (
+                                                                <CheckCircleIcon className="w-4 h-4" />
+                                                              ) : (
+                                                                <MinusCircleIcon className="w-4 h-4" />
+                                                              )}
+                                                              <span className="absolute left-2 right-2 top-1/2 h-px bg-red-700" />
+                                                            </>
+                                                          ) : (
+                                                            defaultValues[
+                                                              field.id
+                                                            ] ?? "N/D"
+                                                          )}
+                                                        </span>
+                                                      </div>
+                                                    )}
                                                     {(() => {
                                                       switch (
                                                         field.value_type
@@ -840,7 +828,10 @@ function SettingsWidget() {
                                                                           String(
                                                                             modifier.setting_definition_child
                                                                           ),
-                                                                          modifier.default
+                                                                          modifier.default,
+                                                                          {
+                                                                            shouldDirty: true,
+                                                                          }
                                                                         )
                                                                     )
                                                                   }}
@@ -920,21 +911,43 @@ function SettingsWidget() {
                           </>
                         )}
                       </Disclosure>
-                    </>
+                    </li>
                   )
-                }}
-              </Form>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+                })}
+                {form.formState.isDirty && (
+                  <li>
+                    <div className="flex items-center justify-between px-6 py-5 rounded-b-md">
+                      <p className="text-gray-900 text-sm">
+                        You have made{" "}
+                        <strong className="font-medium">
+                          {changeCount}{" "}
+                          {changeCount === 1 ? "change" : "changes"}
+                        </strong>
+                      </p>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() => form.reset()}
+                        >
+                          Discard
+                        </Button>
+                        <Button type="submit">Save changes</Button>
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </>
+        )
+      }}
+    </Form>
   )
 }
 
 export default function HomeScreen() {
   return (
-    <main className="flex justify-center pt-8 min-h-screen bg-gray-200">
+    <main className="flex justify-center py-8 min-h-screen bg-gray-200">
       <div className="w-full max-w-6xl">
         <SettingsWidget />
       </div>
