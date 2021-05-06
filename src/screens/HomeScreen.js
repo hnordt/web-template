@@ -395,7 +395,11 @@ function SettingsWidget() {
                                         {result.child.map((child) => (
                                           <TabPanel key={child.id}>
                                             <div className="grid gap-8 grid-cols-4">
-                                              {child.setting.map((setting) => {
+                                              {_.orderBy(
+                                                "order",
+                                                "asc",
+                                                child.setting
+                                              ).map((setting) => {
                                                 let field = fields.find(
                                                   (field) =>
                                                     field.id === setting.id
