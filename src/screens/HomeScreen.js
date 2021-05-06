@@ -426,31 +426,24 @@ function SettingsWidget() {
                                                       <div className="absolute right-0 top-0">
                                                         <span className="relative text-red-600 line-through text-sm font-medium">
                                                           {field.value_type ===
-                                                          "key_value" ? (
-                                                            _.invert(
-                                                              field.value_lower
-                                                            )[
-                                                              defaultValues[
+                                                          "key_value"
+                                                            ? _.invert(
+                                                                field.value_lower
+                                                              )[
+                                                                defaultValues[
+                                                                  field.id
+                                                                ]
+                                                              ] ?? "N/D"
+                                                            : field.value_type ===
+                                                              "boolean"
+                                                            ? defaultValues[
                                                                 field.id
                                                               ]
-                                                            ] ?? "N/D"
-                                                          ) : field.value_type ===
-                                                            "boolean" ? (
-                                                            <>
-                                                              {defaultValues[
+                                                              ? "On"
+                                                              : "Off"
+                                                            : defaultValues[
                                                                 field.id
-                                                              ] ? (
-                                                                <CheckCircleIcon className="w-4 h-4" />
-                                                              ) : (
-                                                                <MinusCircleIcon className="w-4 h-4" />
-                                                              )}
-                                                              <span className="absolute left-2 right-2 top-1/2 h-px bg-red-700" />
-                                                            </>
-                                                          ) : (
-                                                            defaultValues[
-                                                              field.id
-                                                            ] ?? "N/D"
-                                                          )}
+                                                              ] ?? "N/D"}
                                                         </span>
                                                       </div>
                                                     )}
