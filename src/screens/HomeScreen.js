@@ -179,8 +179,10 @@ function SettingsWidget() {
   const modifiers = fields.reduce(
     (acc, field) => [
       ...acc,
-      ...field.child.reduce(
-        (acc, child) => [
+      ...field.child.reduce((acc, child) => {
+        const condition = JSON.parse(child.condition)
+
+        return [
           ...acc,
           {
             ...child,
@@ -189,14 +191,15 @@ function SettingsWidget() {
               fieldId: field.id,
               value: normalizeFieldValue(
                 field,
-                JSON.parse(child.condition).value
+                condition.key
+                  ? field.value_lower[condition.key]
+                  : condition.value
               ),
               applyTo: child.setting_definition_child,
             },
           },
-        ],
-        []
-      ),
+        ]
+      }, []),
     ],
     []
   )
@@ -421,7 +424,9 @@ function SettingsWidget() {
                                                         field.span === 3 &&
                                                           "col-span-3",
                                                         field.span === 4 &&
-                                                          "col-span-4"
+                                                          "col-span-4",
+                                                        field.display ===
+                                                          false && "hidden"
                                                       )}
                                                     >
                                                       {renderField(
@@ -545,7 +550,10 @@ function SettingsWidget() {
                                                                                 "col-span-3",
                                                                               field.span ===
                                                                                 4 &&
-                                                                                "col-span-4"
+                                                                                "col-span-4",
+                                                                              field.display ===
+                                                                                false &&
+                                                                                "hidden"
                                                                             )}
                                                                           >
                                                                             {renderField(
@@ -626,7 +634,7 @@ export default function HomeScreen() {
 
 function renderField(field, form, defaultValues, modifiers) {
   return (
-    <div className={cn("relative", field.display === false && "hidden")}>
+    <div className="relative">
       {form.formState.dirtyFields[field.id] && (
         <button
           className="absolute right-0 top-0"
