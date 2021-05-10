@@ -6,6 +6,7 @@ const Button = React.forwardRef(function Button(props, ref) {
   const {
     type = "button",
     variant = "primary",
+    fill,
     loading,
     disabled,
     children,
@@ -17,15 +18,18 @@ const Button = React.forwardRef(function Button(props, ref) {
       {...rest}
       ref={ref}
       className={cn(
-        "inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2",
-        variant === "primary" && "text-white bg-blue-600 border-transparent",
+        "relative inline-flex justify-center items-center text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-red-500 focus:ring-offset-2 focus:ring-2",
+        variant === "primary" && "text-white bg-red-600 border-transparent",
         variant === "secondary" && "text-gray-700 bg-white border-gray-300",
+        !props.size && "px-4 py-2",
+        props.size === "xl" && "px-6 py-3",
+        fill && "w-full",
         loading
           ? "cursor-auto"
           : disabled
           ? "opacity-75 cursor-auto"
           : {
-              "hover:bg-blue-700": variant === "primary",
+              "hover:bg-red-700": variant === "primary",
               "hover:bg-gray-50": variant === "secondary",
             }
       )}
@@ -48,6 +52,7 @@ const Button = React.forwardRef(function Button(props, ref) {
 Button.propTypes = {
   type: PropTypes.oneOf(["submit"]),
   variant: PropTypes.oneOf(["primary", "secondary"]),
+  fill: PropTypes.bool,
   loading: PropTypes.bool,
   disabled: PropTypes.bool,
   children: PropTypes.node.isRequired,
