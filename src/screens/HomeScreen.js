@@ -23,6 +23,7 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs"
 import _ from "lodash/fp"
 import { Popover, Transition } from "@headlessui/react"
 import toast from "react-hot-toast"
+import BiocideTimer from "components/BiocideTimer"
 
 function enforceSeconds(value) {
   if (typeof value === "string" && value.includes(":")) {
@@ -438,12 +439,35 @@ function SettingsWidget() {
                                                     </div>
                                                   )
                                                 })}
+                                              <div className="col-span-4">
+                                                <div className="relative">
+                                                  <div
+                                                    className="absolute inset-0 flex items-center"
+                                                    aria-hidden="true"
+                                                  >
+                                                    <div className="w-full border-t border-gray-300" />
+                                                  </div>
+                                                  <div className="relative flex justify-start">
+                                                    <span className="pr-2 text-gray-500 text-sm bg-gray-50">
+                                                      Components
+                                                    </span>
+                                                  </div>
+                                                </div>
+                                              </div>
                                               {child.component.map(
-                                                (component) => (
+                                                (component, componentIndex) => (
                                                   <div
                                                     key={component.component}
                                                   >
-                                                    <Popover className="relative">
+                                                    {component.component_type ===
+                                                    "biocide_timer" ? (
+                                                      <BiocideTimer
+                                                        number={
+                                                          componentIndex + 1
+                                                        }
+                                                      />
+                                                    ) : null}
+                                                    {/* <Popover className="relative">
                                                       {({ open }) => (
                                                         <>
                                                           <div className="bottom-[1px] relative mt-6">
@@ -572,7 +596,7 @@ function SettingsWidget() {
                                                           </Transition>
                                                         </>
                                                       )}
-                                                    </Popover>
+                                                    </Popover> */}
                                                   </div>
                                                 )
                                               )}
