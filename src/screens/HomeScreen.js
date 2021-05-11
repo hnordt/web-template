@@ -440,8 +440,11 @@ function SettingsWidget() {
                                                     </div>
                                                   )
                                                 })}
-
-                                              <BiocideTimers />
+                                              {child.component.find(
+                                                (component) =>
+                                                  component.component_type ===
+                                                  "biocide_timer"
+                                              ) && <BiocideTimers />}
                                               {/* <Popover className="relative">
                                                       {({ open }) => (
                                                         <>
