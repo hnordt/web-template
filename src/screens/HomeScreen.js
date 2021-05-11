@@ -8,6 +8,7 @@ import {
   CogIcon,
   CursorClickIcon,
   DocumentReportIcon,
+  PlusIcon,
   SaveIcon,
 } from "@heroicons/react/solid"
 import Input, { DurationInput } from "components/core/alpha/Input"
@@ -21,7 +22,7 @@ import dayjs from "dayjs"
 import { Disclosure } from "@headlessui/react"
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs"
 import _ from "lodash/fp"
-import { Popover, Transition } from "@headlessui/react"
+// import { Popover, Transition } from "@headlessui/react"
 import toast from "react-hot-toast"
 import BiocideTimer from "components/BiocideTimer"
 
@@ -398,7 +399,7 @@ function SettingsWidget() {
                                       <div className="mt-6 text-gray-500 text-sm">
                                         {result.child.map((child) => (
                                           <TabPanel key={child.id}>
-                                            <div className="grid gap-8 grid-cols-4">
+                                            <div className="grid gap-6 grid-cols-4">
                                               {_.orderBy("order", "asc", fields)
                                                 .filter(
                                                   (field) =>
@@ -439,35 +440,9 @@ function SettingsWidget() {
                                                     </div>
                                                   )
                                                 })}
-                                              <div className="col-span-4">
-                                                <div className="relative">
-                                                  <div
-                                                    className="absolute inset-0 flex items-center"
-                                                    aria-hidden="true"
-                                                  >
-                                                    <div className="w-full border-t border-gray-300" />
-                                                  </div>
-                                                  <div className="relative flex justify-start">
-                                                    <span className="pr-2 text-gray-500 text-sm bg-gray-50">
-                                                      Components
-                                                    </span>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                              {child.component.map(
-                                                (component, componentIndex) => (
-                                                  <div
-                                                    key={component.component}
-                                                  >
-                                                    {component.component_type ===
-                                                    "biocide_timer" ? (
-                                                      <BiocideTimer
-                                                        number={
-                                                          componentIndex + 1
-                                                        }
-                                                      />
-                                                    ) : null}
-                                                    {/* <Popover className="relative">
+
+                                              <BiocideTimers />
+                                              {/* <Popover className="relative">
                                                       {({ open }) => (
                                                         <>
                                                           <div className="bottom-[1px] relative mt-6">
@@ -528,7 +503,7 @@ function SettingsWidget() {
                                                               unmount={false}
                                                             >
                                                               <div className="rounded-lg shadow-lg overflow-hidden ring-black ring-opacity-5 ring-1">
-                                                                <div className="relative grid gap-8 grid-cols-4 p-7 bg-white">
+                                                                <div className="relative grid gap-6 grid-cols-4 p-7 bg-white">
                                                                   {_.orderBy(
                                                                     "order",
                                                                     "asc",
@@ -597,9 +572,6 @@ function SettingsWidget() {
                                                         </>
                                                       )}
                                                     </Popover> */}
-                                                  </div>
-                                                )
-                                              )}
                                             </div>
                                           </TabPanel>
                                         ))}
@@ -907,5 +879,48 @@ function renderField(field, form, defaultValues, modifiers) {
         }
       })()}
     </div>
+  )
+}
+
+function BiocideTimers(props) {
+  const [timers, setTimers] = React.useState([{}])
+
+  return (
+    <>
+      <div className="col-span-4">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center" aria-hidden>
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex">
+            <span className="flex items-center pr-2 bg-gray-50 space-x-2">
+              <span className="text-gray-500 text-sm bg-gray-50">Timers</span>
+              <button
+                className="inline-flex items-center p-0.5 text-white bg-green-600 hover:bg-green-700 border border-transparent rounded-full focus:outline-none shadow-sm focus:ring-green-500 focus:ring-offset-2 focus:ring-2"
+                type="button"
+                onClick={() => setTimers([...timers, {}])}
+              >
+                <PlusIcon className="w-5 h-5" aria-hidden="true" />
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="col-span-4">
+        <div className="grid gap-6 grid-cols-4">
+          {timers.map((timer, timerIndex) => (
+            <BiocideTimer
+              key={timerIndex}
+              number={timerIndex + 1}
+              onRemove={() =>
+                setTimers(
+                  timers.filter((_, _timerIndex) => _timerIndex !== timerIndex)
+                )
+              }
+            />
+          ))}
+        </div>
+      </div>
+    </>
   )
 }
