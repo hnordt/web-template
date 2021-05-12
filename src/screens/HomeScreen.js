@@ -12,8 +12,8 @@ import {
   PlusCircleIcon,
   PlusIcon,
 } from "@heroicons/react/solid"
-import _ from "lodash/fp"
 import * as Scroll from "react-scroll"
+import useNewOrder from "hooks/useNewOrder"
 
 // TODO: fox
 function renderHint(component, totalCount = 0) {
@@ -59,7 +59,7 @@ function renderHint(component, totalCount = 0) {
 }
 
 function Option(props) {
-  const { component, selected, setSelected } = props
+  const { component, item, dispatch } = props
 
   const toolbarState = useToolbarState({
     loop: true,
@@ -68,11 +68,13 @@ function Option(props) {
   if (component.max === 1) {
     return (
       <RadioGroup
-        value={selected[component.id]}
+        value={item.options[component.id]}
         onChange={(value) => {
-          setSelected({
-            ...selected,
-            [component.id]: value,
+          dispatch({
+            type: "SELECT_OPTION",
+            itemId: item.id,
+            componentId: component.id,
+            optionId: value,
           })
           props.onFinishSelection?.()
         }}
@@ -82,7 +84,9 @@ function Option(props) {
             <RadioGroup.Label className="text-gray-900 text-base font-medium">
               {component.name}
             </RadioGroup.Label>
-            <div>{renderHint(component, selected[component.id] ? 1 : 0)}</div>
+            <div>
+              {renderHint(component, item.options[component.id] ? 1 : 0)}
+            </div>
           </div>
         </div>
         <div className="divide-gray-200 divide-y">
@@ -138,7 +142,7 @@ function Option(props) {
     )
   }
 
-  const totalCount = Object.values(selected[component.id] ?? []).reduce(
+  const totalCount = Object.values(item.options[component.id] ?? []).reduce(
     (acc, v) => (v > 0 ? acc + v : acc),
     0
   )
@@ -155,7 +159,7 @@ function Option(props) {
       </div>
       <div className="divide-gray-200 divide-y">
         {component.options.map((option) => {
-          const optionCount = selected[component.id]?.[option.id] ?? 0
+          const optionCount = item.options[component.id]?.[option.id] ?? 0
 
           return (
             <div
@@ -197,13 +201,11 @@ function Option(props) {
                           as="button"
                           className="rounded-full focus:outline-none focus:ring-red-500 focus:ring-2"
                           onClick={() => {
-                            setSelected({
-                              ...selected,
-                              [component.id]: {
-                                ...selected[component.id],
-                                [option.id]:
-                                  optionCount > 0 ? optionCount - 1 : 0,
-                              },
+                            dispatch({
+                              type: "DECREMENT_OPTION",
+                              itemId: item.id,
+                              componentId: component.id,
+                              optionId: option.id,
                             })
                           }}
                         >
@@ -226,15 +228,11 @@ function Option(props) {
                       )}
                       disabled={totalCount === component.max}
                       onClick={() => {
-                        setSelected({
-                          ...selected,
-                          [component.id]: {
-                            ...selected[component.id],
-                            [option.id]:
-                              totalCount < component.max
-                                ? optionCount + 1
-                                : optionCount,
-                          },
+                        dispatch({
+                          type: "INCREMENT_OPTION",
+                          itemId: item.id,
+                          componentId: component.id,
+                          optionId: option.id,
                         })
 
                         if (totalCount === component.max - 1) {
@@ -339,7 +337,11 @@ function Option(props) {
   // )
 }
 
+const product = products[1]
+
 export default function HomeScreen() {
+  const newOrder = useNewOrder()
+
   // {
   //   [component.id]: option.id, (radio)
   //   [component.id]: { (checkbox)
@@ -351,15 +353,24 @@ export default function HomeScreen() {
   //     [option2.id]: 0
   //   },
   // }
-  const [selected, setSelected] = React.useState({})
-
-  const product = products[1]
-
   const toolbarState = useToolbarState({
     loop: true,
   })
 
   const commentsInputRef = React.useRef(null)
+
+  React.useEffect(() => {
+    newOrder.dispatch({
+      type: "ADD_ITEM",
+      product,
+    })
+  }, [])
+
+  const item = newOrder.state.items[0]
+
+  if (!item) {
+    return null
+  }
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-black bg-opacity-75">
@@ -412,8 +423,8 @@ export default function HomeScreen() {
                 <Scroll.Element key={component.id} name={component.name}>
                   <Option
                     component={component}
-                    selected={selected}
-                    setSelected={setSelected}
+                    item={item}
+                    dispatch={newOrder.dispatch}
                     onFinishSelection={() => {
                       const component =
                         product.components[componentIndex + 1]?.name
@@ -463,16 +474,12 @@ export default function HomeScreen() {
                     {...toolbarState}
                     as="button"
                     className="inline-flex items-center justify-center w-10 h-10 border border-gray-200 rounded-full focus:outline-none focus:ring-red-500 focus:ring-offset-2 focus:ring-2"
-                    // onClick={() => {
-                    //   setSelected({
-                    //     ...selected,
-                    //     [component.id]: {
-                    //       ...selected[component.id],
-                    //       [option.id]:
-                    //         optionCount > 0 ? optionCount - 1 : 0,
-                    //     },
-                    //   })
-                    // }}
+                    onClick={() => {
+                      newOrder.dispatch({
+                        type: "DECREMENT_ITEM",
+                        itemId: item.id,
+                      })
+                    }}
                   >
                     <MinusIcon className="w-5 h-5 text-gray-900" />
                   </ToolbarItem>
@@ -480,24 +487,18 @@ export default function HomeScreen() {
                     className="text-gray-900 text-base font-medium"
                     disabled
                   >
-                    {String(0)}
+                    {String(item.quantity)}
                   </ToolbarItem>
                   <ToolbarItem
                     {...toolbarState}
                     as="button"
                     className="inline-flex items-center justify-center w-10 h-10 border border-gray-200 rounded-full focus:outline-none focus:ring-red-500 focus:ring-offset-2 focus:ring-2"
-                    // onClick={() => {
-                    //   setSelected({
-                    //     ...selected,
-                    //     [component.id]: {
-                    //       ...selected[component.id],
-                    //       [option.id]:
-                    //         totalCount < component.max
-                    //           ? optionCount + 1
-                    //           : optionCount,
-                    //     },
-                    //   })
-                    // }}
+                    onClick={() => {
+                      newOrder.dispatch({
+                        type: "INCREMENT_ITEM",
+                        itemId: item.id,
+                      })
+                    }}
                   >
                     <PlusIcon className="w-5 h-5 text-gray-900" />
                   </ToolbarItem>
