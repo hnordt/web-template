@@ -106,21 +106,19 @@ function reducer(state, action) {
     }
 
     case "INCREMENT_OPTION": {
-      const item = state.items.find((item) => item.id === action.itemId)
-
       return {
         ...state,
-        items: state.items.map((_item) => {
-          if (_item === item) {
+        items: state.items.map((item) => {
+          if (item.id === action.itemId) {
             return {
-              ..._item,
+              ...item,
               options: {
-                ..._item.options,
+                ...item.options,
                 [action.componentId]: {
-                  ..._item.options[action.componentId],
+                  ...item.options[action.componentId],
                   [action.optionId]:
-                    (_item.options[action.componentId]?.[action.optionId] ??
-                      0) + 1,
+                    (item.options[action.componentId]?.[action.optionId] ?? 0) +
+                    1,
                 },
               },
             }
@@ -132,20 +130,18 @@ function reducer(state, action) {
     }
 
     case "DECREMENT_OPTION": {
-      const item = state.items.find((item) => item.id === action.itemId)
-
       return {
         ...state,
-        items: state.items.map((_item) => {
-          if (_item === item) {
+        items: state.items.map((item) => {
+          if (item.id === action.itemId) {
             return {
-              ..._item,
+              ...item,
               options: {
-                ..._item.options,
+                ...item.options,
                 [action.componentId]: {
-                  ..._item.options[action.componentId],
+                  ...item.options[action.componentId],
                   [action.optionId]: Math.max(
-                    _item.options[action.componentId][action.optionId] - 1,
+                    item.options[action.componentId][action.optionId] - 1,
                     0
                   ),
                 },

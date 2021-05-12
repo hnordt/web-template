@@ -16,7 +16,10 @@ const products = _.flatten(
         : null,
       name: item.description,
       description: item.details,
-      price: item.unitPrice > 0 ? item.unitPrice : item.unitMinPrice,
+      price: item.unitPrice,
+      // When unitPrice is greater than zero it means that the product has a
+      // base price, otherwise minPrice indicates the starting price
+      minPrice: item.unitPrice > 0 ? 0 : item.unitMinPrice,
       originalPrice: item.unitOriginalPrice,
       components: item.choices
         ? item.choices.map((choice) => ({
