@@ -9,13 +9,14 @@ const products = _.flatten(
       category: {
         id: category.code,
         name: category.name,
-        description: null,
       },
       imageUrl: item.logoUrl
         ? `https://static-images.ifood.com.br/image/upload/t_high/pratos/${item.logoUrl}`
         : null,
       name: item.description,
-      description: item.details,
+      // iFood might return details as undefined, so we want to enforce null
+      // in that case
+      description: item.details ?? null,
       price: item.unitPrice,
       // When unitPrice is greater than zero it means that the product has a
       // base price, otherwise minPrice indicates the starting price
@@ -30,7 +31,9 @@ const products = _.flatten(
             options: choice.garnishItens.map((item) => ({
               id: item.code,
               name: item.description,
-              description: item.details,
+              // iFood might return details as undefined, so we want to enforce null
+              // in that case
+              description: item.details ?? null,
               price: item.unitPrice,
             })),
           }))
