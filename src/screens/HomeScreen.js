@@ -1,6 +1,5 @@
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
-// import { Checkbox } from "reakit/Checkbox"
 import { useToolbarState, Toolbar, ToolbarItem } from "reakit/Toolbar"
 import cn from "classnames"
 import products from "data/products"
@@ -16,7 +15,6 @@ import {
 import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
 
-// TODO: fix
 function renderHint(component, totalCount = 0) {
   const hint = ["Escolha"]
 
@@ -278,17 +276,6 @@ function Option(props) {
                       </ToolbarItem>
                     </Toolbar>
                   </div>
-                  {/* <span
-                  className={cn(
-                    checked
-                      ? "bg-red-600 border-transparent"
-                      : "bg-white border-gray-300",
-                    "flex-shrink-0 h-5 w-5 rounded border flex items-center justify-center group-focus:ring-2 group-focus:ring-offset-2 group-focus:ring-red-500"
-                  )}
-                  aria-hidden
-                >
-                  <CheckIcon className="w-3.5 h-3.5 text-white" />
-                </span> */}
                 </div>
               </div>
             )
@@ -297,79 +284,6 @@ function Option(props) {
       </div>
     </div>
   )
-
-  // Checkbox
-  // return (
-  //   <div>
-  //     <div className="sticky z-10 top-0 -mt-px px-6 py-5 bg-gray-50 border-b border-t border-gray-200">
-  //       <div className="flex items-center justify-between">
-  //         <div className="text-gray-900 text-base font-medium">
-  //           {component.name}
-  //         </div>
-  //         <div>
-  //           {renderHint(component, totalCount)}
-  //         </div>
-  //       </div>
-  //     </div>
-  //     <div className="divide-gray-200 divide-y">
-  //       {component.options.map((option) => {
-  //         const checked = !!selected[component.id]?.[option.id]
-
-  //         return (
-  //           <Checkbox
-  //             key={option.id}
-  //             as="button"
-  //             className={cn(
-  //               "group text-left w-full px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 cursor-pointer"
-  //             )}
-  //             onClick={() => {
-  //               setSelected({
-  //                 ...selected,
-  //                 [component.id]: {
-  //                   ...selected[component.id],
-  //                   [option.id]: !checked,
-  //                 },
-  //               })
-  //             }}
-  //           >
-  //             <div className="flex items-center justify-between space-x-6">
-  //               <div>
-  //                 <div className="space-y-1">
-  //                   <h3 className="text-gray-900 text-sm font-medium">
-  //                     {option.name}
-  //                   </h3>
-  //                   <p className="text-gray-500 text-sm">
-  //                     {option.description}
-  //                   </p>
-  //                 </div>
-  //                 {option.price > 0 && (
-  //                   <p className="mt-2 text-red-600 text-sm font-medium">
-  //                     +{" "}
-  //                     {new Intl.NumberFormat("pt-BR", {
-  //                       style: "currency",
-  //                       currency: "BRL",
-  //                     }).format(option.price)}
-  //                   </p>
-  //                 )}
-  //               </div>
-  //               <span
-  //                 className={cn(
-  //                   checked
-  //                     ? "bg-red-600 border-transparent"
-  //                     : "bg-white border-gray-300",
-  //                   "flex-shrink-0 h-5 w-5 rounded border flex items-center justify-center group-focus:ring-2 group-focus:ring-offset-2 group-focus:ring-red-500"
-  //                 )}
-  //                 aria-hidden
-  //               >
-  //                 <CheckIcon className="w-3.5 h-3.5 text-white" />
-  //               </span>
-  //             </div>
-  //           </Checkbox>
-  //         )
-  //       })}
-  //     </div>
-  //   </div>
-  // )
 }
 
 const product = products[2]
@@ -407,17 +321,6 @@ function getOrderItemTotal(item) {
 export default function HomeScreen() {
   const newOrder = useNewOrder()
 
-  // {
-  //   [component.id]: option.id, (radio)
-  //   [component.id]: { (checkbox)
-  //     [option1.id]: false,
-  //     [option2.id]: false
-  //   },
-  //   [component.id]: { (multiple count)
-  //     [option1.id]: 0,
-  //     [option2.id]: 0
-  //   },
-  // }
   const toolbarState = useToolbarState({
     loop: true,
   })
