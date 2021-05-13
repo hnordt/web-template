@@ -113,6 +113,28 @@ function Option(props) {
     }
   }
 
+  function renderOptionSummary(option) {
+    return (
+      <div>
+        <div className="space-y-1">
+          <h3 className="text-gray-900 text-sm font-medium">{option.name}</h3>
+          {option.description && (
+            <p className="text-gray-500 text-sm">{option.description}</p>
+          )}
+        </div>
+        {option.price > 0 && (
+          <p className="mt-2 text-red-600 text-sm font-medium">
+            +{" "}
+            {new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(option.price)}
+          </p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="sticky z-10 top-0 px-6 py-5 bg-gray-50 border-b border-t border-gray-200">
@@ -149,160 +171,120 @@ function Option(props) {
           />
         </div>
       )}
-      {component.max === 1 ? (
-        <RadioGroup
-          className="divide-gray-200 divide-y"
-          value={item.options[component.id]}
-          onChange={(value) => {
-            dispatch({
-              type: "SELECT_OPTION",
-              itemId: item.id,
-              componentId: component.id,
-              optionId: value,
-            })
-            props.onDone()
-          }}
-        >
-          {options.map((option) => (
-            <RadioGroup.Option
-              key={option.id}
-              value={option.id}
-              className={cn(
-                "px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 cursor-pointer"
-              )}
-            >
-              {({ active, checked }) => (
-                <div className="flex items-center justify-between space-x-6">
-                  <div>
-                    <div className="space-y-1">
-                      <h3 className="text-gray-900 text-sm font-medium">
-                        {option.name}
-                      </h3>
-                      {option.description && (
-                        <p className="text-gray-500 text-sm">
-                          {option.description}
-                        </p>
-                      )}
-                    </div>
-                    {option.price > 0 && (
-                      <p className="mt-2 text-red-600 text-sm font-medium">
-                        +{" "}
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(option.price)}
-                      </p>
-                    )}
-                  </div>
-                  <span
-                    className={cn(
-                      checked
-                        ? "bg-red-600 border-transparent"
-                        : "bg-white border-gray-300",
-                      active ? "ring-2 ring-offset-2 ring-red-500" : "",
-                      "flex-shrink-0 h-5 w-5 rounded-full border flex items-center justify-center"
-                    )}
-                    aria-hidden
-                  >
-                    <span className="w-2.5 h-2.5 bg-white rounded-full" />
-                  </span>
-                </div>
-              )}
-            </RadioGroup.Option>
-          ))}
-        </RadioGroup>
+      {options.length === 0 ? (
+        <div className="px-6 py-5">
+          <p className="text-gray-500 text-sm">Nenhum resultado encontrado</p>
+        </div>
       ) : (
-        <div className="divide-gray-200 divide-y">
-          {options.length === 0 ? (
-            <div className={cn("px-6 py-5")}>
-              <p className="text-gray-500 text-sm">
-                Nenhum resultado encontrado
-              </p>
-            </div>
-          ) : (
-            options.map((option) => {
-              const optionCount = item.options[component.id]?.[option.id] ?? 0
-
-              return (
-                <div
+        <div>
+          {component.max === 1 ? (
+            <RadioGroup
+              className="divide-gray-200 divide-y"
+              value={item.options[component.id]}
+              onChange={(value) => {
+                dispatch({
+                  type: "SELECT_OPTION",
+                  itemId: item.id,
+                  componentId: component.id,
+                  optionId: value,
+                })
+                props.onDone()
+              }}
+            >
+              {options.map((option) => (
+                <RadioGroup.Option
                   key={option.id}
+                  value={option.id}
                   className={cn(
-                    "group text-left w-full px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500"
+                    "px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 cursor-pointer"
                   )}
                 >
-                  <div className="flex items-center justify-between space-x-6">
-                    <div>
-                      <div className="space-y-1">
-                        <h3 className="text-gray-900 text-sm font-medium">
-                          {option.name}
-                        </h3>
-                        {option.description && (
-                          <p className="text-gray-500 text-sm">
-                            {option.description}
-                          </p>
+                  {({ active, checked }) => (
+                    <div className="flex items-center justify-between space-x-6">
+                      {renderOptionSummary(option)}
+                      <span
+                        className={cn(
+                          checked
+                            ? "bg-red-600 border-transparent"
+                            : "bg-white border-gray-300",
+                          active ? "ring-2 ring-offset-2 ring-red-500" : "",
+                          "flex-shrink-0 h-5 w-5 rounded-full border flex items-center justify-center"
                         )}
-                      </div>
-                      {option.price > 0 && (
-                        <p className="mt-2 text-red-600 text-sm font-medium">
-                          +{" "}
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(option.price)}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex-shrink-0">
-                      <Toolbar
-                        {...optionCountToolbarState}
-                        className="flex items-center space-x-2.5"
-                        aria-label="Quantidade"
+                        aria-hidden
                       >
-                        <ToolbarItem
+                        <span className="w-2.5 h-2.5 bg-white rounded-full" />
+                      </span>
+                    </div>
+                  )}
+                </RadioGroup.Option>
+              ))}
+            </RadioGroup>
+          ) : (
+            <div className="divide-gray-200 divide-y">
+              {options.map((option) => {
+                const optionCount = item.options[component.id]?.[option.id] ?? 0
+
+                return (
+                  <div
+                    key={option.id}
+                    className={cn(
+                      "group text-left w-full px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500"
+                    )}
+                  >
+                    <div className="flex items-center justify-between space-x-6">
+                      {renderOptionSummary(option)}
+                      <div className="flex-shrink-0">
+                        <Toolbar
                           {...optionCountToolbarState}
-                          as="button"
-                          className={cn(
-                            "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
-                            optionCount === 0 ? "opacity-25" : undefined
-                          )}
-                          onClick={() => {
-                            dispatch({
-                              type: "DECREMENT_OPTION",
-                              itemId: item.id,
-                              componentId: component.id,
-                              optionId: option.id,
-                            })
-                          }}
+                          className="flex items-center space-x-2.5"
+                          aria-label="Quantidade"
                         >
-                          <MinusCircleIcon className="w-6 h-6 text-red-600" />
-                        </ToolbarItem>
-                        <ToolbarItem
-                          className="text-gray-900 text-base font-medium"
-                          disabled
-                        >
-                          {String(optionCount)}
-                        </ToolbarItem>
-                        <ToolbarItem
-                          {...optionCountToolbarState}
-                          as="button"
-                          className={cn(
-                            "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
-                            quantityOfOptionsSelected === component.max
-                              ? "opacity-25"
-                              : undefined
-                          )}
-                          onClick={() =>
-                            incrementOption(item, component, option)
-                          }
-                        >
-                          <PlusCircleIcon className="w-6 h-6 text-red-600" />
-                        </ToolbarItem>
-                      </Toolbar>
+                          <ToolbarItem
+                            {...optionCountToolbarState}
+                            as="button"
+                            className={cn(
+                              "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
+                              optionCount === 0 ? "opacity-25" : undefined
+                            )}
+                            onClick={() => {
+                              dispatch({
+                                type: "DECREMENT_OPTION",
+                                itemId: item.id,
+                                componentId: component.id,
+                                optionId: option.id,
+                              })
+                            }}
+                          >
+                            <MinusCircleIcon className="w-6 h-6 text-red-600" />
+                          </ToolbarItem>
+                          <ToolbarItem
+                            className="text-gray-900 text-base font-medium"
+                            disabled
+                          >
+                            {String(optionCount)}
+                          </ToolbarItem>
+                          <ToolbarItem
+                            {...optionCountToolbarState}
+                            as="button"
+                            className={cn(
+                              "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
+                              quantityOfOptionsSelected === component.max
+                                ? "opacity-25"
+                                : undefined
+                            )}
+                            onClick={() =>
+                              incrementOption(item, component, option)
+                            }
+                          >
+                            <PlusCircleIcon className="w-6 h-6 text-red-600" />
+                          </ToolbarItem>
+                        </Toolbar>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })
+                )
+              })}
+            </div>
           )}
         </div>
       )}
