@@ -20,20 +20,22 @@ function ZapierIcon() {
 
 function IntegrationCard(props) {
   return (
-    <div className="bg-white w-72 h-52 shadow-md text-center items-center flex rounded-sm">
-      <div className="w-full">
-        <div className="bg-gray-300 relative w-20 h-px top-28" />
-        <span className="relative left-60 bottom-5">
+    <div className="bg-white w-72 h-48 shadow-md text-center items-center rounded-md">
+      <div className="w-full text-center grid grid-rows-2">
+        <div className="relative left-60 top-3">
           <ZapierIcon />
-        </span>
-        <img
-          className="m-auto mb-16 pb-4"
-          src={`/integration-logos/${props.logo}.png`}
-          alt={props.name}
-        ></img>
+        </div>
+        <div className="relative pt-5">
+          <img
+            className="absolute ml-20"
+            src={`/integration-logos/${props.logo}.png`}
+            alt={props.name}
+          ></img>
+        </div>
       </div>
-      <div className="self-end absolute">
-        <p className="p-4 relative w-full pb-5 text-sm font-bold text-gray-600">
+      <div>
+        <div className="bg-gray-300 h-px mx-4 mt-20" />
+        <p className="p-4 relative w-full text-left bottom-1 text-sm font-bold text-gray-600">
           {props.name}
         </p>
       </div>
