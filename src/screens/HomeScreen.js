@@ -293,7 +293,7 @@ function Option(props) {
   )
 }
 
-const product = products[2]
+const product = products[1]
 
 // TODO: OrderItem.getTotal
 function getOrderItemTotal(item) {
