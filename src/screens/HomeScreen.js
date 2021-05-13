@@ -2,6 +2,7 @@ import React from "react"
 import { RadioGroup } from "@headlessui/react"
 import { useToolbarState, Toolbar, ToolbarItem } from "reakit/Toolbar"
 import cn from "classnames"
+import _ from "lodash/fp"
 import products from "data/products"
 import Button from "components/core/alpha/Button"
 import {
@@ -15,10 +16,10 @@ import {
 import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
 
-function renderHint(component, totalCount = 0) {
+function renderHint(component, totalQuantity = 0) {
   const hint = ["Escolha"]
 
-  if (totalCount === 0) {
+  if (totalQuantity === 0) {
     if (component.min === 0) {
       hint.push(`até ${component.max}`)
     } else if (component.min === component.max) {
@@ -34,7 +35,7 @@ function renderHint(component, totalCount = 0) {
     )
   }
 
-  const remaining = component.max - totalCount
+  const remaining = component.max - totalQuantity
 
   if (remaining === 0) {
     return <CheckIcon className="w-6 h-6 text-green-600" />
@@ -61,45 +62,79 @@ function Option(props) {
   const { component, item, dispatch } = props
 
   const [searchText, setSearchText] = React.useState("")
+  const [finishedSelection, setFinishedSelection] = React.useState(false)
+
+  // TODO: create reducer as a race condition is still possible
+  React.useEffect(() => {
+    if (finishedSelection) {
+      props.onFinishSelection?.() // TODO
+      setFinishedSelection(false)
+    }
+  }, [finishedSelection])
 
   const toolbarState = useToolbarState({
     loop: true,
   })
 
-  if (component.max === 1) {
-    return (
-      <RadioGroup
-        value={item.options[component.id]}
-        onChange={(value) => {
-          dispatch({
-            type: "SELECT_OPTION",
-            itemId: item.id,
-            componentId: component.id,
-            optionId: value,
-          })
-          props.onFinishSelection?.()
-        }}
-      >
-        <div className="sticky z-10 top-0 px-6 py-5 bg-gray-50 border-b border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <RadioGroup.Label className="text-gray-900 text-base font-medium">
-              {component.name}
-            </RadioGroup.Label>
-            <div>
-              {renderHint(component, item.options[component.id] ? 1 : 0)}
-            </div>
+  const options = component.options.filter((option) =>
+    option.name.toLowerCase().includes(searchText.toLowerCase())
+  )
+
+  const totalQuantity =
+    component.max === 1
+      ? item.options[component.id]
+        ? 1
+        : 0
+      : _.sum(_.values(item.options[component.id]))
+
+  return (
+    <div>
+      <div className="sticky z-10 top-0 px-6 py-5 bg-gray-50 border-b border-t border-gray-200">
+        <div className="flex items-center justify-between">
+          <div className="text-gray-900 text-base font-medium">
+            {component.name}
+          </div>
+          <div className="flex items-center space-x-4">
+            {component.options.length > 8 && (
+              <div className="relative">
+                <SearchIcon className="absolute left-2 top-1/2 w-4 h-4 text-gray-400 transform -translate-y-1/2" />
+                <input
+                  className="placeholder-gray-500 pl-7 w-36 h-6 text-gray-900 text-sm leading-none bg-white border border-gray-300 focus:border-red-500 rounded-xl focus:outline-none shadow-sm focus:ring-red-500"
+                  type="search"
+                  value={searchText}
+                  placeholder="Buscar"
+                  onChange={(e) => {
+                    setSearchText(e.target.value)
+                    props.onSearch?.()
+                  }}
+                />
+              </div>
+            )}
+            <div>{renderHint(component, totalQuantity)}</div>
           </div>
         </div>
-        <div className="divide-gray-200 divide-y">
-          {component.options.map((option) => (
+      </div>
+      {component.max === 1 ? (
+        <RadioGroup
+          className="divide-gray-200 divide-y"
+          value={item.options[component.id]}
+          onChange={(value) => {
+            dispatch({
+              type: "SELECT_OPTION",
+              itemId: item.id,
+              componentId: component.id,
+              optionId: value,
+            })
+            props.onFinishSelection?.()
+          }}
+        >
+          {options.map((option) => (
             <RadioGroup.Option
               key={option.id}
               value={option.id}
-              className={({ checked }) =>
-                cn(
-                  "px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 cursor-pointer"
-                )
-              }
+              className={cn(
+                "px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500 cursor-pointer"
+              )}
             >
               {({ active, checked }) => (
                 <div className="flex items-center justify-between space-x-6">
@@ -140,154 +175,119 @@ function Option(props) {
               )}
             </RadioGroup.Option>
           ))}
-        </div>
-      </RadioGroup>
-    )
-  }
-
-  const totalCount = Object.values(item.options[component.id] ?? []).reduce(
-    (acc, v) => (v > 0 ? acc + v : acc),
-    0
-  )
-
-  const options = component.options.filter((option) =>
-    option.name.toLowerCase().includes(searchText.toLowerCase())
-  )
-
-  return (
-    <div>
-      <div className="sticky z-10 top-0 -mt-px px-6 py-5 bg-gray-50 border-b border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="text-gray-900 text-base font-medium">
-            {component.name}
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <SearchIcon className="absolute left-2 top-1/2 w-4 h-4 text-gray-400 transform -translate-y-1/2" />
-              <input
-                className="placeholder-gray-500 pl-7 w-36 h-6 text-gray-900 text-sm leading-none bg-white border border-gray-300 focus:border-red-500 rounded-xl focus:outline-none shadow-sm focus:ring-red-500"
-                type="search"
-                value={searchText}
-                placeholder="Buscar"
-                onChange={(e) => {
-                  setSearchText(e.target.value)
-                  props.onSearch?.()
-                }}
-              />
+        </RadioGroup>
+      ) : (
+        <div className="divide-gray-200 divide-y">
+          {options.length === 0 ? (
+            <div className={cn("px-6 py-5")}>
+              <p className="text-gray-500 text-sm">
+                Nenhum resultado encontrado
+              </p>
             </div>
-            <div>{renderHint(component, totalCount)}</div>
-          </div>
-        </div>
-      </div>
-      <div className="divide-gray-200 divide-y">
-        {options.length === 0 ? (
-          <div className={cn("px-6 py-5")}>
-            <p className="text-gray-500 text-sm">Nenhum resultado encontrado</p>
-          </div>
-        ) : (
-          options.map((option) => {
-            const optionCount = item.options[component.id]?.[option.id] ?? 0
+          ) : (
+            options.map((option) => {
+              const optionCount = item.options[component.id]?.[option.id] ?? 0
 
-            return (
-              <div
-                key={option.id}
-                className={cn(
-                  "group text-left w-full px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500"
-                )}
-              >
-                <div className="flex items-center justify-between space-x-6">
-                  <div>
-                    <div className="space-y-1">
-                      <h3 className="text-gray-900 text-sm font-medium">
-                        {option.name}
-                      </h3>
-                      {option.description && (
-                        <p className="text-gray-500 text-sm">
-                          {option.description}
+              return (
+                <div
+                  key={option.id}
+                  className={cn(
+                    "group text-left w-full px-6 py-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500"
+                  )}
+                >
+                  <div className="flex items-center justify-between space-x-6">
+                    <div>
+                      <div className="space-y-1">
+                        <h3 className="text-gray-900 text-sm font-medium">
+                          {option.name}
+                        </h3>
+                        {option.description && (
+                          <p className="text-gray-500 text-sm">
+                            {option.description}
+                          </p>
+                        )}
+                      </div>
+                      {option.price > 0 && (
+                        <p className="mt-2 text-red-600 text-sm font-medium">
+                          +{" "}
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(option.price)}
                         </p>
                       )}
                     </div>
-                    {option.price > 0 && (
-                      <p className="mt-2 text-red-600 text-sm font-medium">
-                        +{" "}
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(option.price)}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex-shrink-0">
-                    <Toolbar
-                      {...toolbarState}
-                      className="flex items-center space-x-2.5"
-                      aria-label="Quantidade"
-                    >
-                      {optionCount > 0 && (
-                        <>
-                          <ToolbarItem
-                            {...toolbarState}
-                            as="button"
-                            className="rounded-full focus:outline-none focus:ring-red-500 focus:ring-2"
-                            onClick={() => {
-                              dispatch({
-                                type: "DECREMENT_OPTION",
-                                itemId: item.id,
-                                componentId: component.id,
-                                optionId: option.id,
-                              })
-                            }}
-                          >
-                            <MinusCircleIcon className="w-6 h-6 text-red-600" />
-                          </ToolbarItem>
-                          <ToolbarItem
-                            className="text-gray-900 text-base font-medium"
-                            disabled
-                          >
-                            {String(optionCount)}
-                          </ToolbarItem>
-                        </>
-                      )}
-                      <ToolbarItem
+                    <div className="flex-shrink-0">
+                      <Toolbar
                         {...toolbarState}
-                        as="button"
-                        className={cn(
-                          "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
-                          totalCount === component.max
-                            ? "opacity-25"
-                            : undefined
-                        )}
-                        disabled={totalCount === component.max}
-                        onClick={() => {
-                          dispatch({
-                            type: "INCREMENT_OPTION",
-                            itemId: item.id,
-                            componentId: component.id,
-                            optionId: option.id,
-                          })
-
-                          if (totalCount === component.max - 1) {
-                            setSearchText("")
-                            setTimeout(() => props.onFinishSelection?.(), 200)
-                          }
-                        }}
+                        className="flex items-center space-x-2.5"
+                        aria-label="Quantidade"
                       >
-                        <PlusCircleIcon className="w-6 h-6 text-red-600" />
-                      </ToolbarItem>
-                    </Toolbar>
+                        <ToolbarItem
+                          {...toolbarState}
+                          as="button"
+                          className={cn(
+                            "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
+                            optionCount === 0 ? "opacity-25" : undefined
+                          )}
+                          onClick={() => {
+                            dispatch({
+                              type: "DECREMENT_OPTION",
+                              itemId: item.id,
+                              componentId: component.id,
+                              optionId: option.id,
+                            })
+                          }}
+                        >
+                          <MinusCircleIcon className="w-6 h-6 text-red-600" />
+                        </ToolbarItem>
+                        <ToolbarItem
+                          className="text-gray-900 text-base font-medium"
+                          disabled
+                        >
+                          {String(optionCount)}
+                        </ToolbarItem>
+                        <ToolbarItem
+                          {...toolbarState}
+                          as="button"
+                          className={cn(
+                            "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
+                            totalQuantity === component.max
+                              ? "opacity-25"
+                              : undefined
+                          )}
+                          onClick={() => {
+                            dispatch({
+                              type: "INCREMENT_OPTION",
+                              itemId: item.id,
+                              componentId: component.id,
+                              optionId: option.id,
+                            })
+
+                            if (totalQuantity === component.max - 1) {
+                              setSearchText("")
+                              setFinishedSelection(true)
+                            }
+                          }}
+                        >
+                          <PlusCircleIcon className="w-6 h-6 text-red-600" />
+                        </ToolbarItem>
+                      </Toolbar>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          })
-        )}
-      </div>
+              )
+            })
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
 const product = products[2]
 
+// TODO: OrderItem.getTotal
 function getOrderItemTotal(item) {
   return (
     (item.product.price +

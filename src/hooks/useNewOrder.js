@@ -1,164 +1,108 @@
 import React from "react"
+import produce from "immer"
 import { nanoid } from "nanoid"
-
-// const order = {
-//   items: [
-//     {
-//       id: null,
-//       product: {},
-//       options: {
-//         "component1.id": "option.id",
-//         "component2.id": {
-//           "option1.id": 1,
-//           "option2.id": 1,
-//         },
-//       },
-//       quantity: 1,
-//     },
-//   ],
-// }
+import _ from "lodash/fp"
 
 const initialState = {
   items: [],
 }
 
-function reducer(state, action) {
+const reducer = produce((draft, action) => {
+  const item = action.itemId
+    ? draft.items.find((item) => item.id === action.itemId)
+    : null
+
+  const component = action.componentId
+    ? item.product.components.find(
+        (component) => component.id === action.componentId
+      )
+    : null
+
+  const totalQuantity =
+    item && component ? _.sum(_.values(item.options[component.id])) : null
+
   switch (action.type) {
     case "ADD_ITEM": {
-      return {
-        ...state,
-        items: [
-          ...state.items,
-          {
-            id: nanoid(12),
-            product: action.product,
-            options: {},
-            quantity: 1,
-          },
-        ],
-      }
+      draft.items.push({
+        id: nanoid(12),
+        product: action.product,
+        options: action.product.components.reduce(
+          (acc, component) => ({
+            ...acc,
+            [component.id]:
+              component.max === 1
+                ? null
+                : component.options.reduce(
+                    (acc, option) => ({
+                      ...acc,
+                      [option.id]: 0,
+                    }),
+                    {}
+                  ),
+          }),
+          {}
+        ),
+        quantity: 1,
+      })
+
+      break
     }
 
     case "UPDATE_ITEM": {
-      return {
-        ...state,
-        // TODO
-      }
+      break
     }
 
     case "INCREMENT_ITEM": {
-      return {
-        ...state,
-        items: state.items.map((item) => {
-          if (item.id === action.itemId) {
-            return {
-              ...item,
-              quantity: item.quantity + 1,
-            }
-          }
+      item.quantity = item.quantity + 1
 
-          return item
-        }),
-      }
+      break
     }
 
     case "DECREMENT_ITEM": {
-      return {
-        ...state,
-        items: state.items.map((item) => {
-          if (item.id === action.itemId) {
-            return {
-              ...item,
-              quantity: Math.max(item.quantity - 1, 1),
-            }
-          }
-
-          return item
-        }),
+      if (item.quantity > 1) {
+        item.quantity = item.quantity - 1
       }
+
+      break
     }
 
     case "REMOVE_ITEM": {
-      return {
-        ...state,
-        items: state.items.filter((item) => item.id !== action.itemId),
+      const itemIndex = draft.items.findIndex((_item) => _item.id === item.id)
+
+      if (itemIndex > -1) {
+        draft.items.splice(itemIndex, 1)
       }
+
+      break
     }
 
     case "SELECT_OPTION": {
-      return {
-        ...state,
-        items: state.items.map((item) => {
-          if (item.id === action.itemId) {
-            return {
-              ...item,
-              options: {
-                ...item.options,
-                [action.componentId]: action.optionId,
-              },
-            }
-          }
+      item.options[component.id] = action.optionId
 
-          return item
-        }),
-      }
+      break
     }
 
     case "INCREMENT_OPTION": {
-      return {
-        ...state,
-        items: state.items.map((item) => {
-          if (item.id === action.itemId) {
-            return {
-              ...item,
-              options: {
-                ...item.options,
-                [action.componentId]: {
-                  ...item.options[action.componentId],
-                  [action.optionId]:
-                    (item.options[action.componentId]?.[action.optionId] ?? 0) +
-                    1,
-                },
-              },
-            }
-          }
-
-          return item
-        }),
+      if (totalQuantity < component.max) {
+        item.options[component.id][action.optionId]++
       }
+
+      break
     }
 
     case "DECREMENT_OPTION": {
-      return {
-        ...state,
-        items: state.items.map((item) => {
-          if (item.id === action.itemId) {
-            return {
-              ...item,
-              options: {
-                ...item.options,
-                [action.componentId]: {
-                  ...item.options[action.componentId],
-                  [action.optionId]: Math.max(
-                    (item.options[action.componentId]?.[action.optionId] ?? 0) -
-                      1,
-                    0
-                  ),
-                },
-              },
-            }
-          }
-
-          return item
-        }),
+      if (totalQuantity > 0) {
+        item.options[component.id][action.optionId]--
       }
+
+      break
     }
 
     default: {
-      return state
+      break
     }
   }
-}
+})
 
 export default function useNewOrder() {
   const [state, dispatch] = React.useReducer(reducer, initialState)
