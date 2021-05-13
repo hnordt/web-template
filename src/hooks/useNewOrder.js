@@ -3,6 +3,26 @@ import produce from "immer"
 import { nanoid } from "nanoid"
 import _ from "lodash/fp"
 
+/*
+  ItemShape = {
+    id: String,
+    product: Object,
+    options: OptionShape,
+    quantity: Number,
+  }
+
+  OptionShape = {
+    // component1.max = 1
+    [component1.id]: option.id,
+
+    // component2.max > 1
+    [component2.id]: {
+      [option1.id]: Number,
+      [option2.id]: Number,
+    }
+  }
+*/
+
 const initialState = {
   items: [],
 }
@@ -11,15 +31,6 @@ const reducer = produce((draft, action) => {
   const item = action.itemId
     ? draft.items.find((item) => item.id === action.itemId)
     : null
-
-  const component = action.componentId
-    ? item.product.components.find(
-        (component) => component.id === action.componentId
-      )
-    : null
-
-  const totalQuantity =
-    item && component ? _.sum(_.values(item.options[component.id])) : null
 
   switch (action.type) {
     case "ADD_ITEM": {
@@ -67,23 +78,27 @@ const reducer = produce((draft, action) => {
     }
 
     case "REMOVE_ITEM": {
-      const itemIndex = draft.items.findIndex((_item) => _item.id === item.id)
+      const index = draft.items.findIndex((_item) => _item.id === item.id)
 
-      if (itemIndex > -1) {
-        draft.items.splice(itemIndex, 1)
+      if (index > -1) {
+        draft.items.splice(index, 1)
       }
 
       break
     }
 
     case "SELECT_OPTION": {
-      item.options[component.id] = action.optionId
+      item.options[action.componentId] = action.optionId
 
       break
     }
 
     case "INCREMENT_OPTION": {
-      if (totalQuantity < component.max) {
+      const component = item.product.components.find(
+        (component) => component.id === action.componentId
+      )
+
+      if (_.sum(_.values(item.options[component.id])) < component.max) {
         item.options[component.id][action.optionId]++
       }
 
@@ -91,8 +106,8 @@ const reducer = produce((draft, action) => {
     }
 
     case "DECREMENT_OPTION": {
-      if (totalQuantity > 0) {
-        item.options[component.id][action.optionId]--
+      if (item.options[action.componentId][action.optionId] > 0) {
+        item.options[action.componentId][action.optionId]--
       }
 
       break
