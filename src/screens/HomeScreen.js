@@ -11,12 +11,12 @@ import {
   MinusIcon,
   PlusCircleIcon,
   PlusIcon,
-  SearchIcon,
+  SearchCircleIcon,
 } from "@heroicons/react/solid"
 import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
 
-function renderHint(component, quantityOfOptionsSelected = 0) {
+function renderHint(component, quantityOfOptionsSelected) {
   const hint = ["Escolha"]
 
   if (quantityOfOptionsSelected === 0) {
@@ -46,14 +46,18 @@ function renderHint(component, quantityOfOptionsSelected = 0) {
   } else if (component.min === component.max) {
     hint.push(`mais ${remaining}`)
   } else {
-    hint.push(
-      `entre ${component.min - remaining} e ${component.max - remaining}`
-    )
+    hint.push(`mais ${component.max - quantityOfOptionsSelected}`)
+  }
+
+  hint.push(remaining === 1 ? "opção" : "opções")
+
+  if (quantityOfOptionsSelected >= component.min) {
+    hint.push("se quiser")
   }
 
   return (
     <span className="inline-flex items-center px-3 py-0.5 text-gray-800 text-sm font-medium bg-gray-200 rounded-full">
-      {hint.join(" ")} {remaining === 1 ? "opção" : "opções"}
+      {hint.join(" ")}
     </span>
   )
 }
@@ -78,6 +82,20 @@ function Option(props) {
         : 0
       : _.sum(_.values(item.options[component.id]))
 
+  function incrementOption(item, component, option) {
+    dispatch({
+      type: "INCREMENT_OPTION",
+      itemId: item.id,
+      componentId: component.id,
+      optionId: option.id,
+    })
+
+    if (quantityOfOptionsSelected === component.max - 1) {
+      setSearchText("")
+      setTimeout(() => props.onFinishSelection?.(), 0)
+    }
+  }
+
   return (
     <div>
       <div className="sticky z-10 top-0 px-6 py-5 bg-gray-50 border-b border-t border-gray-200">
@@ -85,26 +103,35 @@ function Option(props) {
           <div className="text-gray-900 text-base font-medium">
             {component.name}
           </div>
-          <div className="flex items-center space-x-4">
-            {component.options.length > 8 && (
-              <div className="relative">
-                <SearchIcon className="absolute left-2 top-1/2 w-4 h-4 text-gray-400 transform -translate-y-1/2" />
-                <input
-                  className="placeholder-gray-500 pl-7 w-36 h-6 text-gray-900 text-sm leading-none bg-white border border-gray-300 focus:border-red-500 rounded-xl focus:outline-none shadow-sm focus:ring-red-500"
-                  type="search"
-                  value={searchText}
-                  placeholder="Buscar"
-                  onChange={(e) => {
-                    setSearchText(e.target.value)
-                    props.onSearch?.()
-                  }}
-                />
-              </div>
-            )}
-            <div>{renderHint(component, quantityOfOptionsSelected)}</div>
-          </div>
+          <div>{renderHint(component, quantityOfOptionsSelected)}</div>
         </div>
       </div>
+      {component.options.length > 8 && (
+        <div className="relative border-b border-gray-200">
+          <SearchCircleIcon className="absolute left-6 top-1/2 w-6 h-6 text-gray-400 pointer-events-none transform -translate-y-1/2" />
+          <input
+            className="placeholder-gray-500 pl-14 pr-6 py-5 w-full text-gray-900 text-sm leading-none bg-white border-none focus:border-red-500 focus:outline-none focus:ring-red-500 focus:ring-2 focus:ring-inset"
+            type="search"
+            value={searchText}
+            placeholder="Buscar"
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp") {
+                e.preventDefault()
+                incrementOption(item, component, options[0])
+              } else if (e.key === "ArrowDown") {
+                e.preventDefault()
+                dispatch({
+                  type: "DECREMENT_OPTION",
+                  itemId: item.id,
+                  componentId: component.id,
+                  optionId: options[0].id,
+                })
+              }
+            }}
+          />
+        </div>
+      )}
       {component.max === 1 ? (
         <RadioGroup
           className="divide-gray-200 divide-y"
@@ -247,22 +274,9 @@ function Option(props) {
                               ? "opacity-25"
                               : undefined
                           )}
-                          onClick={() => {
-                            dispatch({
-                              type: "INCREMENT_OPTION",
-                              itemId: item.id,
-                              componentId: component.id,
-                              optionId: option.id,
-                            })
-
-                            if (
-                              quantityOfOptionsSelected ===
-                              component.max - 1
-                            ) {
-                              setSearchText("")
-                              setTimeout(() => props.onFinishSelection?.(), 0)
-                            }
-                          }}
+                          onClick={() =>
+                            incrementOption(item, component, option)
+                          }
                         >
                           <PlusCircleIcon className="w-6 h-6 text-red-600" />
                         </ToolbarItem>
@@ -392,12 +406,6 @@ export default function HomeScreen() {
                     component={component}
                     item={item}
                     dispatch={newOrder.dispatch}
-                    onSearch={() => {
-                      Scroll.scroller.scrollTo(component.name, {
-                        containerId: "containerElement",
-                        smooth: false,
-                      })
-                    }}
                     onFinishSelection={() => {
                       const component =
                         product.components[componentIndex + 1]?.name
