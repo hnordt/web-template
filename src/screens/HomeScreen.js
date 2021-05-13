@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/solid"
 import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
+import OrderItem from "utils/OrderItem"
 
 function renderHint(component, quantityOfOptionsSelected) {
   const hint = ["Escolha"]
@@ -295,37 +296,6 @@ function Option(props) {
 
 const product = products[1]
 
-// TODO: OrderItem.getTotal
-function getOrderItemTotal(item) {
-  return (
-    (item.product.price +
-      item.product.components.reduce((acc, component) => {
-        function findOptionById(id) {
-          return component.options.find((option) => option.id === id)
-        }
-
-        const selectedOptionId = item.options[component.id]
-
-        if (!selectedOptionId) {
-          return acc
-        }
-
-        if (typeof selectedOptionId === "object") {
-          const quantitiesByOptionId = item.options[component.id]
-
-          return Object.entries(quantitiesByOptionId).reduce(
-            (acc, [optionId, quantity]) =>
-              acc + findOptionById(optionId).price * quantity,
-            0
-          )
-        }
-
-        return acc + findOptionById(selectedOptionId).price
-      }, 0)) *
-    item.quantity
-  )
-}
-
 export default function HomeScreen() {
   const newOrder = useNewOrder()
 
@@ -493,7 +463,7 @@ export default function HomeScreen() {
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(getOrderItemTotal(item))}
+                    }).format(OrderItem.getTotal(item))}
                   </span>
                 </Button>
               </div>
