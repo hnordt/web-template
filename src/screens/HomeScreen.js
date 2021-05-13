@@ -16,10 +16,10 @@ import {
 import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
 
-function renderHint(component, totalQuantity = 0) {
+function renderHint(component, quantityOfOptionsSelected = 0) {
   const hint = ["Escolha"]
 
-  if (totalQuantity === 0) {
+  if (quantityOfOptionsSelected === 0) {
     if (component.min === 0) {
       hint.push(`até ${component.max}`)
     } else if (component.min === component.max) {
@@ -35,7 +35,7 @@ function renderHint(component, totalQuantity = 0) {
     )
   }
 
-  const remaining = component.max - totalQuantity
+  const remaining = component.max - quantityOfOptionsSelected
 
   if (remaining === 0) {
     return <CheckIcon className="w-6 h-6 text-green-600" />
@@ -62,15 +62,6 @@ function Option(props) {
   const { component, item, dispatch } = props
 
   const [searchText, setSearchText] = React.useState("")
-  const [finishedSelection, setFinishedSelection] = React.useState(false)
-
-  // TODO: create reducer as a race condition is still possible
-  React.useEffect(() => {
-    if (finishedSelection) {
-      props.onFinishSelection?.() // TODO
-      setFinishedSelection(false)
-    }
-  }, [finishedSelection])
 
   const toolbarState = useToolbarState({
     loop: true,
@@ -80,7 +71,7 @@ function Option(props) {
     option.name.toLowerCase().includes(searchText.toLowerCase())
   )
 
-  const totalQuantity =
+  const quantityOfOptionsSelected =
     component.max === 1
       ? item.options[component.id]
         ? 1
@@ -110,7 +101,7 @@ function Option(props) {
                 />
               </div>
             )}
-            <div>{renderHint(component, totalQuantity)}</div>
+            <div>{renderHint(component, quantityOfOptionsSelected)}</div>
           </div>
         </div>
       </div>
@@ -252,7 +243,7 @@ function Option(props) {
                           as="button"
                           className={cn(
                             "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
-                            totalQuantity === component.max
+                            quantityOfOptionsSelected === component.max
                               ? "opacity-25"
                               : undefined
                           )}
@@ -264,9 +255,12 @@ function Option(props) {
                               optionId: option.id,
                             })
 
-                            if (totalQuantity === component.max - 1) {
+                            if (
+                              quantityOfOptionsSelected ===
+                              component.max - 1
+                            ) {
                               setSearchText("")
-                              setFinishedSelection(true)
+                              setTimeout(() => props.onFinishSelection?.(), 0)
                             }
                           }}
                         >
