@@ -16,6 +16,7 @@ import {
 import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
 import OrderItem from "utils/OrderItem"
+import Fuse from "fuse.js"
 
 function renderHint(component, quantityOfOptionsSelected) {
   const hint = ["Escolha"]
@@ -68,13 +69,28 @@ function Option(props) {
 
   const [searchText, setSearchText] = React.useState("")
 
-  const toolbarState = useToolbarState({
+  const optionCountToolbarState = useToolbarState({
     loop: true,
   })
 
-  const options = component.options.filter((option) =>
-    option.name.toLowerCase().includes(searchText.toLowerCase())
-  )
+  const options = searchText
+    ? new Fuse(component.options, {
+        keys: [
+          {
+            name: "name",
+            weight: 2,
+          },
+          {
+            name: "description",
+            weight: 1,
+          },
+        ],
+        threshold: 0.4,
+        distance: 400,
+      })
+        .search(searchText)
+        .map((v) => v.item)
+    : component.options
 
   const quantityOfOptionsSelected =
     component.max === 1
@@ -93,7 +109,7 @@ function Option(props) {
 
     if (quantityOfOptionsSelected === component.max - 1) {
       setSearchText("")
-      setTimeout(() => props.onFinishSelection?.(), 0)
+      setTimeout(() => props.onDone(), 0)
     }
   }
 
@@ -144,7 +160,7 @@ function Option(props) {
               componentId: component.id,
               optionId: value,
             })
-            props.onFinishSelection?.()
+            props.onDone()
           }}
         >
           {options.map((option) => (
@@ -238,12 +254,12 @@ function Option(props) {
                     </div>
                     <div className="flex-shrink-0">
                       <Toolbar
-                        {...toolbarState}
+                        {...optionCountToolbarState}
                         className="flex items-center space-x-2.5"
                         aria-label="Quantidade"
                       >
                         <ToolbarItem
-                          {...toolbarState}
+                          {...optionCountToolbarState}
                           as="button"
                           className={cn(
                             "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
@@ -267,7 +283,7 @@ function Option(props) {
                           {String(optionCount)}
                         </ToolbarItem>
                         <ToolbarItem
-                          {...toolbarState}
+                          {...optionCountToolbarState}
                           as="button"
                           className={cn(
                             "rounded-full focus:outline-none focus:ring-red-500 focus:ring-2",
@@ -299,7 +315,7 @@ const product = products[1]
 export default function HomeScreen() {
   const newOrder = useNewOrder()
 
-  const toolbarState = useToolbarState({
+  const itemCountToolbarState = useToolbarState({
     loop: true,
   })
 
@@ -337,10 +353,7 @@ export default function HomeScreen() {
             </div>
           )}
           <div className="flex flex-1 flex-col">
-            <Scroll.Element
-              className="flex-1 overflow-auto"
-              id="containerElement"
-            >
+            <Scroll.Element className="flex-1 overflow-auto" id="product">
               <div className="px-6 py-5">
                 <h1 className="text-gray-900 text-lg font-medium">
                   {product.name}
@@ -376,18 +389,18 @@ export default function HomeScreen() {
                     component={component}
                     item={item}
                     dispatch={newOrder.dispatch}
-                    onFinishSelection={() => {
-                      const component =
+                    onDone={() => {
+                      const nextComponent =
                         product.components[componentIndex + 1]?.name
 
-                      if (component) {
-                        Scroll.scroller.scrollTo(component, {
-                          containerId: "containerElement",
+                      if (nextComponent) {
+                        Scroll.scroller.scrollTo(nextComponent, {
+                          containerId: "product",
                           smooth: true,
                         })
                       } else {
                         Scroll.scroller.scrollTo("comments", {
-                          containerId: "containerElement",
+                          containerId: "product",
                           smooth: true,
                         })
                         setTimeout(() => commentsInputRef.current.focus(), 0)
@@ -417,12 +430,12 @@ export default function HomeScreen() {
             <div className="flex items-center justify-between px-6 py-6 border-t border-gray-200 space-x-4">
               <div>
                 <Toolbar
-                  {...toolbarState}
+                  {...itemCountToolbarState}
                   className="flex items-center space-x-4"
                   aria-label="Quantidade"
                 >
                   <ToolbarItem
-                    {...toolbarState}
+                    {...itemCountToolbarState}
                     as="button"
                     className="inline-flex items-center justify-center w-10 h-10 border border-gray-200 rounded-full focus:outline-none focus:ring-red-500 focus:ring-offset-2 focus:ring-2"
                     onClick={() => {
@@ -441,7 +454,7 @@ export default function HomeScreen() {
                     {String(item.quantity)}
                   </ToolbarItem>
                   <ToolbarItem
-                    {...toolbarState}
+                    {...itemCountToolbarState}
                     as="button"
                     className="inline-flex items-center justify-center w-10 h-10 border border-gray-200 rounded-full focus:outline-none focus:ring-red-500 focus:ring-offset-2 focus:ring-2"
                     onClick={() => {
