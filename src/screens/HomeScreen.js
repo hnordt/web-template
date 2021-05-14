@@ -1,75 +1,14 @@
 import React from "react"
-import { SearchIcon } from "@heroicons/react/solid"
-import toast from "react-hot-toast"
+import { Dialog, Transition } from "@headlessui/react"
+import { CheckCircleIcon, SearchIcon, XIcon } from "@heroicons/react/solid"
 import Fuse from "fuse.js"
 import cn from "classnames"
-
-const integrations = {
-  "Communication": [
-    {
-      logoUrl: "/integration-logos/slack.png",
-      name: "Slack",
-    },
-    {
-      logoUrl: "/integration-logos/gmail.png",
-      name: "Gmail",
-    },
-    {
-      logoUrl: "/integration-logos/discord.png",
-      name: "Discord",
-    },
-  ],
-  "Sales & CRM": [
-    {
-      logoUrl: "/integration-logos/connectwisemanage.png",
-      name: "Connectwise Manage",
-    },
-    {
-      logoUrl: "/integration-logos/pipedrive.png",
-      name: "Pipedrive",
-    },
-    {
-      logoUrl: "/integration-logos/salesforce.png",
-      name: "Salesforce",
-    },
-  ],
-  "Support": [
-    {
-      logoUrl: "/integration-logos/freshdesk.png",
-      name: "Freshdesk",
-    },
-    {
-      logoUrl: "/integration-logos/helpscout.png",
-      name: "Help Scout",
-    },
-    {
-      logoUrl: "/integration-logos/intercom.png",
-      name: "Intercom",
-    },
-    {
-      logoUrl: "/integration-logos/zendesk.png",
-      name: "Zendesk",
-    },
-  ],
-  "Monitoring": [
-    {
-      logoUrl: "/integration-logos/pagerduty.png",
-      name: "PagerDuty",
-    },
-    {
-      logoUrl: "/integration-logos/opsgenie.png",
-      name: "Opsgenie",
-    },
-    {
-      logoUrl: "/integration-logos/site24x7.png",
-      name: "Site24x7",
-    },
-  ],
-}
+import integrations from "data/integrations.json"
 
 export default function HomeScreen() {
-  const [searchText, setSearchText] = React.useState("")
   const [activeGroups, setActiveGroups] = React.useState("all")
+  const [searchText, setSearchText] = React.useState("")
+  const [integration, setIntegration] = React.useState(null)
 
   const filteredGroups = Object.entries(integrations)
     .map(([name, integrations]) => ({
@@ -90,90 +29,160 @@ export default function HomeScreen() {
     )
 
   return (
-    <main className="min-h-screen bg-gray-200">
-      <div className="flex items-center justify-between px-8 h-20 bg-white shadow-md">
-        <h1 className="text-gray-900 text-2xl font-bold">Integrations</h1>
-        <div className="flex items-center space-x-4">
-          <div className="space-x-2">
-            <GroupButton
-              active={activeGroups === "all"}
-              onClick={() => setActiveGroups("all")}
-            >
-              All
-            </GroupButton>
-            {Object.keys(integrations).map((groupName) => (
+    <>
+      <main className="min-h-screen bg-gray-200">
+        <div className="flex items-center justify-between px-8 h-20 bg-white shadow-md">
+          <h1 className="text-gray-900 text-2xl font-bold">Integrations</h1>
+          <div className="flex items-center space-x-4">
+            <div className="space-x-2">
               <GroupButton
-                key={groupName}
-                active={activeGroups.includes(groupName)}
-                onClick={() =>
-                  setActiveGroups(
-                    activeGroups.includes(groupName)
-                      ? activeGroups.filter(
-                          (activeGroup) => activeGroup !== groupName
-                        )
-                      : [...activeGroups, groupName]
-                  )
-                }
+                active={activeGroups === "all"}
+                onClick={() => setActiveGroups("all")}
               >
-                {groupName}
+                All
               </GroupButton>
-            ))}
-          </div>
-          <div className="relative">
-            <SearchIcon className="absolute left-2 top-1/2 w-5 h-5 text-gray-400 pointer-events-none transform -translate-y-1/2" />
-            <input
-              className="placeholder-gray-400 pl-8 w-80 h-8 text-gray-900 text-sm border-gray-400 rounded focus:outline-none focus:ring-blue-500"
-              type="search"
-              value={searchText}
-              placeholder="Search for integrations"
-              autoFocus
-              onChange={(e) => setSearchText(e.target.value)}
-            />
+              {Object.keys(integrations).map((groupName) => (
+                <GroupButton
+                  key={groupName}
+                  active={activeGroups.includes(groupName)}
+                  onClick={() =>
+                    setActiveGroups(
+                      activeGroups.includes(groupName)
+                        ? activeGroups.filter(
+                            (activeGroup) => activeGroup !== groupName
+                          )
+                        : [...activeGroups, groupName]
+                    )
+                  }
+                >
+                  {groupName}
+                </GroupButton>
+              ))}
+            </div>
+            <div className="relative">
+              <SearchIcon className="absolute left-2 top-1/2 w-5 h-5 text-gray-400 pointer-events-none transform -translate-y-1/2" />
+              <input
+                className="placeholder-gray-400 pl-8 w-80 h-8 text-gray-900 text-sm border-gray-400 rounded focus:outline-none focus:ring-blue-500"
+                type="search"
+                value={searchText}
+                placeholder="Search for integrations"
+                autoFocus
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="p-8">
-        <div className="space-y-10">
-          {filteredGroups.length === 0 ? (
-            <p className="text-gray-600 text-base">No integrations found</p>
-          ) : (
-            filteredGroups.map((group) => (
-              <div key={group.name}>
-                <h2 className="mb-6 pb-3 text-gray-700 text-base font-bold border-b border-gray-300">
-                  {group.name}
-                </h2>
-                <div className="grid gap-6 grid-cols-4">
-                  {group.integrations.map((integration) => (
-                    <IntegrationCard
-                      key={integration.name}
-                      logoUrl={integration.logoUrl}
-                      name={integration.name}
-                      onClick={() =>
-                        toast(
-                          <span>
-                            Not implemented yet{" "}
-                            <span className="inline-block ml-1 text-base">
-                              👻
-                            </span>
-                          </span>,
-                          {
-                            style: {
-                              borderRadius: "10px",
-                              background: "#333",
-                              color: "#fff",
-                            },
-                          }
-                        )
-                      }
-                    />
-                  ))}
+        <div className="p-8">
+          <div className="space-y-10">
+            {filteredGroups.length === 0 ? (
+              <p className="text-gray-600 text-base">No integrations found</p>
+            ) : (
+              filteredGroups.map((group) => (
+                <div key={group.name}>
+                  <h2 className="mb-6 pb-3 text-gray-700 text-base font-bold border-b border-gray-300">
+                    {group.name}
+                  </h2>
+                  <div className="grid gap-6 grid-cols-4">
+                    {group.integrations.map((integration) => (
+                      <IntegrationCard
+                        key={integration.name}
+                        logoUrl={integration.logoUrl}
+                        name={integration.name}
+                        onClick={() =>
+                          setIntegration({
+                            ...integration,
+                            groupName: group.name,
+                          })
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <SlideOver open={!!integration} onClose={() => setIntegration(null)}>
+        {integration && (
+          <>
+            <div className="px-8 py-5 border-b border-gray-200">
+              <span className="text-gray-500 text-xs tracking-wide">
+                {integration?.groupName}
+              </span>
+              <h1 className="text-gray-900 text-xl font-semibold">
+                {integration?.name}
+              </h1>
+            </div>
+            <div className="p-8">
+              <div className="flex items-center space-x-5">
+                <img
+                  className="h-5"
+                  src={integration?.logoUrl}
+                  alt={integration?.name}
+                />
+                <span className="text-gray-900 text-2xl" aria-hidden>
+                  +
+                </span>
+                <img
+                  className="h-7"
+                  src="/integration-logos/zapier.png"
+                  alt="Zapier"
+                />
+              </div>
+              <h2 className="mb-5 mt-8 text-gray-900 text-lg font-bold">
+                About integration
+              </h2>
+              <dl className="flex space-x-8">
+                <div>
+                  <dt className="text-gray-500 text-xs tracking-wide">Code</dt>
+                  <dd className="text-gray-900 text-sm font-bold">
+                    Not required
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-gray-500 text-xs tracking-wide">
+                    Website
+                  </dt>
+                  <dd>
+                    <a
+                      className="text-blue-500 hover:underline text-sm font-bold"
+                      href={integration?.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Visit
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+              <p className="mt-5 text-gray-900 text-sm">
+                {integration?.description}
+              </p>
+              <h2 className="text-md mb-5 mt-8 text-gray-900 font-bold">
+                Best used for
+              </h2>
+              <ul className="space-y-4">
+                {integration?.uses.map((use, useIndex) => (
+                  <li
+                    key={useIndex}
+                    className="flex items-center text-gray-900 text-sm space-x-2"
+                  >
+                    <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                      <CheckCircleIcon
+                        className="w-5 h-5 text-blue-500"
+                        aria-hidden
+                      />
+                    </span>
+                    <span>{use}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </SlideOver>
+    </>
   )
 }
 
@@ -230,5 +239,70 @@ function ZapierIcon(props) {
         fill="#ff4a00"
       />
     </svg>
+  )
+}
+
+function SlideOver(props) {
+  return (
+    <Transition.Root show={props.open} as={React.Fragment}>
+      <Dialog
+        as="div"
+        static
+        className="fixed inset-0 overflow-hidden"
+        open={props.open}
+        onClose={props.onClose}
+      >
+        <div className="absolute inset-0 overflow-hidden">
+          <Transition.Child
+            as={React.Fragment}
+            enter="ease-in-out duration-500"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in-out duration-500"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+          <div className="fixed inset-y-0 right-0 flex pl-10 max-w-full">
+            <Transition.Child
+              as={React.Fragment}
+              enter="transform transition ease-in-out duration-500"
+              enterFrom="translate-x-full"
+              enterTo="translate-x-0"
+              leave="transform transition ease-in-out duration-500"
+              leaveFrom="translate-x-0"
+              leaveTo="translate-x-full"
+            >
+              <div className="relative w-screen max-w-md">
+                <Transition.Child
+                  as={React.Fragment}
+                  enter="ease-in-out duration-500"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in-out duration-500"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="absolute left-0 top-0 flex -ml-10 pr-4 pt-4">
+                    <button
+                      className="text-gray-300 hover:text-white rounded-md focus:outline-none focus:ring-white focus:ring-2"
+                      type="button"
+                      onClick={props.onClose}
+                    >
+                      <span className="sr-only">Close panel</span>
+                      <XIcon className="w-6 h-6" aria-hidden />
+                    </button>
+                  </div>
+                </Transition.Child>
+                <div className="h-full bg-white shadow-xl overflow-y-scroll">
+                  {props.children}
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition.Root>
   )
 }

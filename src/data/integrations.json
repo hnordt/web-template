@@ -1,0 +1,140 @@
+{
+  "Communication": [
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/slack.png",
+      "name": "Slack",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/gmail.png",
+      "name": "Gmail",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/discord.png",
+      "name": "Discord",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    }
+  ],
+  "Sales & CRM": [
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/connectwisemanage.png",
+      "name": "Connectwise Manage",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/pipedrive.png",
+      "name": "Pipedrive",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/salesforce.png",
+      "name": "Salesforce",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    }
+  ],
+  "Support": [
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/freshdesk.png",
+      "name": "Freshdesk",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/helpscout.png",
+      "name": "Help Scout",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/intercom.png",
+      "name": "Intercom",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/zendesk.png",
+      "name": "Zendesk",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    }
+  ],
+  "Monitoring": [
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/pagerduty.png",
+      "name": "PagerDuty",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/opsgenie.png",
+      "name": "Opsgenie",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    },
+    {
+      "url": "https://slack.com",
+      "logoUrl": "/integration-logos/site24x7.png",
+      "name": "Site24x7",
+      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "uses": [
+        "Send account activity to slack channel",
+        "Manage domains from teams slack channel"
+      ]
+    }
+  ]
+}
