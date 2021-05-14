@@ -168,7 +168,7 @@ export default function HomeScreen() {
                     key={useIndex}
                     className="flex items-center text-gray-900 text-sm space-x-2"
                   >
-                    <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                    <span className="inline-flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full">
                       <CheckCircleIcon
                         className="w-5 h-5 text-blue-500"
                         aria-hidden
