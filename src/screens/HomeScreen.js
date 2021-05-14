@@ -110,7 +110,7 @@ export default function HomeScreen() {
               <span className="text-gray-500 text-xs tracking-wide">
                 {integration?.groupName}
               </span>
-              <h1 className="text-gray-900 text-xl font-semibold">
+              <h1 className="text-gray-900 text-xl font-bold">
                 {integration?.name}
               </h1>
             </div>
