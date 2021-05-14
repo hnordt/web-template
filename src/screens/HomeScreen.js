@@ -117,17 +117,9 @@ export default function HomeScreen() {
             <div className="p-8">
               <div className="flex items-center space-x-5">
                 <img
-                  className="h-5"
-                  src={integration?.logoUrl}
+                  className="h-12"
+                  src={integration?.logoUrl.replace(".png", "-zap.png")}
                   alt={integration?.name}
-                />
-                <span className="text-gray-900 text-2xl" aria-hidden>
-                  +
-                </span>
-                <img
-                  className="h-7"
-                  src="/integration-logos/zapier.png"
-                  alt="Zapier"
                 />
               </div>
               <h2 className="mb-5 mt-8 text-gray-900 text-lg font-bold">
