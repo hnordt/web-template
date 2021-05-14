@@ -7,58 +7,62 @@ import cn from "classnames"
 const integrations = {
   "Communication": [
     {
-      logoUrl: "/integration-logos/Discord.png",
-      name: "Discord",
+      logoUrl: "/integration-logos/slack.png",
+      name: "Slack",
     },
     {
-      logoUrl: "/integration-logos/Gmail.png",
+      logoUrl: "/integration-logos/gmail.png",
       name: "Gmail",
     },
     {
-      logoUrl: "/integration-logos/PagerDuty.png",
-      name: "PagerDuty",
-    },
-    {
-      logoUrl: "/integration-logos/Slack.png",
-      name: "Slack",
-    },
-  ],
-  "Monitoring": [
-    {
-      logoUrl: "/integration-logos/Opsgenie.png",
-      name: "Opsgenie",
+      logoUrl: "/integration-logos/discord.png",
+      name: "Discord",
     },
   ],
   "Sales & CRM": [
     {
-      logoUrl: "/integration-logos/Automate.png",
+      logoUrl: "/integration-logos/connectwisemanage.png",
       name: "Connectwise Manage",
     },
     {
-      logoUrl: "/integration-logos/Pipedrive.png",
+      logoUrl: "/integration-logos/pipedrive.png",
       name: "Pipedrive",
     },
     {
-      logoUrl: "/integration-logos/Salesforce.png",
+      logoUrl: "/integration-logos/salesforce.png",
       name: "Salesforce",
     },
   ],
   "Support": [
     {
-      logoUrl: "/integration-logos/Freshdesk.png",
+      logoUrl: "/integration-logos/freshdesk.png",
       name: "Freshdesk",
     },
     {
-      logoUrl: "/integration-logos/HelpScout.png",
+      logoUrl: "/integration-logos/helpscout.png",
       name: "Help Scout",
     },
     {
-      logoUrl: "/integration-logos/Intercom.png",
+      logoUrl: "/integration-logos/intercom.png",
       name: "Intercom",
     },
     {
-      logoUrl: "/integration-logos/Zendesk.png",
+      logoUrl: "/integration-logos/zendesk.png",
       name: "Zendesk",
+    },
+  ],
+  "Monitoring": [
+    {
+      logoUrl: "/integration-logos/pagerduty.png",
+      name: "PagerDuty",
+    },
+    {
+      logoUrl: "/integration-logos/opsgenie.png",
+      name: "Opsgenie",
+    },
+    {
+      logoUrl: "/integration-logos/site24x7.png",
+      name: "Site24x7",
     },
   ],
 }
@@ -199,7 +203,11 @@ function IntegrationCard(props) {
     >
       <ZapierIcon className="absolute right-4 top-4" />
       <div className="flex items-center justify-center h-24">
-        <img className="object-contain" src={props.logoUrl} alt={props.name} />
+        <img
+          className="max-w-[140px] max-h-16"
+          src={props.logoUrl}
+          alt={props.name}
+        />
       </div>
       <div className="my-4 h-px bg-gray-300" />
       <h3 className="text-gray-600 text-sm font-bold">{props.name}</h3>
