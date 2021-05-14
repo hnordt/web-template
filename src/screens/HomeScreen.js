@@ -122,6 +122,7 @@ export default function HomeScreen() {
               type="search"
               value={searchText}
               placeholder="Search for integrations"
+              autoFocus
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
