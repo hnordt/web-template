@@ -17,6 +17,7 @@ import * as Scroll from "react-scroll"
 import useNewOrder from "hooks/useNewOrder"
 import OrderItem from "utils/OrderItem"
 import Fuse from "fuse.js"
+import Modal from "components/core/alpha/Modal"
 
 function renderHint(component, quantityOfOptionsSelected) {
   const hint = ["Escolha"]
@@ -292,68 +293,91 @@ function Option(props) {
   )
 }
 
-const product = products[1]
-
 export default function HomeScreen() {
+  const [open, setOpen] = React.useState(false)
+
   const newOrder = useNewOrder()
 
+  React.useEffect(() => {
+    newOrder.dispatch({
+      type: "ADD_ITEM",
+      product: products[0],
+    })
+  }, [])
+
+  return (
+    <main className="flex items-center justify-center min-h-screen bg-gray-100">
+      <Button variant="primary" onClick={() => setOpen(true)}>
+        Open
+      </Button>
+      <ItemModal
+        item={newOrder.state.items[0]}
+        dispatch={newOrder.dispatch}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+    </main>
+  )
+}
+
+function ItemModal(props) {
   const itemCountToolbarState = useToolbarState({
     loop: true,
   })
 
   const commentsInputRef = React.useRef(null)
 
-  React.useEffect(() => {
-    newOrder.dispatch({
-      type: "ADD_ITEM",
-      product,
-    })
-  }, [])
+  const item = props.item
 
-  const item = newOrder.state.items[0]
-
+  // TODO
   if (!item) {
     return null
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-black bg-opacity-75">
-      <div
-        className={cn(
-          "w-full bg-white rounded-md shadow-lg overflow-hidden",
-          product.imageUrl ? "max-w-[1200px]" : "max-w-[600px]"
-        )}
-      >
+    <Modal
+      className={cn(
+        "bg-white rounded-md shadow-lg",
+        item.product.imageUrl ? "sm:max-w-[1200px]" : "sm:max-w-[600px]"
+      )}
+      open={props.open}
+      onClose={props.onClose}
+    >
+      <div>
         <div className="max-h-[637px] flex">
-          {product.imageUrl && (
+          {item.product.imageUrl && (
             <div className="flex-1">
               <img
                 className="w-full h-full object-cover"
-                src={product.imageUrl}
-                alt={product.name}
+                src={item.product.imageUrl}
+                alt={item.product.name}
               />
             </div>
           )}
           <div className="flex flex-1 flex-col">
             <Scroll.Element className="flex-1 overflow-auto" id="product">
-              <div className="px-6 py-5">
+              <div className="relative px-6 py-5">
+                <button
+                  className="absolute right-0 top-0 w-0 h-0 outline-none"
+                  aria-hidden
+                />
                 <h1 className="text-gray-900 text-lg font-medium">
-                  {product.name}
+                  {item.product.name}
                 </h1>
                 <p className="mt-0.5 text-gray-500 text-sm">
-                  {product.description}
+                  {item.product.description}
                 </p>
                 <p className="flex items-baseline mt-3 space-x-2">
-                  {product.originalPrice && (
+                  {item.product.originalPrice && (
                     <span className="text-gray-400 line-through text-sm font-medium">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
-                      }).format(product.originalPrice)}
+                      }).format(item.product.originalPrice)}
                     </span>
                   )}
                   <span className="text-green-600 text-base font-medium">
-                    {product.minPrice > 0 && (
+                    {item.product.minPrice > 0 && (
                       <span className="text-base font-normal">
                         A partir de{" "}
                       </span>
@@ -361,19 +385,19 @@ export default function HomeScreen() {
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(product.minPrice || product.price)}
+                    }).format(item.product.minPrice || item.product.price)}
                   </span>
                 </p>
               </div>
-              {product.components.map((component, componentIndex) => (
+              {item.product.components.map((component, componentIndex) => (
                 <Scroll.Element key={component.id} name={component.name}>
                   <Option
                     component={component}
                     item={item}
-                    dispatch={newOrder.dispatch}
+                    dispatch={props.dispatch}
                     onDone={() => {
                       const nextComponent =
-                        product.components[componentIndex + 1]?.name
+                        item.product.components[componentIndex + 1]?.name
 
                       if (nextComponent) {
                         Scroll.scroller.scrollTo(nextComponent, {
@@ -421,7 +445,7 @@ export default function HomeScreen() {
                     as="button"
                     className="inline-flex items-center justify-center w-10 h-10 border border-gray-200 rounded-full focus:outline-none focus:ring-red-500 focus:ring-offset-2 focus:ring-2"
                     onClick={() => {
-                      newOrder.dispatch({
+                      props.dispatch({
                         type: "DECREMENT_ITEM",
                         itemId: item.id,
                       })
@@ -440,7 +464,7 @@ export default function HomeScreen() {
                     as="button"
                     className="inline-flex items-center justify-center w-10 h-10 border border-gray-200 rounded-full focus:outline-none focus:ring-red-500 focus:ring-offset-2 focus:ring-2"
                     onClick={() => {
-                      newOrder.dispatch({
+                      props.dispatch({
                         type: "INCREMENT_ITEM",
                         itemId: item.id,
                       })
@@ -466,6 +490,6 @@ export default function HomeScreen() {
           </div>
         </div>
       </div>
-    </main>
+    </Modal>
   )
 }
