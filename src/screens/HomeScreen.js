@@ -13,6 +13,8 @@ import cn from "classnames"
 import integrations from "data/integrations.json"
 
 export default function HomeScreen() {
+  const searchInputRef = React.useRef(null)
+
   const [step, setStep] = React.useState(1)
 
   const [activeGroups, setActiveGroups] = React.useState("all")
@@ -137,6 +139,7 @@ export default function HomeScreen() {
             <div className="relative">
               <SearchIcon className="absolute left-2 top-1/2 w-5 h-5 text-gray-400 pointer-events-none transform -translate-y-1/2" />
               <input
+                ref={searchInputRef}
                 className="placeholder-gray-400 pl-8 w-80 h-8 text-gray-900 text-sm border-gray-400 rounded focus:outline-none focus:ring-blue-500"
                 type="search"
                 value={searchText}
@@ -189,7 +192,13 @@ export default function HomeScreen() {
           </div>
         </div>
       </main>
-      <SlideOver open={!!integration} onClose={() => setIntegration(null)}>
+      <SlideOver
+        open={!!integration}
+        onClose={() => {
+          setIntegration(null)
+          setTimeout(() => searchInputRef.current.focus(), 0)
+        }}
+      >
         {integration && (
           <>
             <div className="px-8 py-5 border-b border-gray-200">
