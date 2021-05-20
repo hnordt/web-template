@@ -1,11 +1,20 @@
 import React from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import { CheckCircleIcon, SearchIcon, XIcon } from "@heroicons/react/solid"
+import {
+  CalendarIcon,
+  CheckCircleIcon,
+  LocationMarkerIcon,
+  SearchIcon,
+  ShieldCheckIcon,
+  XIcon,
+} from "@heroicons/react/solid"
 import Fuse from "fuse.js"
 import cn from "classnames"
 import integrations from "data/integrations.json"
 
 export default function HomeScreen() {
+  const [step, setStep] = React.useState(1)
+
   const [activeGroups, setActiveGroups] = React.useState("all")
   const [searchText, setSearchText] = React.useState("")
   const [integration, setIntegration] = React.useState(null)
@@ -27,6 +36,71 @@ export default function HomeScreen() {
         (activeGroups === "all" || activeGroups.includes(group.name)) &&
         group.integrations.length > 0
     )
+
+  if (step === 1) {
+    return (
+      <main className="relative min-h-screen">
+        <div className="h-[400px] absolute left-0 right-0 top-0 bg-gradient-to-b from-blue-100 to-white" />
+        <div className="relative z-10 flex flex-col items-center mx-auto p-8 max-w-3xl text-center">
+          <img
+            className="max-w-[560px]"
+            src="/zapier-integrations.png"
+            alt="DNSFilter + Zapier"
+          />
+          <h1 className="mt-6 text-gray-900 text-2xl font-bold">
+            Introducing <span className="text-blue-500">DNSFilter</span> +{" "}
+            <span
+              style={{
+                color: "#ff6100",
+              }}
+            >
+              Zapier
+            </span>{" "}
+            Integration
+          </h1>
+          <p className="mt-2 text-gray-700 text-sm">
+            Upgrade your plan to take advantage of this new integration which
+            connects <strong>DNSFilter Pro &amp; Enterprise</strong> customers
+            with <strong>3,000+</strong> apps already available through{" "}
+            <strong>Zapier</strong>.
+          </p>
+          <div className="grid gap-8 grid-cols-3 mb-14 mt-10">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-xl">
+                <CalendarIcon className="w-7 h-7 text-blue-500" />
+              </div>
+              <h3 className="text-gray-700 text-sm font-bold">
+                Schedule account activity notices
+              </h3>
+            </div>
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-xl">
+                <LocationMarkerIcon className="w-7 h-7 text-blue-500" />
+              </div>
+              <h3 className="text-gray-700 text-sm font-bold">
+                Create sites automatically
+              </h3>
+            </div>
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-xl">
+                <ShieldCheckIcon className="w-7 h-7 text-blue-500" />
+              </div>
+              <h3 className="text-gray-700 text-sm font-bold">
+                Configure and assign policies
+              </h3>
+            </div>
+          </div>
+          <button
+            className="px-14 py-3 text-white text-base font-bold bg-blue-500 hover:bg-blue-600 active:bg-blue-700 rounded-md focus:outline-none shadow-md uppercase focus:ring-offset-2 focus:ring-2"
+            type="button"
+            onClick={() => setStep(2)}
+          >
+            Upgrade your plan
+          </button>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <>
@@ -126,13 +200,13 @@ export default function HomeScreen() {
                 About integration
               </h2>
               <dl className="flex space-x-8">
-                <div>
+                <div className="space-y-1">
                   <dt className="text-gray-500 text-xs tracking-wide">Code</dt>
                   <dd className="text-gray-900 text-sm font-bold">
                     Not required
                   </dd>
                 </div>
-                <div>
+                <div className="space-y-1">
                   <dt className="text-gray-500 text-xs tracking-wide">
                     Website
                   </dt>
