@@ -143,10 +143,14 @@ export default function HomeScreen() {
                 placeholder="Search for integrations"
                 autoFocus
                 onChange={(e) => setSearchText(e.target.value)}
-                onKeyPress={(e) => {
+                onKeyUp={(e) => {
                   if (e.key === "Enter") {
-                    const firstGroup = filteredGroups[0]
-                    const firstIntegration = firstGroup.integrations[0]
+                    const firstGroup = filteredGroups?.[0]
+                    const firstIntegration = firstGroup.integrations?.[0]
+
+                    if (!firstGroup || !firstIntegration) {
+                      return
+                    }
 
                     setIntegration({
                       ...firstIntegration,
