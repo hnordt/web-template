@@ -43,7 +43,7 @@ export default function HomeScreen() {
         <div className="h-[400px] absolute left-0 right-0 top-0 bg-gradient-to-b from-blue-100 to-white" />
         <div className="max-w-[840px] relative z-10 flex flex-col items-center mx-auto p-8 text-center">
           <img
-            className="max-w-[560px]"
+            className="h-[320px] sm:h-[420px] md:h-[560px]"
             src="/zapier-integrations.png"
             alt="DNSFilter + Zapier"
           />
