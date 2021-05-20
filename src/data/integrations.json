@@ -1,140 +1,112 @@
 {
   "Communication": [
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/slack.png",
       "name": "Slack",
       "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
       "uses": [
         "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
+        "Manage domains from teams slack channel",
+        "Triggering block alerts"
       ]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/gmail.png",
       "name": "Gmail",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "description": "One of the most popular email services, Gmail keeps track of all your emails with threaded conversations, tags, and Google-powered search to find any message you need.",
       "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
+        "Receive email when dynamic IP not resolving",
+        "Triggering block alerts"
       ]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/discord.png",
       "name": "Discord",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+      "description": "Discord is an all-in-one voice and text chat targeted at gamers but often used by businesses.",
       "uses": [
         "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
+        "Receive email when dynamic IP not resolving",
+        "Triggering block alerts"
       ]
     }
   ],
   "Sales & CRM": [
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/connectwisemanage.png",
       "name": "Connectwise Manage",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "ConnectWise Manage is a business management platform designed to successfully run and grow your technology business.",
+      "uses": ["Create DNSFilter orgs automatically"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/pipedrive.png",
       "name": "Pipedrive",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Pipedrive is sales pipeline and CRM software for deal makers. Get super-organized. Close deals in less time. iOS and Android apps let you take your pipeline with you anywhere.",
+      "uses": ["Create DNSFilter orgs automatically"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/salesforce.png",
       "name": "Salesforce",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Salesforce is a leading enterprise CRM application.",
+      "uses": ["Create DNSFilter orgs automatically"]
     }
   ],
   "Support": [
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/freshdesk.png",
       "name": "Freshdesk",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Freshdesk is an online help desk software with multiple channel customer service to support customers across email, phone, chat, web, Twitter and more.",
+      "uses": ["Triggering block alerts", "Assign unblock requests"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/helpscout.png",
       "name": "Help Scout",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Help Scout is the ideal small business help desk. You can deliver great email support and get setup in minutes, without any of the typical help desk complexities.",
+      "uses": ["Triggering block alerts", "Assign unblock requests"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/intercom.png",
       "name": "Intercom",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Intercom is a customer communication platform that enables targeted communication with customers on your website, inside your web and mobile apps, and by email.",
+      "uses": ["Triggering block alerts", "Assign unblock requests"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/zendesk.png",
       "name": "Zendesk",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Zendesk is a web-based help desk support tool that makes it simple to provide great customer support.",
+      "uses": ["Triggering block alerts", "Assign unblock requests"]
     }
   ],
   "Monitoring": [
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/pagerduty.png",
       "name": "PagerDuty",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "PagerDuty is the central nervous system for a company's digital operations. PagerDuty identifies issues and opportunities in real time and brings together the right people to respond to problems faster and prevent them in the future.",
+      "uses": ["Alert when dynamic IP not resolving", "Triggering block alerts"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/opsgenie.png",
       "name": "Opsgenie",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "OpsGenie extends IT Operations Management to mobile devices. OpsGenie gets alerts from IT management systems and notify the users via iPhone/Android push notifications, email, text messages and voice to text phone calls. OpsGenie automates the notification process, empowering users to receive alert notifications and rapidly respond to them directly from OpsGenie apps.",
+      "uses": ["Alert when dynamic IP not resolving", "Triggering block alerts"]
     },
     {
-      "url": "https://slack.com",
+      "url": "https://zapier.com/apps/dnsfilter/integrations",
       "logoUrl": "/integration-logos/site24x7.png",
       "name": "Site24x7",
-      "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
-      "uses": [
-        "Send account activity to slack channel",
-        "Manage domains from teams slack channel"
-      ]
+      "description": "Site24x7 is a performance monitoring solution for DevOps and IT operations which provides visibility into critical performance parameters of resources and proactive insight into areas that could become an issue before they arise.",
+      "uses": ["Alert when dynamic IP not resolving", "Triggering block alerts"]
     }
   ]
 }

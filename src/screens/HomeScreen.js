@@ -136,7 +136,7 @@ export default function HomeScreen() {
                   <dt className="text-gray-500 text-xs tracking-wide">
                     Website
                   </dt>
-                  <dd>
+                  <dd className="text-gray-900 text-sm font-bold">
                     <a
                       className="text-blue-500 hover:underline text-sm font-bold"
                       href={integration?.url}
