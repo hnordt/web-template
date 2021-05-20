@@ -93,6 +93,7 @@ export default function HomeScreen() {
           <button
             className="px-14 py-3 text-white text-base font-bold bg-blue-500 hover:bg-blue-600 active:bg-blue-700 rounded-md focus:outline-none shadow-md uppercase focus:ring-offset-2 focus:ring-2"
             type="button"
+            autoFocus
             onClick={() => setStep(2)}
           >
             Upgrade your plan
