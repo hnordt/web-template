@@ -41,7 +41,7 @@ export default function HomeScreen() {
     return (
       <main className="relative min-h-screen">
         <div className="h-[400px] absolute left-0 right-0 top-0 bg-gradient-to-b from-blue-100 to-white" />
-        <div className="relative z-10 flex flex-col items-center mx-auto p-8 max-w-3xl text-center">
+        <div className="max-w-[840px] relative z-10 flex flex-col items-center mx-auto p-8 text-center">
           <img
             className="max-w-[560px]"
             src="/zapier-integrations.png"
@@ -58,7 +58,7 @@ export default function HomeScreen() {
             </span>{" "}
             Integration
           </h1>
-          <p className="mt-2 text-gray-700 text-sm">
+          <p className="mt-2 text-gray-700 text-sm leading-relaxed">
             Upgrade your plan to take advantage of this new integration which
             connects <strong>DNSFilter Pro &amp; Enterprise</strong> customers
             with <strong>3,000+</strong> apps already available through{" "}
