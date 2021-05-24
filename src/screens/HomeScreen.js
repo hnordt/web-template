@@ -240,6 +240,10 @@ function SettingsWidget() {
     <Form
       defaultValues={defaultValues}
       onSubmit={(values, _, form) => {
+        if (!form.formState.isDirty) {
+          return
+        }
+
         form.reset(values)
         toast.success("Settings saved successfully!")
       }}
