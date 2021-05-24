@@ -13,11 +13,19 @@ import cn from "classnames"
 import integrations from "data/integrations.json"
 
 export default function HomeScreen() {
+  const searchInputRef = React.useRef(null)
+
   const [step, setStep] = React.useState(1)
 
   const [activeGroups, setActiveGroups] = React.useState("all")
   const [searchText, setSearchText] = React.useState("")
   const [integration, setIntegration] = React.useState(null)
+
+  React.useEffect(() => {
+    if (integration === null) {
+      searchInputRef.current?.focus()
+    }
+  }, [integration])
 
   const filteredGroups = Object.entries(integrations)
     .map(([name, integrations]) => ({
@@ -119,7 +127,10 @@ export default function HomeScreen() {
               {Object.keys(integrations).map((groupName) => (
                 <GroupButton
                   key={groupName}
-                  active={activeGroups.includes(groupName)}
+                  active={
+                    Array.isArray(activeGroups) &&
+                    activeGroups.includes(groupName)
+                  }
                   onClick={() =>
                     setActiveGroups(
                       activeGroups.includes(groupName)
@@ -137,20 +148,21 @@ export default function HomeScreen() {
             <div className="relative">
               <SearchIcon className="absolute left-2 top-1/2 w-5 h-5 text-gray-400 pointer-events-none transform -translate-y-1/2" />
               <input
+                ref={searchInputRef}
                 className="placeholder-gray-400 pl-8 w-80 h-8 text-gray-900 text-sm border-gray-400 rounded focus:outline-none focus:ring-blue-500"
                 type="search"
                 value={searchText}
                 placeholder="Search for integrations"
                 autoFocus
                 onChange={(e) => setSearchText(e.target.value)}
-                onKeyUp={(e) => {
+                onKeyPress={(e) => {
                   if (e.key === "Enter") {
-                    const firstGroup = filteredGroups?.[0]
-                    const firstIntegration = firstGroup.integrations?.[0]
-
-                    if (!firstGroup || !firstIntegration) {
+                    if (!filteredGroups.length) {
                       return
                     }
+
+                    const firstGroup = filteredGroups[0]
+                    const firstIntegration = firstGroup.integrations[0]
 
                     setIntegration({
                       ...firstIntegration,
@@ -276,10 +288,10 @@ function GroupButton(props) {
       {...rest}
       type="button"
       className={cn(
-        "inline-block px-4 py-1.5 text-gray-600 text-sm bg-gray-200 rounded focus:outline-none focus-visible:ring-2",
+        "inline-block px-4 py-1.5 text-sm rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
         active
-          ? "bg-blue-500 text-white hover:bg-blue-600 focus-visible:ring-blue-300"
-          : "text-gray-600 bg-gray-200 hover:bg-gray-300 focus-visible:ring-blue-500"
+          ? "bg-blue-500 text-white hover:bg-blue-600 focus-visible:ring-offset-1"
+          : "text-gray-600 bg-gray-200 hover:bg-gray-300"
       )}
     />
   )
