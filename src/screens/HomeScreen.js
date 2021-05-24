@@ -148,7 +148,7 @@ export default function HomeScreen() {
         locale={{
           last: "Done",
         }}
-        run={localStorage.getItem("DNSFilterTour:ZapierIntegrations")}
+        run={!localStorage.getItem("DNSFilterTour:ZapierIntegrations")}
         continuous
         showProgress
         showSkipButton
