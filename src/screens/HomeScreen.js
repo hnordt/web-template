@@ -33,7 +33,7 @@ function enforceSeconds(value) {
   }
 
   if (typeof value !== "number") {
-    return Number(value)
+    return isNaN(value) ? 0 : Number(value)
   }
 
   return value
@@ -125,6 +125,14 @@ function normalizeFieldValue(field, value) {
       .startOf("day")
       .add(enforceSeconds(value), "seconds")
       .format("HH:mm")
+  }
+
+  if (field.value_type === "duration") {
+    return typeof value !== "string"
+      ? "00:00"
+      : value.length < 5
+      ? "00:00"
+      : value
   }
 
   if (field.value_type === "boolean") {

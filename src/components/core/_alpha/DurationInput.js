@@ -25,7 +25,7 @@ function DurationInput(props, ref) {
         H: {
           mask: IMask.MaskedRange,
           from: 0,
-          to: 24,
+          to: 23,
           placeholderChar: "0",
         },
         mm: {
