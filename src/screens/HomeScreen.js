@@ -8,6 +8,7 @@ import {
   ShieldCheckIcon,
   XIcon,
 } from "@heroicons/react/solid"
+import Joyride, { STATUS } from "react-joyride"
 import Fuse from "fuse.js"
 import cn from "classnames"
 import integrations from "data/integrations.json"
@@ -51,7 +52,7 @@ export default function HomeScreen() {
         <div className="h-[400px] absolute left-0 right-0 top-0 bg-gradient-to-b from-blue-100 to-white" />
         <div className="max-w-[840px] relative z-10 flex flex-col items-center mx-auto p-8 text-center">
           <img
-            className="h-[320px] sm:h-[420px] md:h-[560px]"
+            className="h-[320px] sm:h-[380px] md:h-[460px]"
             src="/zapier-integrations.png"
             alt="DNSFilter + Zapier"
           />
@@ -113,11 +114,60 @@ export default function HomeScreen() {
 
   return (
     <>
+      <Joyride
+        spotlightClicks
+        steps={[
+          {
+            target: "[data-tour='1']",
+            content: (
+              <span className="text-gray-900 text-base">
+                Press any button to apply category filters
+              </span>
+            ),
+            disableBeacon: true,
+          },
+          {
+            target: "[data-tour='2']",
+            content: (
+              <span className="text-gray-900 text-base">
+                Type your search criteria and hit <strong>Enter</strong> to open
+                details for the first result
+              </span>
+            ),
+          },
+          {
+            target: "[data-tour='3']",
+            content: (
+              <span className="text-gray-900 text-base">
+                You can also read integration details by clicking (or touching)
+                the cards
+              </span>
+            ),
+          },
+        ]}
+        locale={{
+          last: "Done",
+        }}
+        run={localStorage.getItem("DNSFilterTour:ZapierIntegrations")}
+        continuous
+        showProgress
+        showSkipButton
+        styles={{
+          options: {
+            primaryColor: "rgb(37, 99, 235)",
+          },
+        }}
+        callback={(data) => {
+          if (data.status === STATUS.FINISHED) {
+            localStorage.setItem("DNSFilterTour:ZapierIntegrations", "true")
+          }
+        }}
+      />
       <main className="min-h-screen bg-gray-200">
         <div className="flex items-center justify-between px-8 h-20 bg-white shadow-md">
           <h1 className="text-gray-900 text-2xl font-bold">Integrations</h1>
           <div className="flex items-center space-x-4">
-            <div className="space-x-2">
+            <div className="space-x-2" data-tour="1">
               <GroupButton
                 active={activeGroups === "all"}
                 onClick={() => setActiveGroups("all")}
@@ -170,6 +220,7 @@ export default function HomeScreen() {
                     })
                   }
                 }}
+                data-tour="2"
               />
             </div>
           </div>
@@ -179,24 +230,32 @@ export default function HomeScreen() {
             {filteredGroups.length === 0 ? (
               <p className="text-gray-600 text-base">No integrations found</p>
             ) : (
-              filteredGroups.map((group) => (
+              filteredGroups.map((group, groupIndex) => (
                 <div key={group.name}>
                   <h2 className="mb-6 pb-3 text-gray-700 text-base font-bold border-b border-gray-300">
                     {group.name}
                   </h2>
                   <div className="grid gap-6 grid-cols-4">
-                    {group.integrations.map((integration) => (
-                      <IntegrationCard
+                    {group.integrations.map((integration, integrationIndex) => (
+                      <div
                         key={integration.name}
-                        logoUrl={integration.logoUrl}
-                        name={integration.name}
-                        onClick={() =>
-                          setIntegration({
-                            ...integration,
-                            groupName: group.name,
-                          })
+                        data-tour={
+                          groupIndex === 0 && integrationIndex === 0
+                            ? "3"
+                            : undefined
                         }
-                      />
+                      >
+                        <IntegrationCard
+                          logoUrl={integration.logoUrl}
+                          name={integration.name}
+                          onClick={() =>
+                            setIntegration({
+                              ...integration,
+                              groupName: group.name,
+                            })
+                          }
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -300,7 +359,7 @@ function GroupButton(props) {
 function IntegrationCard(props) {
   return (
     <button
-      className="relative p-4 text-left bg-white rounded-md focus:outline-none hover:shadow-lg shadow-md transform hover:scale-105 transition focus-visible:ring-blue-500 focus-visible:ring-2"
+      className="relative p-4 w-full text-left bg-white rounded-md focus:outline-none hover:shadow-lg shadow-md transform hover:scale-105 transition focus-visible:ring-blue-500 focus-visible:ring-2"
       type="button"
       onClick={props.onClick}
     >
