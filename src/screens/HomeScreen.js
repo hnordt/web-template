@@ -77,14 +77,6 @@ function applyModifierToField(field, modifiers, currentValues) {
   return field
 }
 
-function getAppliableModifiersByField(modifiers, field, value) {
-  return modifiers.filter(
-    (modifier) =>
-      modifier._condition.fieldId === field.id &&
-      modifier._condition.value === value
-  )
-}
-
 function normalizeField(field) {
   return {
     ...field,
@@ -148,7 +140,7 @@ function SettingsWidget() {
 
   const settings = data?.results ?? []
 
-  let fields = settings
+  const fields = settings
     .flatMap((setting) =>
       setting.child.reduce(
         (acc, child, childIndex) => [
@@ -177,6 +169,14 @@ function SettingsWidget() {
       )
     )
     .map(normalizeField)
+
+  const defaultValues = fields.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.id]: normalizeFieldValue(field, field.value.value),
+    }),
+    {}
+  )
 
   const modifiers = fields.reduce(
     (acc, field) => [
@@ -217,26 +217,24 @@ function SettingsWidget() {
   // when calculating the var fields
   // probably we need to apply the modifier while creating the field, so we can
   // force it to return the correct value type
-  const unsafeValueTypeDefaultValues = fields.reduce(
-    (acc, field) => ({
-      ...acc,
-      [field.id]: field.value.value,
-    }),
-    {}
-  )
-
-  fields = fields.map((field) =>
-    applyModifierToField(field, modifiers, unsafeValueTypeDefaultValues)
-  )
-
+  // const unsafeValueTypeDefaultValues = fields.reduce(
+  //   (acc, field) => ({
+  //     ...acc,
+  //     [field.id]: field.value.value,
+  //   }),
+  //   {}
+  // )
+  // fields = fields.map((field) =>
+  //   applyModifierToField(field, modifiers, unsafeValueTypeDefaultValues)
+  // )
   // we can only calculate defaultValues after applying all modifiers
-  const defaultValues = fields.reduce(
-    (acc, field) => ({
-      ...acc,
-      [field.id]: normalizeFieldValue(field, field.value.value),
-    }),
-    {}
-  )
+  // const defaultValues = fields.reduce(
+  //   (acc, field) => ({
+  //     ...acc,
+  //     [field.id]: normalizeFieldValue(field, field.value.value),
+  //   }),
+  //   {}
+  // )
 
   return (
     <Form
@@ -816,19 +814,29 @@ function renderField(field, form, defaultValues, modifiers) {
                     onChange={(value) => {
                       props.field.onChange(value)
 
-                      getAppliableModifiersByField(
-                        modifiers,
-                        field,
-                        value
-                      ).forEach((modifier) =>
-                        form.setValue(
-                          String(modifier._condition.applyTo),
-                          modifier.default,
-                          {
-                            shouldDirty: true,
-                          }
+                      modifiers
+                        .filter(
+                          (modifier) => modifier._condition.fieldId === field.id
                         )
-                      )
+                        .forEach((modifier) => {
+                          if (modifier._condition.value !== value) {
+                            form.setValue(
+                              String(modifier._condition.applyTo),
+                              defaultValues[modifier._condition.applyTo],
+                              {
+                                shouldDirty: true,
+                              }
+                            )
+                          } else {
+                            form.setValue(
+                              String(modifier._condition.applyTo),
+                              modifier.default,
+                              {
+                                shouldDirty: true,
+                              }
+                            )
+                          }
+                        })
                     }}
                   />
                 )}
@@ -854,19 +862,30 @@ function renderField(field, form, defaultValues, modifiers) {
                         onChange={(value) => {
                           props.field.onChange(value)
 
-                          getAppliableModifiersByField(
-                            modifiers,
-                            field,
-                            value
-                          ).forEach((modifier) =>
-                            form.setValue(
-                              String(modifier._condition.applyTo),
-                              modifier.default,
-                              {
-                                shouldDirty: true,
-                              }
+                          modifiers
+                            .filter(
+                              (modifier) =>
+                                modifier._condition.fieldId === field.id
                             )
-                          )
+                            .forEach((modifier) => {
+                              if (modifier._condition.value !== value) {
+                                form.setValue(
+                                  String(modifier._condition.applyTo),
+                                  defaultValues[modifier._condition.applyTo],
+                                  {
+                                    shouldDirty: true,
+                                  }
+                                )
+                              } else {
+                                form.setValue(
+                                  String(modifier._condition.applyTo),
+                                  modifier.default,
+                                  {
+                                    shouldDirty: true,
+                                  }
+                                )
+                              }
+                            })
                         }}
                       />
                     )}
