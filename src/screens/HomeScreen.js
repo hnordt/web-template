@@ -19,7 +19,6 @@ import isInt from "validator/lib/isInt"
 import Select from "components/core/alpha/Select"
 import Switch from "components/core/alpha/Switch"
 import dayjs from "dayjs"
-import { Disclosure } from "@headlessui/react"
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@reach/tabs"
 import _ from "lodash/fp"
 import { Popover, Transition } from "@headlessui/react"
@@ -136,6 +135,7 @@ function normalizeFieldValue(field, value) {
 }
 
 function SettingsWidget() {
+  const [openPanels, setOpenPanels] = React.useState({})
   const [tabIndexes, setTabIndexes] = React.useState({})
 
   const settings = data?.results ?? []
@@ -252,6 +252,11 @@ function SettingsWidget() {
           (field) => String(field.id) === Object.keys(errors)[0]
         )
 
+        setOpenPanels((openPanels) => ({
+          ...openPanels,
+          [firstInvalidField.meta.settingId]: true,
+        }))
+
         setTabIndexes({
           ...tabIndexes,
           [firstInvalidField.meta.settingId]: firstInvalidField.meta.childIndex,
@@ -276,346 +281,331 @@ function SettingsWidget() {
                     "Actions": CursorClickIcon,
                   }[result.category]
 
+                  const open = !!openPanels[result.id]
+
                   return (
                     <li key={result.id}>
-                      <Disclosure>
-                        {({ open }) => (
-                          <>
-                            <div className="flex items-center">
-                              <Disclosure.Button
+                      <div className="flex items-center">
+                        <button
+                          type="button"
+                          className={cn(
+                            "group flex items-center px-6 py-5 w-full text-left focus:outline-none focus-visible:ring-blue-400 focus-visible:ring focus-visible:ring-inset",
+                            resultIndex === 0 && "rounded-t-md",
+                            resultIndex === settings.length - 1 &&
+                              !form.formState.isDirty &&
+                              "rounded-b-md"
+                          )}
+                          onClick={() =>
+                            setOpenPanels((openPanels) => ({
+                              ...openPanels,
+                              [result.id]: !openPanels[result.id],
+                            }))
+                          }
+                        >
+                          <div className="flex flex-1 items-center">
+                            <div className="flex-shrink-0">
+                              <div
                                 className={cn(
-                                  "group flex items-center px-6 py-5 w-full text-left focus:outline-none focus-visible:ring-blue-400 focus-visible:ring focus-visible:ring-inset",
-                                  resultIndex === 0 && "rounded-t-md",
-                                  resultIndex === settings.length - 1 &&
-                                    !form.formState.isDirty &&
-                                    "rounded-b-md"
+                                  "relative inline-flex items-center justify-center w-12 h-12 text-white bg-gradient-to-bl rounded-xl shadow-lg",
+                                  open
+                                    ? "from-blue-500 to-blue-700 group-hover:from-blue-600 group-hover:to-blue-800"
+                                    : "from-gray-400 to-gray-500 group-hover:from-gray-500 group-hover:to-gray-600"
                                 )}
                               >
-                                <div className="flex flex-1 items-center">
-                                  <div className="flex-shrink-0">
-                                    <div
-                                      className={cn(
-                                        "relative inline-flex items-center justify-center w-12 h-12 text-white bg-gradient-to-bl rounded-xl shadow-lg",
-                                        open
-                                          ? "from-blue-500 to-blue-700 group-hover:from-blue-600 group-hover:to-blue-800"
-                                          : "from-gray-400 to-gray-500 group-hover:from-gray-500 group-hover:to-gray-600"
-                                      )}
-                                    >
-                                      <Icon
-                                        className="w-6 h-6 text-white"
-                                        aria-hidden
-                                      />
-                                      {fields.some(
-                                        (field) =>
-                                          field.meta.settingId === result.id &&
-                                          form.formState.dirtyFields[field.id]
-                                      ) && (
-                                        <span className="absolute -right-0.5 -top-0.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full" />
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div className="flex-1 px-4">
-                                    <p className="text-gray-900 text-base font-medium">
-                                      {result.category}
-                                    </p>
-                                    <p className="mt-1 text-gray-500 text-sm">
-                                      <span className="truncate">
-                                        {result.description}
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-                                <div>
-                                  {open ? (
-                                    <ChevronDownIcon
-                                      className="w-5 h-5 text-gray-400"
-                                      aria-hidden
-                                    />
-                                  ) : (
-                                    <ChevronRightIcon
-                                      className="w-5 h-5 text-gray-400"
-                                      aria-hidden
-                                    />
-                                  )}
-                                </div>
-                              </Disclosure.Button>
+                                <Icon
+                                  className="w-6 h-6 text-white"
+                                  aria-hidden
+                                />
+                                {fields.some(
+                                  (field) =>
+                                    field.meta.settingId === result.id &&
+                                    form.formState.dirtyFields[field.id]
+                                ) && (
+                                  <span className="absolute -right-0.5 -top-0.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full" />
+                                )}
+                              </div>
                             </div>
-                            <Disclosure.Panel
-                              className={cn(
-                                "p-6 bg-gray-50 shadow-inner",
-                                resultIndex === settings.length - 1 &&
-                                  !form.formState.isDirty &&
-                                  "rounded-b-md"
-                              )}
-                              unmount={false}
-                            >
-                              <Tabs
-                                index={tabIndexes[result.id] ?? 0}
-                                onChange={(index) =>
-                                  setTabIndexes({
-                                    ...tabIndexes,
-                                    [result.id]: index,
-                                  })
-                                }
-                              >
-                                {({ selectedIndex }) => (
-                                  <>
-                                    <TabList>
-                                      <div className="border-b border-gray-200">
-                                        <div className="flex -mb-px space-x-8">
-                                          {result.child.map(
-                                            (child, childIndex) => (
-                                              <Tab
-                                                key={child.id}
+                            <div className="flex-1 px-4">
+                              <p className="text-gray-900 text-base font-medium">
+                                {result.category}
+                              </p>
+                              <p className="mt-1 text-gray-500 text-sm">
+                                <span className="truncate">
+                                  {result.description}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            {open ? (
+                              <ChevronDownIcon
+                                className="w-5 h-5 text-gray-400"
+                                aria-hidden
+                              />
+                            ) : (
+                              <ChevronRightIcon
+                                className="w-5 h-5 text-gray-400"
+                                aria-hidden
+                              />
+                            )}
+                          </div>
+                        </button>
+                      </div>
+                      <div
+                        className={cn(
+                          "p-6 bg-gray-50 shadow-inner",
+                          resultIndex === settings.length - 1 &&
+                            !form.formState.isDirty &&
+                            "rounded-b-md",
+                          !open && "hidden"
+                        )}
+                      >
+                        <Tabs
+                          index={tabIndexes[result.id] ?? 0}
+                          onChange={(index) =>
+                            setTabIndexes({
+                              ...tabIndexes,
+                              [result.id]: index,
+                            })
+                          }
+                        >
+                          {({ selectedIndex }) => (
+                            <>
+                              <TabList>
+                                <div className="border-b border-gray-200">
+                                  <div className="flex -mb-px space-x-8">
+                                    {result.child.map((child, childIndex) => (
+                                      <Tab
+                                        key={child.id}
+                                        className={cn(
+                                          "px-1 pb-4 whitespace-nowrap text-sm font-medium border-b-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+                                          childIndex === selectedIndex
+                                            ? "border-blue-500 text-blue-600"
+                                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        )}
+                                      >
+                                        <span className="inline-flex items-center space-x-2">
+                                          <span>{child.category}</span>
+                                          {fields.some(
+                                            (field) =>
+                                              field.meta.settingId ===
+                                                result.id &&
+                                              field.meta.childId === child.id &&
+                                              form.formState.dirtyFields[
+                                                field.id
+                                              ]
+                                          ) && (
+                                            <span className="relative">
+                                              <SaveIcon className="w-4 h-4 text-blue-500" />
+                                              <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
+                                            </span>
+                                          )}
+                                        </span>
+                                      </Tab>
+                                    ))}
+                                  </div>
+                                </div>
+                              </TabList>
+                              <TabPanels>
+                                <div className="mt-6 text-gray-500 text-sm">
+                                  {result.child.map((child) => (
+                                    <TabPanel key={child.id}>
+                                      <div className="grid gap-6 grid-cols-4">
+                                        {_.orderBy("order", "asc", fields)
+                                          .filter(
+                                            (field) =>
+                                              field.meta.settingId ===
+                                                result.id &&
+                                              field.meta.childId === child.id &&
+                                              !field.meta.component
+                                          )
+                                          .map((field) => {
+                                            // TODO: avoid mutation
+                                            field = applyModifierToField(
+                                              field,
+                                              modifiers,
+                                              currentValues
+                                            )
+
+                                            return (
+                                              <div
+                                                key={field.id}
                                                 className={cn(
-                                                  "px-1 pb-4 whitespace-nowrap text-sm font-medium border-b-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-                                                  childIndex === selectedIndex
-                                                    ? "border-blue-500 text-blue-600"
-                                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                                  field.span === 2 &&
+                                                    "col-span-2",
+                                                  field.span === 3 &&
+                                                    "col-span-3",
+                                                  field.span === 4 &&
+                                                    "col-span-4",
+                                                  field.display === false &&
+                                                    "hidden"
                                                 )}
                                               >
-                                                <span className="inline-flex items-center space-x-2">
-                                                  <span>{child.category}</span>
-                                                  {fields.some(
-                                                    (field) =>
-                                                      field.meta.settingId ===
-                                                        result.id &&
-                                                      field.meta.childId ===
-                                                        child.id &&
-                                                      form.formState
-                                                        .dirtyFields[field.id]
-                                                  ) && (
-                                                    <span className="relative">
-                                                      <SaveIcon className="w-4 h-4 text-blue-500" />
-                                                      <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
-                                                    </span>
-                                                  )}
-                                                </span>
-                                              </Tab>
+                                                {renderField(
+                                                  field,
+                                                  form,
+                                                  defaultValues,
+                                                  modifiers
+                                                )}
+                                              </div>
                                             )
-                                          )}
-                                        </div>
-                                      </div>
-                                    </TabList>
-                                    <TabPanels>
-                                      <div className="mt-6 text-gray-500 text-sm">
-                                        {result.child.map((child) => (
-                                          <TabPanel key={child.id}>
-                                            <div className="grid gap-6 grid-cols-4">
-                                              {_.orderBy("order", "asc", fields)
-                                                .filter(
-                                                  (field) =>
-                                                    field.meta.settingId ===
-                                                      result.id &&
-                                                    field.meta.childId ===
-                                                      child.id &&
-                                                    !field.meta.component
-                                                )
-                                                .map((field) => {
-                                                  // TODO: avoid mutation
-                                                  field = applyModifierToField(
-                                                    field,
-                                                    modifiers,
-                                                    currentValues
-                                                  )
-
-                                                  return (
-                                                    <div
-                                                      key={field.id}
-                                                      className={cn(
-                                                        field.span === 2 &&
-                                                          "col-span-2",
-                                                        field.span === 3 &&
-                                                          "col-span-3",
-                                                        field.span === 4 &&
-                                                          "col-span-4",
-                                                        field.display ===
-                                                          false && "hidden"
-                                                      )}
-                                                    >
-                                                      {renderField(
-                                                        field,
-                                                        form,
-                                                        defaultValues,
-                                                        modifiers
-                                                      )}
-                                                    </div>
-                                                  )
-                                                })}
-                                              {/* {child.component.find(
+                                          })}
+                                        {/* {child.component.find(
                                                 (component) =>
                                                   component.component_type ===
                                                   "biocide_timer"
                                               ) && <BiocideTimers />} */}
-                                              {child.component.map(
-                                                (component) => (
-                                                  <Popover
-                                                    key={component.component}
-                                                    className="relative"
-                                                  >
-                                                    {({ open }) => (
-                                                      <>
-                                                        <div className="bottom-[1px] relative mt-6">
-                                                          <Popover.Button className="inline-flex justify-center px-4 py-2 w-full text-gray-700 text-smhover:bg-gray-50 bg-white border border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-gray-100 focus:ring-offset-2 focus:ring-2">
-                                                            <span className="inline-flex items-center space-x-2">
-                                                              <span>
-                                                                {
-                                                                  component.component
-                                                                }
-                                                              </span>
-                                                              {fields.some(
-                                                                (field) =>
-                                                                  field.meta
-                                                                    .settingId ===
-                                                                    result.id &&
-                                                                  field.meta
-                                                                    .childId ===
-                                                                    child.id &&
-                                                                  field.meta
-                                                                    .component ===
-                                                                    component.component &&
-                                                                  form.formState
-                                                                    .dirtyFields[
-                                                                    field.id
-                                                                  ]
-                                                              ) && (
-                                                                <span className="relative">
-                                                                  <SaveIcon className="w-4 h-4 text-blue-500" />
-                                                                  <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
-                                                                </span>
-                                                              )}
-                                                            </span>
-                                                            <ChevronDownIcon
-                                                              className={`${
-                                                                open
-                                                                  ? ""
-                                                                  : "text-opacity-70"
-                                                              }
+                                        {child.component.map((component) => (
+                                          <Popover
+                                            key={component.component}
+                                            className="relative"
+                                          >
+                                            {({ open }) => (
+                                              <>
+                                                <div className="bottom-[1px] relative mt-6">
+                                                  <Popover.Button className="inline-flex justify-center px-4 py-2 w-full text-gray-700 text-smhover:bg-gray-50 bg-white border border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-gray-100 focus:ring-offset-2 focus:ring-2">
+                                                    <span className="inline-flex items-center space-x-2">
+                                                      <span>
+                                                        {component.component}
+                                                      </span>
+                                                      {fields.some(
+                                                        (field) =>
+                                                          field.meta
+                                                            .settingId ===
+                                                            result.id &&
+                                                          field.meta.childId ===
+                                                            child.id &&
+                                                          field.meta
+                                                            .component ===
+                                                            component.component &&
+                                                          form.formState
+                                                            .dirtyFields[
+                                                            field.id
+                                                          ]
+                                                      ) && (
+                                                        <span className="relative">
+                                                          <SaveIcon className="w-4 h-4 text-blue-500" />
+                                                          <span className="absolute right-0 top-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
+                                                        </span>
+                                                      )}
+                                                    </span>
+                                                    <ChevronDownIcon
+                                                      className={`${
+                                                        open
+                                                          ? ""
+                                                          : "text-opacity-70"
+                                                      }
                   ml-2 h-5 w-5 text-orange-300 group-hover:text-opacity-80 transition ease-in-out duration-150`}
-                                                              aria-hidden
-                                                            />
-                                                          </Popover.Button>
-                                                        </div>
-                                                        <Transition
-                                                          as={React.Fragment}
-                                                          enter="transition ease-out duration-200"
-                                                          enterFrom="opacity-0 translate-y-1"
-                                                          enterTo="opacity-100 translate-y-0"
-                                                          leave="transition ease-in duration-150"
-                                                          leaveFrom="opacity-100 translate-y-0"
-                                                          leaveTo="opacity-0 translate-y-1"
-                                                          show={open}
-                                                          unmount={false}
-                                                        >
-                                                          <Popover.Panel
-                                                            className="absolute z-10 left-1/2 mt-3 px-4 w-screen max-w-sm transform -translate-x-1/2 sm:px-0 lg:max-w-3xl"
-                                                            unmount={false}
-                                                          >
-                                                            <div className="rounded-lg shadow-lg overflow-hidden ring-black ring-opacity-5 ring-1">
-                                                              <div className="relative grid gap-6 grid-cols-4 p-7 bg-white">
-                                                                {_.orderBy(
-                                                                  "order",
-                                                                  "asc",
-                                                                  fields
-                                                                )
-                                                                  .filter(
-                                                                    (field) =>
-                                                                      field.meta
-                                                                        .settingId ===
-                                                                        result.id &&
-                                                                      field.meta
-                                                                        .childId ===
-                                                                        child.id &&
-                                                                      field.meta
-                                                                        .component ===
-                                                                        component.component
-                                                                  )
-                                                                  .map(
-                                                                    (field) => {
-                                                                      // TODO: avoid mutation
-                                                                      field =
-                                                                        applyModifierToField(
-                                                                          field,
-                                                                          modifiers,
-                                                                          currentValues
-                                                                        )
+                                                      aria-hidden
+                                                    />
+                                                  </Popover.Button>
+                                                </div>
+                                                <Transition
+                                                  as={React.Fragment}
+                                                  enter="transition ease-out duration-200"
+                                                  enterFrom="opacity-0 translate-y-1"
+                                                  enterTo="opacity-100 translate-y-0"
+                                                  leave="transition ease-in duration-150"
+                                                  leaveFrom="opacity-100 translate-y-0"
+                                                  leaveTo="opacity-0 translate-y-1"
+                                                  show={open}
+                                                  unmount={false}
+                                                >
+                                                  <Popover.Panel
+                                                    className="absolute z-10 left-1/2 mt-3 px-4 w-screen max-w-sm transform -translate-x-1/2 sm:px-0 lg:max-w-3xl"
+                                                    unmount={false}
+                                                  >
+                                                    <div className="rounded-lg shadow-lg overflow-hidden ring-black ring-opacity-5 ring-1">
+                                                      <div className="relative grid gap-6 grid-cols-4 p-7 bg-white">
+                                                        {_.orderBy(
+                                                          "order",
+                                                          "asc",
+                                                          fields
+                                                        )
+                                                          .filter(
+                                                            (field) =>
+                                                              field.meta
+                                                                .settingId ===
+                                                                result.id &&
+                                                              field.meta
+                                                                .childId ===
+                                                                child.id &&
+                                                              field.meta
+                                                                .component ===
+                                                                component.component
+                                                          )
+                                                          .map((field) => {
+                                                            // TODO: avoid mutation
+                                                            field =
+                                                              applyModifierToField(
+                                                                field,
+                                                                modifiers,
+                                                                currentValues
+                                                              )
 
-                                                                      return (
-                                                                        <div
-                                                                          key={
-                                                                            field.id
-                                                                          }
-                                                                          className={cn(
-                                                                            field.span ===
-                                                                              2 &&
-                                                                              "col-span-2",
-                                                                            field.span ===
-                                                                              3 &&
-                                                                              "col-span-3",
-                                                                            field.span ===
-                                                                              4 &&
-                                                                              "col-span-4",
-                                                                            field.display ===
-                                                                              false &&
-                                                                              "hidden"
-                                                                          )}
-                                                                        >
-                                                                          {renderField(
-                                                                            field,
-                                                                            form,
-                                                                            defaultValues,
-                                                                            modifiers
-                                                                          )}
-                                                                        </div>
-                                                                      )
-                                                                    }
-                                                                  )}
+                                                            return (
+                                                              <div
+                                                                key={field.id}
+                                                                className={cn(
+                                                                  field.span ===
+                                                                    2 &&
+                                                                    "col-span-2",
+                                                                  field.span ===
+                                                                    3 &&
+                                                                    "col-span-3",
+                                                                  field.span ===
+                                                                    4 &&
+                                                                    "col-span-4",
+                                                                  field.display ===
+                                                                    false &&
+                                                                    "hidden"
+                                                                )}
+                                                              >
+                                                                {renderField(
+                                                                  field,
+                                                                  form,
+                                                                  defaultValues,
+                                                                  modifiers
+                                                                )}
                                                               </div>
-                                                            </div>
-                                                          </Popover.Panel>
-                                                        </Transition>
-                                                      </>
-                                                    )}
-                                                  </Popover>
-                                                )
-                                              )}
-                                            </div>
-                                          </TabPanel>
+                                                            )
+                                                          })}
+                                                      </div>
+                                                    </div>
+                                                  </Popover.Panel>
+                                                </Transition>
+                                              </>
+                                            )}
+                                          </Popover>
                                         ))}
                                       </div>
-                                    </TabPanels>
-                                  </>
-                                )}
-                              </Tabs>
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
+                                    </TabPanel>
+                                  ))}
+                                </div>
+                              </TabPanels>
+                            </>
+                          )}
+                        </Tabs>
+                      </div>
                     </li>
                   )
                 })}
-                {form.formState.isDirty && (
-                  <li>
-                    <div className="flex items-center justify-between px-6 py-5 rounded-b-md">
-                      <p className="text-gray-900 text-sm">
-                        You have made{" "}
-                        <strong className="font-medium">
-                          {changeCount}{" "}
-                          {changeCount === 1 ? "change" : "changes"}
-                        </strong>
-                      </p>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="secondary"
-                          onClick={() => form.reset()}
-                        >
-                          Discard
-                        </Button>
-                        <Button type="submit">Save changes</Button>
-                      </div>
+                <li className={form.formState.isDirty ? undefined : "hidden"}>
+                  <div className="flex items-center justify-between px-6 py-5 rounded-b-md">
+                    <p className="text-gray-900 text-sm">
+                      You have made{" "}
+                      <strong className="font-medium">
+                        {changeCount} {changeCount === 1 ? "change" : "changes"}
+                      </strong>
+                    </p>
+                    <div className="flex space-x-2">
+                      <Button variant="secondary" onClick={() => form.reset()}>
+                        Discard
+                      </Button>
+                      <Button type="submit">Save changes</Button>
                     </div>
-                  </li>
-                )}
+                  </div>
+                </li>
               </ul>
             </div>
           </>

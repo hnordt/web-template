@@ -10,6 +10,7 @@ const Switch = React.forwardRef(function Switch(props, ref) {
           "relative inline-flex flex-shrink-0 w-11 h-6 border-2 border-transparent rounded-full focus:outline-none cursor-pointer transition-colors duration-200 ease-in-out focus:ring-blue-500 focus:ring-offset-2 focus:ring-2",
           props.value ? "bg-blue-600" : "bg-gray-200"
         )}
+        type="button"
         checked={props.value}
         onChange={props.onChange}
       >
