@@ -67,10 +67,6 @@ function shouldApplyModifier(
 ) {
   const condition = modifier._condition
 
-  if (field.id !== condition.applyTo) {
-    return false
-  }
-
   const sourceField = applyModifierToField(
     fields.find((field) => field.id === condition.fieldId),
     fields,
@@ -89,9 +85,19 @@ function shouldApplyModifier(
 }
 
 function applyModifierToField(field, fields, modifiers, currentValues) {
-  const _modifier = modifiers.find((modifier) =>
-    shouldApplyModifier(field, modifier, fields, modifiers, currentValues)
-  )
+  const _modifier = modifiers.find((modifier) => {
+    if (field.id !== modifier._condition.applyTo) {
+      return false
+    }
+
+    return shouldApplyModifier(
+      field,
+      modifier,
+      fields,
+      modifiers,
+      currentValues
+    )
+  })
 
   if (_modifier) {
     return {
@@ -456,7 +462,9 @@ function SettingsWidget() {
                                                   field,
                                                   form,
                                                   defaultValues,
-                                                  modifiers
+                                                  modifiers,
+                                                  fields,
+                                                  currentValues
                                                 )}
                                               </div>
                                             )
@@ -577,7 +585,9 @@ function SettingsWidget() {
                                                                   field,
                                                                   form,
                                                                   defaultValues,
-                                                                  modifiers
+                                                                  modifiers,
+                                                                  fields,
+                                                                  currentValues
                                                                 )}
                                                               </div>
                                                             )
@@ -637,7 +647,14 @@ export default function HomeScreen() {
   )
 }
 
-function renderField(field, form, defaultValues, modifiers) {
+function renderField(
+  field,
+  form,
+  defaultValues,
+  modifiers,
+  fields,
+  currentValues
+) {
   return (
     <div className="relative">
       {form.formState.dirtyFields[field.id] && (
@@ -827,10 +844,21 @@ function renderField(field, form, defaultValues, modifiers) {
                           (modifier) => modifier._condition.fieldId === field.id
                         )
                         .forEach((modifier) => {
-                          if (modifier._condition.value !== value) {
+                          if (
+                            shouldApplyModifier(
+                              field,
+                              modifier,
+                              fields,
+                              modifiers,
+                              {
+                                ...currentValues,
+                                [field.id]: value,
+                              }
+                            )
+                          ) {
                             form.setValue(
                               String(modifier._condition.applyTo),
-                              defaultValues[modifier._condition.applyTo],
+                              modifier.default,
                               {
                                 shouldDirty: true,
                               }
@@ -838,7 +866,7 @@ function renderField(field, form, defaultValues, modifiers) {
                           } else {
                             form.setValue(
                               String(modifier._condition.applyTo),
-                              modifier.default,
+                              defaultValues[modifier._condition.applyTo],
                               {
                                 shouldDirty: true,
                               }
@@ -876,10 +904,21 @@ function renderField(field, form, defaultValues, modifiers) {
                                 modifier._condition.fieldId === field.id
                             )
                             .forEach((modifier) => {
-                              if (modifier._condition.value !== value) {
+                              if (
+                                shouldApplyModifier(
+                                  field,
+                                  modifier,
+                                  fields,
+                                  modifiers,
+                                  {
+                                    ...currentValues,
+                                    [field.id]: value,
+                                  }
+                                )
+                              ) {
                                 form.setValue(
                                   String(modifier._condition.applyTo),
-                                  defaultValues[modifier._condition.applyTo],
+                                  modifier.default,
                                   {
                                     shouldDirty: true,
                                   }
@@ -887,7 +926,7 @@ function renderField(field, form, defaultValues, modifiers) {
                               } else {
                                 form.setValue(
                                   String(modifier._condition.applyTo),
-                                  modifier.default,
+                                  defaultValues[modifier._condition.applyTo],
                                   {
                                     shouldDirty: true,
                                   }
