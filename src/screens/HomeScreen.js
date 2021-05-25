@@ -58,13 +58,7 @@ function Form(props) {
   )
 }
 
-function shouldApplyModifier(
-  field,
-  modifier,
-  fields,
-  modifiers,
-  currentValues
-) {
+function shouldApplyModifier(modifier, fields, modifiers, currentValues) {
   const condition = modifier._condition
 
   const sourceField = applyModifierToField(
@@ -90,13 +84,7 @@ function applyModifierToField(field, fields, modifiers, currentValues) {
       return false
     }
 
-    return shouldApplyModifier(
-      field,
-      modifier,
-      fields,
-      modifiers,
-      currentValues
-    )
+    return shouldApplyModifier(modifier, fields, modifiers, currentValues)
   })
 
   if (_modifier) {
@@ -845,16 +833,10 @@ function renderField(
                         )
                         .forEach((modifier) => {
                           if (
-                            shouldApplyModifier(
-                              field,
-                              modifier,
-                              fields,
-                              modifiers,
-                              {
-                                ...currentValues,
-                                [field.id]: value,
-                              }
-                            )
+                            shouldApplyModifier(modifier, fields, modifiers, {
+                              ...currentValues,
+                              [field.id]: value,
+                            })
                           ) {
                             form.setValue(
                               String(modifier._condition.applyTo),
@@ -906,7 +888,6 @@ function renderField(
                             .forEach((modifier) => {
                               if (
                                 shouldApplyModifier(
-                                  field,
                                   modifier,
                                   fields,
                                   modifiers,
