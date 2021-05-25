@@ -58,12 +58,39 @@ function Form(props) {
   )
 }
 
-function applyModifierToField(field, modifiers, currentValues) {
-  const _modifier = modifiers.find(
-    (modifier) =>
-      modifier._condition.applyTo === field.id &&
-      String(currentValues[modifier._condition.fieldId]) ===
-        String(modifier._condition.value)
+function shouldApplyModifier(
+  field,
+  modifier,
+  fields,
+  modifiers,
+  currentValues
+) {
+  const condition = modifier._condition
+
+  if (field.id !== condition.applyTo) {
+    return false
+  }
+
+  const sourceField = applyModifierToField(
+    fields.find((field) => field.id === condition.fieldId),
+    fields,
+    modifiers,
+    currentValues
+  )
+
+  if (condition.key) {
+    return (
+      String(condition.key) ===
+      String(_.invert(sourceField.value_lower)[currentValues[sourceField.id]])
+    )
+  }
+
+  return String(condition.value) === String(currentValues[sourceField.id])
+}
+
+function applyModifierToField(field, fields, modifiers, currentValues) {
+  const _modifier = modifiers.find((modifier) =>
+    shouldApplyModifier(field, modifier, fields, modifiers, currentValues)
   )
 
   if (_modifier) {
@@ -199,6 +226,7 @@ function SettingsWidget() {
             default: normalizeFieldValue(child, child.default),
             _condition: {
               fieldId: field.id,
+              key: condition.key,
               value: normalizeFieldValue(
                 field,
                 condition.key
@@ -213,36 +241,6 @@ function SettingsWidget() {
     ],
     []
   )
-
-  // [FIXME] to be able to apply modifiers we need to get the current values from the api
-  // the problem is that the api will not return the value typed according to the
-  // modifier, instead, it'll return the value typed according to the default field type
-  // for example Control Cycle Time is of type list, but when Control Method is 0,
-  // Control Cycle Time is of type integer, but still the api will return "45" (list)
-  // and not 45 (integer)
-  // so to be able to apply modifiers we'll need to force all values to be String
-  // this is probably gonna cause issues, so we need to return the correct field type
-  // when calculating the var fields
-  // probably we need to apply the modifier while creating the field, so we can
-  // force it to return the correct value type
-  // const unsafeValueTypeDefaultValues = fields.reduce(
-  //   (acc, field) => ({
-  //     ...acc,
-  //     [field.id]: field.value.value,
-  //   }),
-  //   {}
-  // )
-  // fields = fields.map((field) =>
-  //   applyModifierToField(field, modifiers, unsafeValueTypeDefaultValues)
-  // )
-  // we can only calculate defaultValues after applying all modifiers
-  // const defaultValues = fields.reduce(
-  //   (acc, field) => ({
-  //     ...acc,
-  //     [field.id]: normalizeFieldValue(field, field.value.value),
-  //   }),
-  //   {}
-  // )
 
   return (
     <Form
@@ -435,6 +433,7 @@ function SettingsWidget() {
                                             // TODO: avoid mutation
                                             field = applyModifierToField(
                                               field,
+                                              fields,
                                               modifiers,
                                               currentValues
                                             )
@@ -551,6 +550,7 @@ function SettingsWidget() {
                                                             field =
                                                               applyModifierToField(
                                                                 field,
+                                                                fields,
                                                                 modifiers,
                                                                 currentValues
                                                               )
