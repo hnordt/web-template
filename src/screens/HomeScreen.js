@@ -794,7 +794,7 @@ function renderField(
                     ref={props.field.ref}
                     label={field.label}
                     options={field.value_lower.split(",").map((value) => ({
-                      label: value,
+                      label: `${value} ${field.value_unit}`,
                       value,
                     }))}
                     value={props.field.value}
@@ -828,32 +828,20 @@ function renderField(
                       props.field.onChange(value)
 
                       modifiers
-                        .filter(
-                          (modifier) => modifier._condition.fieldId === field.id
+                        .filter((modifier) =>
+                          shouldApplyModifier(modifier, fields, modifiers, {
+                            ...currentValues,
+                            [field.id]: value,
+                          })
                         )
                         .forEach((modifier) => {
-                          if (
-                            shouldApplyModifier(modifier, fields, modifiers, {
-                              ...currentValues,
-                              [field.id]: value,
-                            })
-                          ) {
-                            form.setValue(
-                              String(modifier._condition.applyTo),
-                              modifier.default,
-                              {
-                                shouldDirty: true,
-                              }
-                            )
-                          } else {
-                            form.setValue(
-                              String(modifier._condition.applyTo),
-                              defaultValues[modifier._condition.applyTo],
-                              {
-                                shouldDirty: true,
-                              }
-                            )
-                          }
+                          form.setValue(
+                            String(modifier._condition.applyTo),
+                            modifier.default,
+                            {
+                              shouldDirty: true,
+                            }
+                          )
                         })
                     }}
                   />
@@ -881,38 +869,20 @@ function renderField(
                           props.field.onChange(value)
 
                           modifiers
-                            .filter(
-                              (modifier) =>
-                                modifier._condition.fieldId === field.id
+                            .filter((modifier) =>
+                              shouldApplyModifier(modifier, fields, modifiers, {
+                                ...currentValues,
+                                [field.id]: value,
+                              })
                             )
                             .forEach((modifier) => {
-                              if (
-                                shouldApplyModifier(
-                                  modifier,
-                                  fields,
-                                  modifiers,
-                                  {
-                                    ...currentValues,
-                                    [field.id]: value,
-                                  }
-                                )
-                              ) {
-                                form.setValue(
-                                  String(modifier._condition.applyTo),
-                                  modifier.default,
-                                  {
-                                    shouldDirty: true,
-                                  }
-                                )
-                              } else {
-                                form.setValue(
-                                  String(modifier._condition.applyTo),
-                                  defaultValues[modifier._condition.applyTo],
-                                  {
-                                    shouldDirty: true,
-                                  }
-                                )
-                              }
+                              form.setValue(
+                                String(modifier._condition.applyTo),
+                                modifier.default,
+                                {
+                                  shouldDirty: true,
+                                }
+                              )
                             })
                         }}
                       />
