@@ -954,6 +954,9 @@ function applyModifiers(
   modifiersThatWillMatch.forEach((modifier) => {
     console.log(`setting ${modifier._condition.applyTo} to ${modifier.default}`)
 
+    // setTimeout is necessary because the value will be set immediately, but
+    // ListItem options will update only after the next render
+    // this is probably gonna cause issues, so we need to find a better solution
     setTimeout(() => {
       form.setValue(String(modifier._condition.applyTo), modifier.default, {
         shouldDirty: true,
@@ -977,6 +980,9 @@ function applyModifiers(
 
     console.log(`setting ${field.id} to ${field.default}`)
 
+    // setTimeout is necessary because the value will be set immediately, but
+    // ListItem options will update only after the next render
+    // this is probably gonna cause issues, so we need to find a better solution
     setTimeout(() => {
       form.setValue(String(field.id), field.default, {
         shouldDirty: true,
