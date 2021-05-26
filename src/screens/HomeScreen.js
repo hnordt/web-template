@@ -826,52 +826,14 @@ function renderField(
                     value={props.field.value}
                     onChange={(value) => {
                       props.field.onChange(value)
-
-                      const modifiersToBeApplied = modifiers.filter(
-                        (modifier) =>
-                          field.id === modifier._condition.fieldId &&
-                          shouldApplyModifier(modifier, fields, modifiers, {
-                            ...currentValues,
-                            [field.id]: value,
-                          })
+                      applyModifiers(
+                        field,
+                        value,
+                        fields,
+                        modifiers,
+                        currentValues,
+                        form
                       )
-
-                      //  if the field has modifiers, and no modifiers were applied because the condition didn't match, it means that I need to reset the fields that would be affected by these modifiers to their default values
-                      if (modifiersToBeApplied.length === 0) {
-                        modifiers
-                          .filter(
-                            (modifier) =>
-                              field.id === modifier._condition.fieldId
-                          )
-                          .forEach((modifier) => {
-                            const field = fields.find(
-                              (field) =>
-                                field.id === modifier._condition.applyTo
-                            )
-
-                            console.log(
-                              `setting ${field.id} to ${field.default}`
-                            )
-
-                            form.setValue(String(field.id), field.default, {
-                              shouldDirty: true,
-                            })
-                          })
-                      }
-
-                      modifiersToBeApplied.forEach((modifier) => {
-                        console.log(
-                          `setting ${modifier._condition.applyTo} to ${modifier.default}`
-                        )
-
-                        form.setValue(
-                          String(modifier._condition.applyTo),
-                          modifier.default,
-                          {
-                            shouldDirty: true,
-                          }
-                        )
-                      })
                     }}
                   />
                 )}
@@ -896,52 +858,14 @@ function renderField(
                         value={props.field.value}
                         onChange={(value) => {
                           props.field.onChange(value)
-
-                          const modifiersToBeApplied = modifiers.filter(
-                            (modifier) =>
-                              field.id === modifier._condition.fieldId &&
-                              shouldApplyModifier(modifier, fields, modifiers, {
-                                ...currentValues,
-                                [field.id]: value,
-                              })
+                          applyModifiers(
+                            field,
+                            value,
+                            fields,
+                            modifiers,
+                            currentValues,
+                            form
                           )
-
-                          //  if the field has modifiers, and no modifiers were applied because the condition didn't match, it means that I need to reset the fields that would be affected by these modifiers to their default values
-                          if (modifiersToBeApplied.length === 0) {
-                            modifiers
-                              .filter(
-                                (modifier) =>
-                                  field.id === modifier._condition.fieldId
-                              )
-                              .forEach((modifier) => {
-                                const field = fields.find(
-                                  (field) =>
-                                    field.id === modifier._condition.applyTo
-                                )
-
-                                console.log(
-                                  `setting ${field.id} to ${field.default}`
-                                )
-
-                                form.setValue(String(field.id), field.default, {
-                                  shouldDirty: true,
-                                })
-                              })
-                          }
-
-                          modifiersToBeApplied.forEach((modifier) => {
-                            console.log(
-                              `setting ${modifier._condition.applyTo} to ${modifier.default}`
-                            )
-
-                            form.setValue(
-                              String(modifier._condition.applyTo),
-                              modifier.default,
-                              {
-                                shouldDirty: true,
-                              }
-                            )
-                          })
                         }}
                       />
                     )}
@@ -1001,4 +925,62 @@ function BiocideTimers(props) {
       </div>
     </>
   )
+}
+
+// TODO: rewrite
+// when a field is changed I'll check all the modifiers that this field will apply
+// if the modifier matches the new value, I'll apply it
+// if the modifier doesn't match, I'll reset the field that would be modified to its default value
+function applyModifiers(
+  sourceField,
+  newSourceFieldValue,
+  fields,
+  modifiers,
+  currentValues,
+  form
+) {
+  const modifiersThatMightBeApplied = modifiers.filter(
+    (modifier) => sourceField.id === modifier._condition.fieldId
+  )
+
+  const modifiersThatWillMatch = modifiersThatMightBeApplied.filter(
+    (modifier) =>
+      shouldApplyModifier(modifier, fields, modifiers, {
+        ...currentValues,
+        [sourceField.id]: newSourceFieldValue,
+      })
+  )
+
+  modifiersThatWillMatch.forEach((modifier) => {
+    console.log(`setting ${modifier._condition.applyTo} to ${modifier.default}`)
+
+    setTimeout(() => {
+      form.setValue(String(modifier._condition.applyTo), modifier.default, {
+        shouldDirty: true,
+      })
+    }, 0)
+  })
+
+  modifiersThatMightBeApplied.forEach((modifier) => {
+    if (
+      modifiersThatWillMatch.find(
+        (_modifier) =>
+          _modifier._condition.applyTo === modifier._condition.applyTo
+      )
+    ) {
+      return
+    }
+
+    const field = fields.find(
+      (field) => field.id === modifier._condition.applyTo
+    )
+
+    console.log(`setting ${field.id} to ${field.default}`)
+
+    setTimeout(() => {
+      form.setValue(String(field.id), field.default, {
+        shouldDirty: true,
+      })
+    }, 0)
+  })
 }
