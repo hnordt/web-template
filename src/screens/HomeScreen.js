@@ -828,13 +828,19 @@ function renderField(
                       props.field.onChange(value)
 
                       modifiers
-                        .filter((modifier) =>
-                          shouldApplyModifier(modifier, fields, modifiers, {
-                            ...currentValues,
-                            [field.id]: value,
-                          })
+                        .filter(
+                          (modifier) =>
+                            field.id === modifier._condition.fieldId &&
+                            shouldApplyModifier(modifier, fields, modifiers, {
+                              ...currentValues,
+                              [field.id]: value,
+                            })
                         )
                         .forEach((modifier) => {
+                          console.log(
+                            `setting ${modifier._condition.applyTo} to ${modifier.default}`
+                          )
+
                           form.setValue(
                             String(modifier._condition.applyTo),
                             modifier.default,
@@ -869,13 +875,24 @@ function renderField(
                           props.field.onChange(value)
 
                           modifiers
-                            .filter((modifier) =>
-                              shouldApplyModifier(modifier, fields, modifiers, {
-                                ...currentValues,
-                                [field.id]: value,
-                              })
+                            .filter(
+                              (modifier) =>
+                                field.id === modifier._condition.fieldId &&
+                                shouldApplyModifier(
+                                  modifier,
+                                  fields,
+                                  modifiers,
+                                  {
+                                    ...currentValues,
+                                    [field.id]: value,
+                                  }
+                                )
                             )
                             .forEach((modifier) => {
+                              console.log(
+                                `setting ${modifier._condition.applyTo} to ${modifier.default}`
+                              )
+
                               form.setValue(
                                 String(modifier._condition.applyTo),
                                 modifier.default,
