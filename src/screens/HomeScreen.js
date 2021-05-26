@@ -301,7 +301,7 @@ export default function HomeScreen() {
   React.useEffect(() => {
     newOrder.dispatch({
       type: "ADD_ITEM",
-      product: products[0],
+      product: products[1],
     })
   }, [])
 
