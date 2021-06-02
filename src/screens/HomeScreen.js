@@ -458,10 +458,18 @@ function SettingsWidget() {
                                             )
                                           })}
                                         {/* {child.component.find(
-                                                (component) =>
-                                                  component.component_type ===
-                                                  "biocide_timer"
-                                              ) && <BiocideTimers />} */}
+                                          (component) =>
+                                            component.component_type ===
+                                            "biocide_timer"
+                                        ) && (
+                                          <BiocideTimers
+                                            components={child.component.filter(
+                                              (component) =>
+                                                component.component_type ===
+                                                "biocide_timer"
+                                            )}
+                                          />
+                                        )} */}
                                         {child.component.map((component) => (
                                           <Popover
                                             key={component.component}
@@ -897,28 +905,29 @@ function BiocideTimers(props) {
           <div className="relative flex">
             <span className="flex items-center pr-2 bg-gray-50 space-x-2">
               <span className="text-gray-500 text-sm bg-gray-50">Timers</span>
-              <button
+              {/* <button
                 className="inline-flex items-center p-0.5 text-white bg-green-600 hover:bg-green-700 border border-transparent rounded-full focus:outline-none shadow-sm focus:ring-green-500 focus:ring-offset-2 focus:ring-2"
                 type="button"
                 onClick={() => setTimers([...timers, {}])}
               >
-                <PlusIcon className="w-5 h-5" aria-hidden="true" />
-              </button>
+                <PlusIcon className="w-5 h-5" aria-hidden />
+              </button> */}
             </span>
           </div>
         </div>
       </div>
       <div className="col-span-4">
         <div className="grid gap-6 grid-cols-4">
-          {timers.map((timer, timerIndex) => (
+          {props.components.map((component, i) => (
             <BiocideTimer
-              key={timerIndex}
-              number={timerIndex + 1}
-              onRemove={() =>
-                setTimers(
-                  timers.filter((_, _timerIndex) => _timerIndex !== timerIndex)
-                )
-              }
+              key={i}
+              number={i + 1}
+              component={component}
+              // onRemove={() =>
+              //   setTimers(
+              //     timers.filter((_, _timerIndex) => _timerIndex !== timerIndex)
+              //   )
+              // }
             />
           ))}
         </div>
