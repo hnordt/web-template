@@ -3,17 +3,50 @@ import Input from "components/core/alpha/Input"
 import Checkbox from "components/core/alpha/Checkbox"
 import Select from "components/core/alpha/Select"
 import { TrashIcon } from "@heroicons/react/solid"
+import cn from "classnames"
 
 export default function BiocideTimer(props) {
   const componentName = props.component.component
-  const fields = props.component.setting
 
-  const pumpOutputField = fields.find((field) =>
-    field.label.toLowerCase().includes("output")
-  )
-  // TODO: other fields
+  function renderField(label, exact = false) {
+    let field = props.component.setting.find((field) =>
+      exact
+        ? field.label.toLowerCase() === label.toLowerCase()
+        : field.label.toLowerCase().includes(label)
+    )
 
-  // TODO: renderField()
+    if (!field) {
+      return null
+    }
+
+    // TODO: avoid mutation
+    field = props.applyModifierToField(
+      field,
+      props.fields,
+      props.modifiers,
+      props.currentValues
+    )
+
+    return (
+      <div
+        className={cn(
+          // field.span === 2 && "col-span-2",
+          // field.span === 3 && "col-span-3",
+          // field.span === 4 && "col-span-4",
+          field.display === false && "hidden"
+        )}
+      >
+        {props.renderField(
+          field,
+          props.form,
+          props.defaultValues,
+          props.modifiers,
+          props.fields,
+          props.currentValues
+        )}
+      </div>
+    )
+  }
 
   return (
     <>
@@ -26,47 +59,42 @@ export default function BiocideTimer(props) {
         </div>
         <div
           className="pb-[3.5px] absolute -right-6 -top-6 group-hover:flex hidden items-end justify-center w-12 h-12 bg-gradient-to-bl from-red-500 to-red-700 cursor-pointer transform rotate-45"
-          onClick={props.onRemove}
+          // onClick={props.onRemove}
+          onClick={() => alert("Not implemented yet")}
         >
           <TrashIcon className="w-3 h-3 text-white transform -rotate-45" />
         </div>
         <div className="pb-5 pt-4 px-6 space-y-4">
-          <Select
-            label="PUMP / CONTROL OUTPUT"
-            options={[
-              {
-                label: "Bio A",
-                value: 1,
-              },
-            ]}
-          />
+          {renderField("output")}
           <div className="flex">
             <div className="grid gap-2 grid-rows-4">
-              {["W1", "W2", "W3", "W4"].map((week) => (
-                <Checkbox key={week} label={week} />
-              ))}
+              {renderField("wk1", true)}
+              {renderField("wk2", true)}
+              {renderField("wk3", true)}
+              {renderField("wk4", true)}
             </div>
             <div className="mx-4 w-px border-l border-dashed border-gray-200" />
             <div>
               <div className="space-y-2">
                 <div className="grid gap-2 grid-cols-2">
-                  {["SU", "TH", "MO", "FR"].map((weekDay) => (
-                    <Checkbox key={weekDay} label={weekDay} />
-                  ))}
+                  {renderField("su", true)}
+                  {renderField("th", true)}
+                  {renderField("m", true)}
+                  {renderField("f", true)}
                 </div>
                 <div className="grid gap-2 grid-cols-2">
-                  {["TU", "SA", "WE", "All"].map((weekDay) => (
-                    <Checkbox key={weekDay} label={weekDay} />
-                  ))}
+                  {renderField("tu", true)}
+                  {renderField("sa", true)}
+                  {renderField("w", true)}
                 </div>
               </div>
             </div>
           </div>
           <div className="grid gap-4 grid-cols-2">
-            <Input type="time" label="Start time" />
-            <Input type="time" label="Pre-bleed" />
-            <Input type="time" label="Bleed lockout" />
-            <Input type="time" label="Dose/active" />
+            {renderField("start")}
+            {renderField("pre-bleed")}
+            {renderField("lockout")}
+            {renderField("dose")}
           </div>
         </div>
       </div>

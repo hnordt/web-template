@@ -24,6 +24,8 @@ import _ from "lodash/fp"
 import { Popover, Transition } from "@headlessui/react"
 import toast from "react-hot-toast"
 import BiocideTimer from "components/BiocideTimer"
+import Checkbox from "components/core/alpha/Checkbox"
+import { DevTool } from "@hookform/devtools"
 
 function enforceSeconds(value) {
   if (typeof value === "string" && value.includes(":")) {
@@ -46,15 +48,18 @@ function Form(props) {
   })
 
   return (
-    <form
-      noValidate
-      onSubmit={form.handleSubmit(
-        (...args) => props.onSubmit?.(...args, form),
-        (...args) => props.onError?.(...args, form)
-      )}
-    >
-      {props.children(form)}
-    </form>
+    <>
+      <form
+        noValidate
+        onSubmit={form.handleSubmit(
+          (...args) => props.onSubmit?.(...args, form),
+          (...args) => props.onError?.(...args, form)
+        )}
+      >
+        {props.children(form)}
+      </form>
+      <DevTool control={form.control} />
+    </>
   )
 }
 
@@ -457,7 +462,7 @@ function SettingsWidget() {
                                               </div>
                                             )
                                           })}
-                                        {/* {child.component.find(
+                                        {child.component.find(
                                           (component) =>
                                             component.component_type ===
                                             "biocide_timer"
@@ -468,9 +473,18 @@ function SettingsWidget() {
                                                 component.component_type ===
                                                 "biocide_timer"
                                             )}
+                                            form={form}
+                                            defaultValues={defaultValues}
+                                            modifiers={modifiers}
+                                            fields={fields}
+                                            currentValues={currentValues}
+                                            applyModifierToField={
+                                              applyModifierToField
+                                            }
+                                            renderField={renderField}
                                           />
-                                        )} */}
-                                        {child.component.map((component) => (
+                                        )}
+                                        {/* {child.component.map((component) => (
                                           <Popover
                                             key={component.component}
                                             className="relative"
@@ -595,7 +609,7 @@ function SettingsWidget() {
                                               </>
                                             )}
                                           </Popover>
-                                        ))}
+                                        ))} */}
                                       </div>
                                     </TabPanel>
                                   ))}
@@ -652,7 +666,13 @@ function renderField(
   currentValues
 ) {
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      // TODO: remove
+      title={`${field.id}: ${defaultValues[field.id]} -> ${
+        currentValues[field.id]
+      }`}
+    >
       {form.formState.dirtyFields[field.id] && (
         <button
           className="absolute right-0 top-0"
@@ -851,35 +871,35 @@ function renderField(
 
           case "boolean": {
             return (
-              <div className="bottom-[1px] relative mt-6">
-                <div className="h-[38px] flex px-2 bg-white border border-gray-300 rounded-3xl shadow-sm">
-                  <Controller
-                    control={form.control}
-                    name={String(field.id)}
-                    rules={{
-                      setValueAs: (v) => normalizeFieldValue(field, v),
+              // <div className="bottom-[1px] relative mt-6">
+              //   <div className="h-[38px] flex px-2 bg-white border border-gray-300 rounded-3xl shadow-sm">
+              <Controller
+                control={form.control}
+                name={String(field.id)}
+                rules={{
+                  setValueAs: (v) => normalizeFieldValue(field, v),
+                }}
+                render={(props) => (
+                  <Checkbox
+                    ref={props.field.ref}
+                    label={field.label}
+                    value={props.field.value}
+                    onChange={(value) => {
+                      props.field.onChange(value)
+                      applyModifiers(
+                        field,
+                        value,
+                        fields,
+                        modifiers,
+                        currentValues,
+                        form
+                      )
                     }}
-                    render={(props) => (
-                      <Switch
-                        ref={props.field.ref}
-                        label={field.label}
-                        value={props.field.value}
-                        onChange={(value) => {
-                          props.field.onChange(value)
-                          applyModifiers(
-                            field,
-                            value,
-                            fields,
-                            modifiers,
-                            currentValues,
-                            form
-                          )
-                        }}
-                      />
-                    )}
                   />
-                </div>
-              </div>
+                )}
+              />
+              //   </div>
+              // </div>
             )
           }
 
@@ -920,6 +940,7 @@ function BiocideTimers(props) {
         <div className="grid gap-6 grid-cols-4">
           {props.components.map((component, i) => (
             <BiocideTimer
+              {...props}
               key={i}
               number={i + 1}
               component={component}
