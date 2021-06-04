@@ -1,4 +1,6 @@
 module.exports = {
-  modulePaths: ["<rootDir>/src"],
+  testPathIgnorePatterns: ["<rootDir>/cypress"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  modulePaths: ["<rootDir>/src"],
+  testEnvironment: "jsdom",
 }
