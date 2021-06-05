@@ -5,9 +5,6 @@
 /node_modules
 npm-debug.log*
 
-# Jest
-/coverage
-
 # Cypress
 /cypress/screenshots
 /cypress/videos
