@@ -6,9 +6,12 @@
 npm-debug.log*
 
 # Cypress
-/cypress/downloads
-/cypress/screenshots
-/cypress/videos
+/cypress/downloads/*
+!/cypress/downloads/.gitkeep
+/cypress/screenshots/*
+!/cypress/screenshots/.gitkeep
+/cypress/videos/*
+!/cypress/videos/.gitkeep
 cypress.env.json
 
 # Next.js
