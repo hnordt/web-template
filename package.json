@@ -1,4 +1,5 @@
 {
+  "name": "@hnordt/web-template",
   "scripts": {
     "postinstall": "husky install",
     "dev": "next dev",
