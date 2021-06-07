@@ -1,24 +1,27 @@
 name: Release
-
 on:
   push:
     branches:
       - master
-
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2
         with:
-          path: ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-next-${{ hashFiles('**/package-lock.json') }}
-      - uses: actions/setup-node@v1
+          build: npm run build
+          start: npm start
+      - uses: actions/upload-artifact@v1
+        if: failure()
         with:
-          node-version: 12
-      - run: npm install
-      - run: npm test
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
       - run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
