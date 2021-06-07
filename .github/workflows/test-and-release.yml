@@ -1,0 +1,31 @@
+name: Test and release
+on:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2.10.2
+        with:
+          build: npm run build
+          start: npm start
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+  release:
+    needs: test
+    runs-on: ubuntu-20.04
+    steps:
+      - run: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
