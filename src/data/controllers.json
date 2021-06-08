@@ -1,0 +1,313 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 10296,
+      "device": {
+        "name": "QC02997 New Link",
+        "header_id": "0830",
+        "equipment_id": "13682",
+        "firmware_version": "SW S0200 Ver 1.22",
+        "gprs_version": "6201 ver 1.00",
+        "active": true
+      },
+      "site": {
+        "id": "wfield-nth-lakes",
+        "site": "Wfield Nth Lakes",
+        "address": {
+          "street_1": "Cnr Anzac Dr",
+          "street_2": "N Lakes Dr",
+          "area": null,
+          "city": "North Lakes",
+          "state": "QLD",
+          "country": "Australia",
+          "zipcode": "4509",
+          "timezone": "Australia/Brisbane",
+          "coordinates": "[-27.2422197, 153.0154642]"
+        },
+        "member": [
+          {
+            "id": 2022,
+            "profile": {
+              "id": "671801a6-fca3-479d-ac11-6badfa0b7315",
+              "first_name": "",
+              "last_name": "",
+              "email": "errortest@gary.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2020,
+            "profile": {
+              "id": "d2fac390-b8fa-4635-8db1-406325e92eb3",
+              "first_name": "",
+              "last_name": "",
+              "email": "test@xyz.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2016,
+            "profile": {
+              "id": "4360e437-cee8-40b9-9196-a520324eec79",
+              "first_name": "",
+              "last_name": "",
+              "email": "test@test.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "administrator"
+          },
+          {
+            "id": 2015,
+            "profile": {
+              "id": "02785f3c-f657-4cb0-937f-b8d22c768194",
+              "first_name": "Fitadmin",
+              "last_name": "",
+              "email": "itadmin@cwc.com.au",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2007,
+            "profile": {
+              "id": "379073ed-1095-487b-9ff3-29dcb206d7b6",
+              "first_name": "Samuel",
+              "last_name": "Wood",
+              "email": "samote.wood@gmail.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2004,
+            "profile": {
+              "id": "c966a4a3-6e82-4b33-ade8-f0a901eb5071",
+              "first_name": "Larry",
+              "last_name": "Narunsky",
+              "email": "larrynarunsky@gmail.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          }
+        ],
+        "devices": 2
+      },
+      "reading": {
+        "pH": { "unit": "pH", "value": 8.89 },
+        "ORP": { "unit": "mV", "setpoint": "400", "value": 403 },
+        "pH%": { "value": 0 },
+        "Aux%": { "value": 0 },
+        "Date": { "setpoint": "0", "value": "2021-06-08" },
+        "Time": { "value": "07:00" },
+        "BioA%": { "value": 0 },
+        "Flow%": { "value": 67 },
+        "Alarm%": { "value": 0 },
+        "Bleed%": { "value": 0 },
+        "ORP/BioB%": { "value": 0 },
+        "Inhibitor%": { "value": 0 },
+        "Bleed water": { "value": 0 },
+        "Dispersant%": { "value": 0 },
+        "Temperature": { "value": 11 },
+        "Conductivity": { "unit": "uS/cm", "setpoint": "1800", "value": 1595 },
+        "Low pH Alarm": { "value": "False" },
+        "Makeup water": { "value": 0 },
+        "High pH Alarm": { "value": "False" },
+        "Low ORP Alarm": { "value": "False" },
+        "No Flow Alarm": { "value": "False" },
+        "High ORP Alarm": { "value": "False" },
+        "pH Calibration": { "value": "False" },
+        "ORP Calibration": { "value": "False" },
+        "Auxiliary Input1": { "unit": "mpy", "setpoint": "", "value": 0 },
+        "Auxiliary Input2": { "unit": "mpy", "setpoint": "", "value": 0 },
+        "Tank Level 1 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 2 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 3 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 4 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 5 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 6 LOW": { "setpoint": "", "value": "False" },
+        "Bleed Timer Alarm": {
+          "unit": "mins",
+          "setpoint": "0",
+          "value": "False"
+        },
+        "pH dose Timer Alarm": { "value": "False" },
+        "ORP dose Timer Alarm": { "value": "False" },
+        "Low Conductivity Alarm": { "value": "False" },
+        "Cycles of concentration": { "value": 1595 },
+        "High Conductivity Alarm": { "value": "False" },
+        "Conductivity Calibration": { "value": "False" },
+        "Alarm Override in Progress": { "value": "False" }
+      },
+      "alarm": [],
+      "note": 0,
+      "favourite": false
+    },
+    {
+      "id": 10297,
+      "device": {
+        "name": "QC02997 Stage 2",
+        "header_id": "0830",
+        "equipment_id": "13683",
+        "firmware_version": "SW S0200 Ver 1.22",
+        "gprs_version": "6201 ver 1.00",
+        "active": true
+      },
+      "site": {
+        "id": "wfield-nth-lakes",
+        "site": "Wfield Nth Lakes",
+        "address": {
+          "street_1": "Cnr Anzac Dr",
+          "street_2": "N Lakes Dr",
+          "area": null,
+          "city": "North Lakes",
+          "state": "QLD",
+          "country": "Australia",
+          "zipcode": "4509",
+          "timezone": "Australia/Brisbane",
+          "coordinates": "[-27.2422197, 153.0154642]"
+        },
+        "member": [
+          {
+            "id": 2022,
+            "profile": {
+              "id": "671801a6-fca3-479d-ac11-6badfa0b7315",
+              "first_name": "",
+              "last_name": "",
+              "email": "errortest@gary.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2020,
+            "profile": {
+              "id": "d2fac390-b8fa-4635-8db1-406325e92eb3",
+              "first_name": "",
+              "last_name": "",
+              "email": "test@xyz.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2016,
+            "profile": {
+              "id": "4360e437-cee8-40b9-9196-a520324eec79",
+              "first_name": "",
+              "last_name": "",
+              "email": "test@test.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "administrator"
+          },
+          {
+            "id": 2015,
+            "profile": {
+              "id": "02785f3c-f657-4cb0-937f-b8d22c768194",
+              "first_name": "Fitadmin",
+              "last_name": "",
+              "email": "itadmin@cwc.com.au",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2007,
+            "profile": {
+              "id": "379073ed-1095-487b-9ff3-29dcb206d7b6",
+              "first_name": "Samuel",
+              "last_name": "Wood",
+              "email": "samote.wood@gmail.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          },
+          {
+            "id": 2004,
+            "profile": {
+              "id": "c966a4a3-6e82-4b33-ade8-f0a901eb5071",
+              "first_name": "Larry",
+              "last_name": "Narunsky",
+              "email": "larrynarunsky@gmail.com",
+              "phone_number": null,
+              "mobile_number": null
+            },
+            "access": "employee"
+          }
+        ],
+        "devices": 2
+      },
+      "reading": {
+        "pH": { "unit": "pH", "value": 8.99 },
+        "ORP": { "unit": "mV", "setpoint": "430", "value": 325 },
+        "pH%": { "value": 0 },
+        "Aux%": { "value": 0 },
+        "Date": { "setpoint": "0", "value": "2021-06-08" },
+        "Time": { "value": "07:30" },
+        "BioA%": { "value": 0 },
+        "Flow%": { "value": 100 },
+        "Alarm%": { "value": 0 },
+        "Bleed%": { "value": 0 },
+        "ORP/BioB%": { "value": 100 },
+        "Inhibitor%": { "value": 0 },
+        "Bleed water": { "value": 0 },
+        "Dispersant%": { "value": 0 },
+        "Temperature": { "value": 10 },
+        "Conductivity": { "unit": "uS/cm", "setpoint": "2000", "value": 762 },
+        "Low pH Alarm": { "value": "False" },
+        "Makeup water": { "value": 0 },
+        "High pH Alarm": { "value": "False" },
+        "Low ORP Alarm": { "value": "False" },
+        "No Flow Alarm": { "value": "False" },
+        "High ORP Alarm": { "value": "False" },
+        "pH Calibration": { "value": "False" },
+        "ORP Calibration": { "value": "False" },
+        "Auxiliary Input1": { "unit": "mpy", "setpoint": "4", "value": 0 },
+        "Auxiliary Input2": { "unit": "mpy", "setpoint": "4", "value": 0 },
+        "Tank Level 1 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 2 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 3 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 4 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 5 LOW": { "setpoint": "", "value": "False" },
+        "Tank Level 6 LOW": { "setpoint": "", "value": "False" },
+        "Bleed Timer Alarm": {
+          "unit": "mins",
+          "setpoint": "0",
+          "value": "False"
+        },
+        "pH dose Timer Alarm": { "value": "False" },
+        "ORP dose Timer Alarm": { "value": "False" },
+        "Low Conductivity Alarm": { "value": "False" },
+        "Cycles of concentration": { "value": 762 },
+        "High Conductivity Alarm": { "value": "False" },
+        "Conductivity Calibration": { "value": "False" },
+        "Alarm Override in Progress": { "value": "False" }
+      },
+      "alarm": [
+        {
+          "alarm": "Low Conductivity Alarm",
+          "raised": "2021-05-12T19:00:00",
+          "resolved": null
+        }
+      ],
+      "note": 0,
+      "favourite": false
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "count": 7,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "profile": {
+        "id": "4360e437-cee8-40b9-9196-a520324eec79",
+        "first_name": "",
+        "last_name": "",
+        "email": "test@test.com",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "administrator"
+    },
+    {
+      "profile": {
+        "id": "ef1bbd71-a1fb-4c00-8116-7ab29451d328",
+        "first_name": "CWC",
+        "last_name": "Support",
+        "email": "support@cwc.com.au",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "administrator"
+    },
+    {
+      "profile": {
+        "id": "671801a6-fca3-479d-ac11-6badfa0b7315",
+        "first_name": "",
+        "last_name": "",
+        "email": "errortest@gary.com",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "employee"
+    },
+    {
+      "profile": {
+        "id": "d2fac390-b8fa-4635-8db1-406325e92eb3",
+        "first_name": "",
+        "last_name": "",
+        "email": "test@xyz.com",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "employee"
+    },
+    {
+      "profile": {
+        "id": "02785f3c-f657-4cb0-937f-b8d22c768194",
+        "first_name": "Fitadmin",
+        "last_name": "",
+        "email": "itadmin@cwc.com.au",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "employee"
+    },
+    {
+      "profile": {
+        "id": "c966a4a3-6e82-4b33-ade8-f0a901eb5071",
+        "first_name": "Larry",
+        "last_name": "Narunsky",
+        "email": "larrynarunsky@gmail.com",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "employee"
+    },
+    {
+      "profile": {
+        "id": "379073ed-1095-487b-9ff3-29dcb206d7b6",
+        "first_name": "Samuel",
+        "last_name": "Wood",
+        "email": "samote.wood@gmail.com",
+        "phone_number": null,
+        "mobile_number": null
+      },
+      "access": "employee"
+    }
+  ]
+}
