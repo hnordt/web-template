@@ -13,7 +13,7 @@ module.exports = {
     },
   },
   purge: {
-    content: ["src/**/*.js"],
+    content: ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"],
   },
   plugins: [
     require("@tailwindcss/typography"),
