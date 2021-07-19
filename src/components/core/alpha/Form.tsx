@@ -1,6 +1,7 @@
 import React from "react"
 import { UseMutationResult } from "react-query"
 import { Transition } from "@headlessui/react"
+import { useForm } from "react-hook-form"
 import { useId } from "@reach/auto-id"
 import cn from "classnames"
 import Loader from "components/core/alpha/Loader"
@@ -122,6 +123,7 @@ interface FormButtonProps {
   icon?: React.FunctionComponent<{ className: string }>
   fill?: boolean
   readOnly?: boolean
+  disabled?: boolean
   loading?: boolean
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   children: React.ReactNode
@@ -131,7 +133,8 @@ export function FormButton(props: FormButtonProps) {
   const formContext = React.useContext(FormContext)
 
   const readOnly = props.readOnly || formContext.readOnly
-  const loading = props.loading || formContext.loading
+  const loading =
+    props.loading || (props.type === "submit" && formContext.loading)
 
   return (
     <button
@@ -139,21 +142,21 @@ export function FormButton(props: FormButtonProps) {
         "flex items-center justify-center px-4 h-9 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2",
         props.variant === "primary" && [
           "text-white bg-blue-600 border-transparent",
-          !(readOnly || loading) && "hover:bg-blue-700",
+          !(readOnly || props.disabled || loading) && "hover:bg-blue-700",
         ],
         props.variant === "secondary" && [
           "text-gray-700 bg-white border-gray-300",
-          !(readOnly || loading) && "hover:bg-gray-50",
+          !(readOnly || props.disabled || loading) && "hover:bg-gray-50",
         ],
         props.variant === "danger" && [
           "text-white bg-red-600 border-transparent",
-          !(readOnly || loading) && "hover:bg-red-700",
+          !(readOnly || props.disabled || loading) && "hover:bg-red-700",
         ],
         props.fill && "w-full",
-        (readOnly || loading) && "cursor-auto"
+        (readOnly || props.disabled || loading) && "cursor-auto"
       )}
       type={props.type ?? "button"}
-      disabled={readOnly || loading}
+      disabled={readOnly || props.disabled || loading}
       onClick={props.onClick}
     >
       {loading ? (
@@ -174,6 +177,7 @@ export function FormButton(props: FormButtonProps) {
 
 interface FormProps {
   fields: Array<FormInputProps>
+  defaultValues: Object
   actions?: Array<FormButtonProps>
   mutation?: UseMutationResult
   gap?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
@@ -181,14 +185,32 @@ interface FormProps {
   loading?: boolean
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   renderFooter?: (props: { children: React.ReactNode }) => React.ReactNode
-  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void
+  onSubmit?: (values: Object) => void
   onCancel?: () => void
 }
 
 export default function Form(props: FormProps) {
+  const form = useForm<any>({
+    defaultValues: props.defaultValues /*??
+      props.fields.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.name]: field.defaultValue ?? "",
+        }),
+        {}
+      ),*/,
+  })
+
+  const loading = props.loading ?? props.mutation?.status === "loading"
+
   return (
-    <FormProvider readOnly={props.readOnly} loading={props.loading}>
-      <FormRoot onSubmit={() => {}}>
+    <FormProvider readOnly={props.readOnly} loading={loading}>
+      <FormRoot
+        onSubmit={form.handleSubmit(
+          (values) =>
+            void props.onSubmit?.(values) ?? props.mutation?.mutate(values)
+        )}
+      >
         {(props.renderContent || ((props) => props.children))({
           children: (
             <div
@@ -230,7 +252,13 @@ export default function Form(props: FormProps) {
                     }[field.size]
                   }
                 >
-                  <FormInput {...field} />
+                  <FormInput
+                    {...field}
+                    {...form.register(field.name, {
+                      required: field.required ? "Required" : undefined,
+                    })}
+                    error={form.formState.errors[field.name]?.message}
+                  />
                 </div>
               ))}
             </div>
@@ -245,6 +273,7 @@ export default function Form(props: FormProps) {
                   props.onCancel && {
                     variant: "secondary",
                     label: "Cancel",
+                    disabled: loading,
                     onClick: props.onCancel,
                   },
                   {
