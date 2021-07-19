@@ -40,6 +40,8 @@ export default function App(props) {
         toastOptions={{
           className: "text-sm",
         }}
+        position="bottom-right"
+        reverseOrder
       />
     </>
   )
