@@ -55,7 +55,7 @@ export function FormRoot(props: FormRootProps) {
   )
 }
 
-interface FormInputProps {
+export interface FormInputProps {
   id?: string
   type: "text" | "number"
   name: string
