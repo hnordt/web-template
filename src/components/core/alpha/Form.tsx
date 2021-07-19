@@ -3,6 +3,7 @@ import { UseMutationResult } from "react-query"
 import { Transition } from "@headlessui/react"
 import { useForm } from "react-hook-form"
 import { useId } from "@reach/auto-id"
+import toast from "react-hot-toast"
 import cn from "classnames"
 import Loader from "components/core/alpha/Loader"
 
@@ -187,6 +188,8 @@ interface FormProps {
   renderFooter?: (props: { children: React.ReactNode }) => React.ReactNode
   onSubmit?: (values: Object) => void
   onCancel?: () => void
+  onSuccess?: string | ((data: any) => void)
+  onError?: string | ((error: Error) => void)
 }
 
 export default function Form(props: FormProps) {
@@ -208,7 +211,19 @@ export default function Form(props: FormProps) {
       <FormRoot
         onSubmit={form.handleSubmit(
           (values) =>
-            void props.onSubmit?.(values) ?? props.mutation?.mutate(values)
+            void props.onSubmit?.(values) ??
+            props.mutation
+              ?.mutateAsync(values)
+              .then((data) =>
+                typeof props.onSuccess === "string"
+                  ? toast.success(props.onSuccess)
+                  : props.onSuccess?.(data)
+              )
+              .catch((error) =>
+                typeof props.onError === "string"
+                  ? toast.success(props.onError)
+                  : props.onError?.(error)
+              )
         )}
       >
         {(props.renderContent || ((props) => props.children))({
