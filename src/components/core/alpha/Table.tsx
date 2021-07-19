@@ -9,6 +9,7 @@ interface TableProps {
     renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   }>
   data: Array<any>
+  onEditClick?: (row: Object) => void
 }
 
 export default function Table(props: TableProps) {
@@ -51,9 +52,11 @@ export default function Table(props: TableProps) {
                   {column.render("Header")}
                 </th>
               ))}
-              <th className="px-6 py-3">
-                <span className="sr-only">Edit</span>
-              </th>
+              {props.onEditClick && (
+                <th className="px-6 py-3">
+                  <span className="sr-only">Edit</span>
+                </th>
+              )}
             </tr>
           ))}
         </thead>
@@ -74,14 +77,17 @@ export default function Table(props: TableProps) {
                     {cell.render("Cell")}
                   </td>
                 ))}
-                <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                  <a
-                    href="#edit"
-                    className="text-indigo-600 hover:text-indigo-900"
-                  >
-                    Edit
-                  </a>
-                </td>
+                {props.onEditClick && (
+                  <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                    <button
+                      className="text-blue-600 hover:text-blue-900 focus-visible:underline"
+                      type="button"
+                      onClick={() => props.onEditClick(row.values)}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                )}
               </tr>
             )
           })}
