@@ -3,7 +3,7 @@ import { UseMutationResult } from "react-query"
 import Form, { FormInputProps } from "components/core/alpha/Form"
 import Modal from "components/core/alpha/Modal"
 
-interface FormModalProps {
+interface ModalFormProps {
   title: string
   description?: string
   fields: Array<FormInputProps>
@@ -15,7 +15,7 @@ interface FormModalProps {
   onError?: string | ((error: Error) => void)
 }
 
-export default function FormModal(props: FormModalProps) {
+export default function ModalForm(props: ModalFormProps) {
   return (
     <Modal
       title={props.title}
