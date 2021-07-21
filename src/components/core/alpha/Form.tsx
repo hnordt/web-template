@@ -187,8 +187,16 @@ interface FormProps {
     variant: "primary" | "secondary"
     icon?: React.FunctionComponent
     label?: string
+    mutation?: UseMutationResult
+
     loading?: boolean
-    onClick: () => void
+    beforeMutate?: { confirm?: string; args?: Array<any> }
+    onClick?: () => void
+    onSuccess?:
+      | string
+      | { toast?: string; refetch: UseQueryResult; push?: any }
+      | ((data: any) => void)
+    onError?: boolean | ((error: Error) => void)
   }>
   gap?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   readOnly?: boolean
@@ -351,6 +359,54 @@ export default function Form(props: FormProps) {
                   <FormButton
                     key={action.label ?? action.icon?.name}
                     {...action}
+                    loading={
+                      action.mutation?.status === "loading" ?? action.loading
+                    }
+                    onClick={() => {
+                      if (action.beforeMutate?.confirm) {
+                        if (!window.confirm(action.beforeMutate.confirm)) {
+                          return
+                        }
+                      }
+
+                      action.mutation?.mutateAsync
+                        .apply(null, action.beforeMutate?.args)
+                        .then((data) => {
+                          if (typeof action.onSuccess === "string") {
+                            toast.success(action.onSuccess)
+                            return
+                          }
+
+                          if (typeof action.onSuccess === "object") {
+                            if (action.onSuccess.toast) {
+                              toast.success(action.onSuccess.toast)
+                            }
+
+                            if (action.onSuccess.refetch) {
+                              action.onSuccess.refetch.refetch(/*{
+                              cancelRefetch: true,
+                            }*/)
+                            }
+
+                            if (action.onSuccess.push) {
+                              history.push(action.onSuccess.push)
+                            }
+
+                            return
+                          }
+
+                          action.onSuccess?.(data)
+                        })
+                        .catch((error) =>
+                          action.onError === true
+                            ? toast.error(error.message)
+                            : action.onError === false
+                            ? error
+                            : action.onError?.(error)
+                        )
+
+                      action.onClick?.()
+                    }}
                   >
                     {action.label}
                   </FormButton>

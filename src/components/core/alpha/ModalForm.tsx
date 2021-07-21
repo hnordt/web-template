@@ -14,8 +14,15 @@ interface ModalFormProps {
     variant: "primary" | "secondary"
     icon?: React.FunctionComponent<{ className: string }>
     label?: string
+    mutation?: UseMutationResult
     loading?: boolean
-    onClick: () => void
+    beforeMutate?: { confirm?: string; args?: Array<any> }
+    onClick?: () => void
+    onSuccess?:
+      | string
+      | { toast?: string; refetch: UseQueryResult; push?: any }
+      | ((data: any) => void)
+    onError?: boolean | ((error: Error) => void)
   }>
   open: boolean
   onClose?: { push?: any } | (() => void)
