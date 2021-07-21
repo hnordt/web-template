@@ -182,8 +182,14 @@ interface FormProps {
   fields: Array<FormInputProps>
   defaultValues?: Object
   submitLabel?: string
-  actions?: Array<FormButtonProps>
   mutation?: UseMutationResult
+  actions?: Array<{
+    variant: "primary" | "secondary"
+    icon?: React.FunctionComponent
+    label?: string
+    loading?: boolean
+    onClick: () => void
+  }>
   gap?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   readOnly?: boolean
   loading?: boolean
@@ -215,6 +221,32 @@ export default function Form(props: FormProps) {
 
   const loading = props.loading ?? props.mutation?.status === "loading"
 
+  const defaultActions: any = [
+    props.onCancel && {
+      variant: "secondary",
+      label: "Cancel",
+      disabled: loading,
+      onClick: () => {
+        if (typeof props.onCancel === "object") {
+          if (props.onCancel.push) {
+            history.push(props.onCancel.push)
+          }
+
+          return
+        }
+
+        props.onCancel?.()
+      },
+    },
+    {
+      type: "submit",
+      variant: "primary",
+      label: props.submitLabel ?? "Submit",
+    },
+  ].filter(Boolean)
+
+  const customActions = props.actions
+
   return (
     <FormProvider readOnly={props.readOnly} loading={loading}>
       <FormRoot
@@ -235,9 +267,9 @@ export default function Form(props: FormProps) {
                   }
 
                   if (props.onSuccess.refetch) {
-                    props.onSuccess.refetch.refetch({
+                    props.onSuccess.refetch.refetch(/*{
                       cancelRefetch: true,
-                    })
+                    }*/)
                   }
 
                   if (props.onSuccess.push) {
@@ -313,37 +345,27 @@ export default function Form(props: FormProps) {
         })}
         {(props.renderFooter ?? ((props) => props.children))({
           children: (
-            <div className="flex justify-end space-x-3">
-              {(
-                props.actions ??
-                [
-                  props.onCancel && {
-                    variant: "secondary",
-                    label: "Cancel",
-                    disabled: loading,
-                    onClick: () => {
-                      if (typeof props.onCancel === "object") {
-                        if (props.onCancel.push) {
-                          history.push(props.onCancel.push)
-                        }
-
-                        return
-                      }
-
-                      props.onCancel?.()
-                    },
-                  },
-                  {
-                    type: "submit",
-                    variant: "primary",
-                    label: props.submitLabel ?? "Submit",
-                  },
-                ].filter(Boolean)
-              ).map((action) => (
-                <FormButton key={action.label ?? action.icon?.name} {...action}>
-                  {action.label}
-                </FormButton>
-              ))}
+            <div className="flex justify-between space-x-6">
+              <div className="flex justify-end space-x-3">
+                {customActions?.map((action) => (
+                  <FormButton
+                    key={action.label ?? action.icon?.name}
+                    {...action}
+                  >
+                    {action.label}
+                  </FormButton>
+                ))}
+              </div>
+              <div className="flex justify-end space-x-3">
+                {defaultActions.map((action) => (
+                  <FormButton
+                    key={action.label ?? action.icon?.name}
+                    {...action}
+                  >
+                    {action.label}
+                  </FormButton>
+                ))}
+              </div>
             </div>
           ),
         })}

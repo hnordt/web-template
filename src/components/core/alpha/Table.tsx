@@ -1,4 +1,5 @@
 import React from "react"
+import { useHistory } from "react-router-dom"
 import { UseQueryResult } from "react-query"
 import { PlusIcon, XCircleIcon } from "@heroicons/react/solid"
 import { useTable } from "react-table"
@@ -23,10 +24,12 @@ interface TableProps {
       onClick: () => void
     }
   }
-  onEditClick?: (row: any) => void
+  onEditClick?: { push?: any } | ((row: any) => void)
 }
 
 export default function Table(props: TableProps) {
+  const history = useHistory()
+
   // TODO: this memoization will probably not work because
   // column.renderContent is a function
   const columns = useDeepCompareMemo(
@@ -183,7 +186,21 @@ export default function Table(props: TableProps) {
                   <button
                     className="text-blue-600 hover:text-blue-900 focus-visible:underline"
                     type="button"
-                    onClick={() => props.onEditClick(row.original)}
+                    onClick={() => {
+                      if (typeof props.onEditClick === "object") {
+                        if (props.onEditClick.push) {
+                          history.push(
+                            typeof props.onEditClick.push === "function"
+                              ? props.onEditClick.push(row.original)
+                              : props.onEditClick.push
+                          )
+                        }
+
+                        return
+                      }
+
+                      props.onEditClick(row.original)
+                    }}
                   >
                     Edit
                   </button>

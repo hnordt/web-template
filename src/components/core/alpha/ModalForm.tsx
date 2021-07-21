@@ -10,6 +10,13 @@ interface ModalFormProps {
   defaultValues?: Object
   submitLabel?: string
   mutation: UseMutationResult
+  actions?: Array<{
+    variant: "primary" | "secondary"
+    icon?: React.FunctionComponent<{ className: string }>
+    label?: string
+    loading?: boolean
+    onClick: () => void
+  }>
   open: boolean
   onClose?: { push?: any } | (() => void)
   onSuccess?:
@@ -33,6 +40,7 @@ export default function ModalForm(props: ModalFormProps) {
         defaultValues={props.defaultValues}
         submitLabel={props.submitLabel}
         mutation={props.mutation}
+        actions={props.actions}
         renderContent={(props) => <div className="p-6">{props.children}</div>}
         renderFooter={(props) => (
           <div className="p-6 border-t border-gray-200">{props.children}</div>
