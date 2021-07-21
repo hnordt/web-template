@@ -1,5 +1,5 @@
 import React from "react"
-import { UseMutationResult } from "react-query"
+import { UseQueryResult, UseMutationResult } from "react-query"
 import Form, { FormInputProps } from "components/core/alpha/Form"
 import Modal from "components/core/alpha/Modal"
 
@@ -7,12 +7,16 @@ interface ModalFormProps {
   title: string
   description?: string
   fields: Array<FormInputProps>
-  defaultValues: Object
+  defaultValues?: Object
+  submitLabel?: string
   mutation: UseMutationResult
   open: boolean
-  onClose?: () => void
-  onSuccess?: string | ((data: any) => void)
-  onError?: string | ((error: Error) => void)
+  onClose?: { push?: any } | (() => void)
+  onSuccess?:
+    | string
+    | { toast?: string; refetch: UseQueryResult; push?: any }
+    | ((data: any) => void)
+  onError?: boolean | ((error: Error) => void)
 }
 
 export default function ModalForm(props: ModalFormProps) {
@@ -27,6 +31,7 @@ export default function ModalForm(props: ModalFormProps) {
       <Form
         fields={props.fields}
         defaultValues={props.defaultValues}
+        submitLabel={props.submitLabel}
         mutation={props.mutation}
         renderContent={(props) => <div className="p-6">{props.children}</div>}
         renderFooter={(props) => (
@@ -34,6 +39,7 @@ export default function ModalForm(props: ModalFormProps) {
         )}
         onCancel={props.onClose}
         onSuccess={props.onSuccess}
+        onError={props.onError}
       />
     </Modal>
   )

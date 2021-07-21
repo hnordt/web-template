@@ -1,5 +1,6 @@
 import React from "react"
-import { UseMutationResult } from "react-query"
+import { useHistory } from "react-router-dom"
+import { UseQueryResult, UseMutationResult } from "react-query"
 import { Transition } from "@headlessui/react"
 import { useForm } from "react-hook-form"
 import { useId } from "@reach/auto-id"
@@ -60,6 +61,7 @@ export interface FormInputProps {
   type: "text" | "number"
   name: string
   label?: string
+  autoComplete?: string
   error?: string
   size?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   readOnly?: boolean
@@ -178,7 +180,8 @@ export function FormButton(props: FormButtonProps) {
 
 interface FormProps {
   fields: Array<FormInputProps>
-  defaultValues: Object
+  defaultValues?: Object
+  submitLabel?: string
   actions?: Array<FormButtonProps>
   mutation?: UseMutationResult
   gap?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
@@ -187,21 +190,27 @@ interface FormProps {
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   renderFooter?: (props: { children: React.ReactNode }) => React.ReactNode
   onSubmit?: (values: Object) => void
-  onCancel?: () => void
-  onSuccess?: string | ((data: any) => void)
-  onError?: string | ((error: Error) => void)
+  onCancel?: { push?: any } | (() => void)
+  onSuccess?:
+    | string
+    | { toast?: string; refetch: UseQueryResult; push?: any }
+    | ((data: any) => void)
+  onError?: boolean | ((error: Error) => void)
 }
 
 export default function Form(props: FormProps) {
+  const history = useHistory()
+
   const form = useForm<any>({
-    defaultValues: props.defaultValues /*??
+    defaultValues:
+      props.defaultValues ??
       props.fields.reduce(
         (acc, field) => ({
           ...acc,
-          [field.name]: field.defaultValue ?? "",
+          [field.name]: "",
         }),
         {}
-      ),*/,
+      ),
   })
 
   const loading = props.loading ?? props.mutation?.status === "loading"
@@ -214,14 +223,37 @@ export default function Form(props: FormProps) {
             void props.onSubmit?.(values) ??
             props.mutation
               ?.mutateAsync(values)
-              .then((data) =>
-                typeof props.onSuccess === "string"
-                  ? toast.success(props.onSuccess)
-                  : props.onSuccess?.(data)
-              )
+              .then((data) => {
+                if (typeof props.onSuccess === "string") {
+                  toast.success(props.onSuccess)
+                  return
+                }
+
+                if (typeof props.onSuccess === "object") {
+                  if (props.onSuccess.toast) {
+                    toast.success(props.onSuccess.toast)
+                  }
+
+                  if (props.onSuccess.refetch) {
+                    props.onSuccess.refetch.refetch({
+                      cancelRefetch: true,
+                    })
+                  }
+
+                  if (props.onSuccess.push) {
+                    history.push(props.onSuccess.push)
+                  }
+
+                  return
+                }
+
+                props.onSuccess?.(data)
+              })
               .catch((error) =>
-                typeof props.onError === "string"
-                  ? toast.success(props.onError)
+                props.onError === true
+                  ? toast.error(error.message)
+                  : props.onError === false
+                  ? error
                   : props.onError?.(error)
               )
         )}
@@ -244,7 +276,7 @@ export default function Form(props: FormProps) {
                   10: "gap-10",
                   11: "gap-11",
                   12: "gap-12",
-                }[props.gap ?? 4]
+                }[props.gap ?? 5]
               )}
             >
               {props.fields.map((field) => (
@@ -289,12 +321,22 @@ export default function Form(props: FormProps) {
                     variant: "secondary",
                     label: "Cancel",
                     disabled: loading,
-                    onClick: props.onCancel,
+                    onClick: () => {
+                      if (typeof props.onCancel === "object") {
+                        if (props.onCancel.push) {
+                          history.push(props.onCancel.push)
+                        }
+
+                        return
+                      }
+
+                      props.onCancel?.()
+                    },
                   },
                   {
                     type: "submit",
                     variant: "primary",
-                    label: "Submit",
+                    label: props.submitLabel ?? "Submit",
                   },
                 ].filter(Boolean)
               ).map((action) => (

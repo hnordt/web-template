@@ -7,8 +7,9 @@ import cn from "classnames"
 
 interface TableProps {
   columns: Array<{
+    variant?: "primary" | "secondary" | "tertiary"
     label: string
-    accessor: string
+    accessor: string | ((row: any, rowIndex: number) => any)
     renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   }>
   data?: Array<any>
@@ -22,7 +23,7 @@ interface TableProps {
       onClick: () => void
     }
   }
-  onEditClick?: (row: Object) => void
+  onEditClick?: (row: any) => void
 }
 
 export default function Table(props: TableProps) {
@@ -45,15 +46,24 @@ export default function Table(props: TableProps) {
           }
 
           return (
-            column.renderContent?.({
-              children: _props.value,
-            }) ?? (
-              // Returning a React Fragment will avoid crashes when props.value
-              // is null or undefined.
-              // We don't want to cast it to string otherwise "undefined" or
-              // "null" would be rendered.
-              <>{_props.value}</>
-            )
+            <span
+              className={
+                {
+                  primary: "font-medium",
+                  tertiary: "text-gray-500",
+                }[column.variant] ?? ""
+              }
+            >
+              {column.renderContent?.({
+                children: _props.value,
+              }) ?? (
+                // Returning a React Fragment will avoid crashes when props.value
+                // is null or undefined.
+                // We don't want to cast it to string otherwise "undefined" or
+                // "null" would be rendered.
+                <>{_props.value}</>
+              )}
+            </span>
           )
         },
         accessor: column.accessor,
@@ -128,63 +138,61 @@ export default function Table(props: TableProps) {
   }
 
   return (
-    <div className="border-b border-gray-200 overflow-hidden sm:rounded-lg">
-      <table
-        className="min-w-full divide-gray-200 divide-y"
-        {...table.getTableProps()}
+    <table
+      className="min-w-full divide-gray-200 divide-y"
+      {...table.getTableProps()}
+    >
+      <thead className="bg-gray-50">
+        {table.headerGroups.map((headerGroup) => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <th
+                className="px-6 py-3 text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
+                {...column.getHeaderProps()}
+              >
+                {column.render("Header")}
+              </th>
+            ))}
+            {props.onEditClick && (
+              <th className="px-6 py-3">
+                <span className="sr-only">Edit</span>
+              </th>
+            )}
+          </tr>
+        ))}
+      </thead>
+      <tbody
+        className="bg-white divide-gray-200 divide-y"
+        {...table.getTableBodyProps()}
       >
-        <thead className="bg-gray-50">
-          {table.headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  className="px-6 py-3 text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
-                  {...column.getHeaderProps()}
+        {table.rows.map((row) => {
+          table.prepareRow(row)
+
+          return (
+            <tr {...row.getRowProps()}>
+              {row.cells.map((cell) => (
+                <td
+                  className="px-6 py-4 text-gray-900 whitespace-nowrap text-sm"
+                  {...cell.getCellProps()}
                 >
-                  {column.render("Header")}
-                </th>
+                  {cell.render("Cell")}
+                </td>
               ))}
               {props.onEditClick && (
-                <th className="px-6 py-3">
-                  <span className="sr-only">Edit</span>
-                </th>
+                <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                  <button
+                    className="text-blue-600 hover:text-blue-900 focus-visible:underline"
+                    type="button"
+                    onClick={() => props.onEditClick(row.original)}
+                  >
+                    Edit
+                  </button>
+                </td>
               )}
             </tr>
-          ))}
-        </thead>
-        <tbody
-          className="bg-white divide-gray-200 divide-y"
-          {...table.getTableBodyProps()}
-        >
-          {table.rows.map((row) => {
-            table.prepareRow(row)
-
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td
-                    className="px-6 py-4 text-gray-900 whitespace-nowrap text-sm"
-                    {...cell.getCellProps()}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-                {props.onEditClick && (
-                  <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                    <button
-                      className="text-blue-600 hover:text-blue-900 focus-visible:underline"
-                      type="button"
-                      onClick={() => props.onEditClick(row.values)}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                )}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }
