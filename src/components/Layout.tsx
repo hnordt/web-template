@@ -5,7 +5,7 @@ export default function Layout(props) {
   const history = useHistory()
 
   return (
-    <main className="p-6">
+    <main className="px-6 py-16">
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-8">
           <div className="flex items-center justify-between">

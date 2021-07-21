@@ -24,7 +24,12 @@ interface TableProps {
       onClick: () => void
     }
   }
-  onEditClick?: { push?: any } | ((row: any) => void)
+  actions?: Array<{
+    icon?: React.FunctionComponent<{ className: string }>
+    label?: string
+    hidden?: (row) => boolean
+    onClick: { push?: any } | ((row) => void)
+  }>
 }
 
 export default function Table(props: TableProps) {
@@ -156,10 +161,8 @@ export default function Table(props: TableProps) {
                 {column.render("Header")}
               </th>
             ))}
-            {props.onEditClick && (
-              <th className="px-6 py-3">
-                <span className="sr-only">Edit</span>
-              </th>
+            {props.actions && props.query?.status !== "loading" && (
+              <th className="px-6 py-3" />
             )}
           </tr>
         ))}
@@ -181,31 +184,44 @@ export default function Table(props: TableProps) {
                   {cell.render("Cell")}
                 </td>
               ))}
-              {props.onEditClick && (
-                <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                  <button
-                    className="text-blue-600 hover:text-blue-900 focus-visible:underline"
-                    type="button"
-                    onClick={() => {
-                      if (typeof props.onEditClick === "object") {
-                        if (props.onEditClick.push) {
-                          history.push(
-                            typeof props.onEditClick.push === "function"
-                              ? props.onEditClick.push(row.original)
-                              : props.onEditClick.push
-                          )
-                        }
+              {props.actions &&
+                props.actions &&
+                props.query?.status !== "loading" && (
+                  <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                    <span className="flex flex-shrink-0 items-center justify-end space-x-4">
+                      {props.actions
+                        .filter((action) => !action.hidden?.(row.original))
+                        .map((action, i) => (
+                          <button
+                            key={action.label ?? action.icon?.name}
+                            className="text-blue-600 hover:text-blue-900 focus-visible:underline"
+                            type="button"
+                            onClick={() => {
+                              if (typeof action.onClick === "object") {
+                                if (action.onClick.push) {
+                                  history.push(
+                                    typeof action.onClick.push === "function"
+                                      ? action.onClick.push(row.original)
+                                      : action.onClick.push
+                                  )
+                                }
 
-                        return
-                      }
+                                return
+                              }
 
-                      props.onEditClick(row.original)
-                    }}
-                  >
-                    Edit
-                  </button>
-                </td>
-              )}
+                              action.onClick?.(row.original)
+                            }}
+                          >
+                            {action.icon
+                              ? React.createElement(action.icon, {
+                                  className: "w-5 h-5 text-gray-400",
+                                })
+                              : action.label}
+                          </button>
+                        ))}
+                    </span>
+                  </td>
+                )}
             </tr>
           )
         })}

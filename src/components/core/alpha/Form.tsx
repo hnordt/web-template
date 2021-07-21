@@ -58,19 +58,21 @@ export function FormRoot(props: FormRootProps) {
 
 export interface FormInputProps {
   id?: string
-  type: "text" | "number"
+  type: "text" | "number" | "select" | "email" | "tel"
   name: string
   label?: string
+  options?: Array<{ label: string; value: any }>
   autoComplete?: string
   error?: string
   size?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   readOnly?: boolean
+  disabled?: boolean
   required?: boolean
 }
 
-export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
+export const FormInput = React.forwardRef<any, FormInputProps>(
   function FormInput(props, ref) {
-    const { label, error, size, ...rest } = props
+    const { label, options, error, size, ...rest } = props
 
     const id = useId(rest.id)
 
@@ -108,13 +110,30 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             </Transition>
           </label>
         )}
-        <input
-          {...rest}
-          ref={ref}
-          className="placeholder-gray-400 block px-3 w-full h-9 border focus:border-blue-500 border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 sm:text-sm"
-          id={id}
-          readOnly={readOnly}
-        />
+        {rest.type === "select" ? (
+          <select
+            {...rest}
+            ref={ref}
+            className="placeholder-gray-400 block pr-10 px-3 w-full h-9 border focus:border-blue-500 border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 sm:text-sm"
+            id={id}
+            // TODO
+            disabled={readOnly}
+          >
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            {...rest}
+            ref={ref}
+            className="placeholder-gray-400 block px-3 w-full h-9 border focus:border-blue-500 border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 sm:text-sm"
+            id={id}
+            readOnly={readOnly}
+          />
+        )}
       </div>
     )
   }
@@ -216,15 +235,19 @@ export default function Form(props: FormProps) {
   const history = useHistory()
 
   const form = useForm<any>({
-    defaultValues:
-      props.defaultValues ??
-      props.fields.reduce(
+    defaultValues: {
+      // We need to spread props.defaultValues because we might want to pass
+      // some values while not rendering/registering them
+      ...props.defaultValues,
+      // We need to enforce an empty string if no defaultValue was provided
+      ...props.fields.reduce(
         (acc, field) => ({
           ...acc,
-          [field.name]: "",
+          [field.name]: props.defaultValues?.[field.name] ?? "",
         }),
         {}
       ),
+    },
   })
 
   const loading = props.loading ?? props.mutation?.status === "loading"

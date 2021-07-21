@@ -1,10 +1,14 @@
 import React from "react"
 import { useHistory } from "react-router-dom"
 import { Dialog, Transition } from "@headlessui/react"
+import cn from "classnames"
+
+// TODO: add close button
 
 interface ModalProps {
   title: string
   description?: string
+  size?: "3xl"
   open: boolean
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   onClose: { push?: any } | (() => void)
@@ -62,7 +66,13 @@ export default function Modal(props: ModalProps) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block align-middle my-8 w-full max-w-md text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all">
+            <div
+              className={cn(
+                "inline-block align-middle my-8 w-full text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all",
+                !props.size && "max-w-md",
+                props.size === "3xl" && "max-w-3xl"
+              )}
+            >
               {props.title && (
                 <div className="p-6 border-b border-gray-200">
                   {props.title && (
