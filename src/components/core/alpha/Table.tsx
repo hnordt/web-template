@@ -192,32 +192,40 @@ export default function Table(props: TableProps) {
                       {props.actions
                         .filter((action) => !action.hidden?.(row.original))
                         .map((action, i) => (
-                          <button
+                          <React.Fragment
                             key={action.label ?? action.icon?.name}
-                            className="text-blue-600 hover:text-blue-900 focus-visible:underline"
-                            type="button"
-                            onClick={() => {
-                              if (typeof action.onClick === "object") {
-                                if (action.onClick.push) {
-                                  history.push(
-                                    typeof action.onClick.push === "function"
-                                      ? action.onClick.push(row.original)
-                                      : action.onClick.push
-                                  )
+                          >
+                            {i > 0 && (
+                              <span className="text-gray-300" aria-hidden>
+                                |
+                              </span>
+                            )}
+                            <button
+                              className="text-blue-600 hover:text-blue-900 focus-visible:underline"
+                              type="button"
+                              onClick={() => {
+                                if (typeof action.onClick === "object") {
+                                  if (action.onClick.push) {
+                                    history.push(
+                                      typeof action.onClick.push === "function"
+                                        ? action.onClick.push(row.original)
+                                        : action.onClick.push
+                                    )
+                                  }
+
+                                  return
                                 }
 
-                                return
-                              }
-
-                              action.onClick?.(row.original)
-                            }}
-                          >
-                            {action.icon
-                              ? React.createElement(action.icon, {
-                                  className: "w-5 h-5 text-gray-400",
-                                })
-                              : action.label}
-                          </button>
+                                action.onClick?.(row.original)
+                              }}
+                            >
+                              {action.icon
+                                ? React.createElement(action.icon, {
+                                    className: "w-5 h-5 text-gray-400",
+                                  })
+                                : action.label}
+                            </button>
+                          </React.Fragment>
                         ))}
                     </span>
                   </td>
