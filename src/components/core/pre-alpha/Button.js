@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import cn from "classnames"
 
 const Button = React.forwardRef(function Button(props, ref) {
@@ -17,7 +16,7 @@ const Button = React.forwardRef(function Button(props, ref) {
       {...rest}
       ref={ref}
       className={cn(
-        "inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2",
+        "inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2 whitespace-nowrap",
         variant === "primary" && "text-white bg-blue-600 border-transparent",
         variant === "secondary" &&
           "text-blue-gray-700 bg-white border-blue-gray-300",
@@ -45,13 +44,5 @@ const Button = React.forwardRef(function Button(props, ref) {
     </button>
   )
 })
-
-Button.propTypes = {
-  type: PropTypes.oneOf(["submit"]),
-  variant: PropTypes.oneOf(["primary", "secondary"]),
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-}
 
 export default Button

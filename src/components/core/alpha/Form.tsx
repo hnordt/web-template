@@ -61,7 +61,7 @@ export interface FormInputProps {
   type: "text" | "number" | "select" | "email" | "tel"
   name: string
   label?: string
-  options?: Array<{ label: string; value: any }>
+  options?: Array<{ label: string; value: any; disabled?: boolean }>
   autoComplete?: string
   error?: string
   size?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
@@ -117,10 +117,14 @@ export const FormInput = React.forwardRef<any, FormInputProps>(
             className="placeholder-gray-400 block pr-10 px-3 w-full h-9 border focus:border-blue-500 border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 sm:text-sm"
             id={id}
             // TODO
-            disabled={readOnly}
+            disabled={readOnly || rest.disabled}
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option
+                key={option.value}
+                value={option.value}
+                disabled={!!option.disabled}
+              >
                 {option.label}
               </option>
             ))}

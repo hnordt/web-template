@@ -8,7 +8,7 @@ import cn from "classnames"
 interface ModalProps {
   title: string
   description?: string
-  size?: "3xl"
+  size?: "lg" | "3xl"
   open: boolean
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   onClose: { push?: any } | (() => void)
@@ -68,8 +68,9 @@ export default function Modal(props: ModalProps) {
           >
             <div
               className={cn(
-                "inline-block align-middle my-8 w-full text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all",
+                "inline-block align-middle my-8 w-full text-left bg-white rounded-2xl shadow-xl transform transition-all",
                 !props.size && "max-w-md",
+                props.size === "lg" && "max-w-lg",
                 props.size === "3xl" && "max-w-3xl"
               )}
             >
