@@ -1,16 +1,50 @@
 import React from "react"
 import { useCombobox } from "downshift"
 
+export interface ComboboxOption {
+  label: string
+  value: any
+}
+
 export interface ComboboxProps {
   label?: string
-  value: any
-  onChange: (value: any) => void
+  options: Array<ComboboxOption>
+  value?: any
+  onChange?: (value: any) => void
 }
 
 export default function Combobox(props: ComboboxProps) {
+  const [keywords, setKeywords] = React.useState("")
+
+  console.log({
+    keywords,
+  })
+
+  const options = React.useMemo(
+    () => [
+      {
+        label: "",
+        value: "",
+      },
+      ...props.options.filter((option) =>
+        keywords ? option.label.includes(keywords) : true
+      ),
+    ],
+    [props.options, keywords]
+  )
+
+  console.log({
+    options,
+    selectedItem: options.find((option) => option.value === props.value),
+  })
+
   const combobox = useCombobox({
-    items: props.value,
-    onInputValueChange: (changes) => props.onChange?.(changes.inputValue),
+    items: options,
+    selectedItem: options.find((option) => option.value === props.value),
+    itemToString: (item) => item?.label ?? "",
+    onInputValueChange: (changes) => setKeywords(changes.inputValue),
+    onSelectedItemChange: (changes) =>
+      props.onChange?.(changes.selectedItem?.value ?? ""),
   })
 
   return (
@@ -37,9 +71,9 @@ export default function Combobox(props: ComboboxProps) {
         }}
       >
         {combobox.isOpen &&
-          props.value.map((item, index) => (
+          options.map((option, index) => (
             <li
-              key={`${item}${index}`}
+              key={option.value}
               style={
                 combobox.highlightedIndex === index
                   ? {
@@ -48,11 +82,11 @@ export default function Combobox(props: ComboboxProps) {
                   : {}
               }
               {...combobox.getItemProps({
-                item,
+                item: option,
                 index,
               })}
             >
-              {item}
+              {option.label}
             </li>
           ))}
       </ul>

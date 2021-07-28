@@ -1,49 +1,35 @@
 import React from "react"
-import Combobox from "components/core/alpha/Combobox"
+// import Combobox from "components/core/alpha/Combobox"
+import Select from "react-select"
+import AsyncSelect from "react-select/async"
+import axios from "axios"
 
 export default function HomeScreen() {
-  const items = [
-    "Neptunium",
-    "Plutonium",
-    "Americium",
-    "Curium",
-    "Berkelium",
-    "Californium",
-    "Einsteinium",
-    "Fermium",
-    "Mendelevium",
-    "Nobelium",
-    "Lawrencium",
-    "Rutherfordium",
-    "Dubnium",
-    "Seaborgium",
-    "Bohrium",
-    "Hassium",
-    "Meitnerium",
-    "Darmstadtium",
-    "Roentgenium",
-    "Copernicium",
-    "Nihonium",
-    "Flerovium",
-    "Moscovium",
-    "Livermorium",
-    "Tennessine",
-    "Oganesson",
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
   ]
-
-  const [inputItems, setInputItems] = React.useState(items)
 
   return (
     <main className="p-6">
-      <Combobox
-        label="Choose an element:"
-        value={inputItems}
-        onChange={(value) =>
-          setInputItems(
-            items.filter((item) =>
-              item.toLowerCase().startsWith(value.toLowerCase())
+      <AsyncSelect
+        cacheOptions
+        defaultOptions
+        loadOptions={(inputValue) =>
+          axios
+            .get(
+              inputValue
+                ? `https://jsonplaceholder.typicode.com/users?q=${inputValue}`
+                : `https://jsonplaceholder.typicode.com/users`
             )
-          )
+            .then((res) => res.data)
+            .then((data) =>
+              data.map((user) => ({
+                label: user.name,
+                value: user.id,
+              }))
+            )
         }
       />
     </main>
