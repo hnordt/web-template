@@ -18,15 +18,14 @@ const Button = React.forwardRef(function Button(props, ref) {
       className={cn(
         "inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2 whitespace-nowrap",
         variant === "primary" && "text-white bg-blue-600 border-transparent",
-        variant === "secondary" &&
-          "text-blue-gray-700 bg-white border-blue-gray-300",
+        variant === "secondary" && "text-gray-700 bg-white border-gray-300",
         loading
           ? "cursor-auto"
           : disabled
           ? "opacity-75 cursor-auto"
           : {
               "hover:bg-blue-700": variant === "primary",
-              "hover:bg-blue-gray-50": variant === "secondary",
+              "hover:bg-gray-50": variant === "secondary",
             }
       )}
       type={type}

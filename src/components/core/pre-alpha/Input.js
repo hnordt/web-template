@@ -27,12 +27,12 @@ const Input = React.forwardRef(function Input(props, ref) {
       {label && (
         <div className="flex justify-between mb-1">
           <label
-            className="block text-blue-gray-700 text-sm font-medium"
+            className="block text-gray-700 text-sm font-medium"
             htmlFor={id}
           >
             {label}
           </label>
-          {hint && <span className="text-blue-gray-500 text-sm">{hint}</span>}
+          {hint && <span className="text-gray-500 text-sm">{hint}</span>}
         </div>
       )}
       <div className="relative flex rounded-md shadow-sm">
@@ -41,14 +41,14 @@ const Input = React.forwardRef(function Input(props, ref) {
             {React.createElement(leadingIcon, {
               "className": cn(
                 "h-5 w-5",
-                error ? "text-red-500" : "text-blue-gray-400"
+                error ? "text-red-500" : "text-gray-400"
               ),
               "aria-hidden": true,
             })}
           </div>
         ) : (
           leadingAddon && (
-            <span className="inline-flex items-center px-3 text-blue-gray-500 bg-blue-gray-50 border border-r-0 border-blue-gray-300 rounded-l-md sm:text-sm">
+            <span className="inline-flex items-center px-3 text-gray-500 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md sm:text-sm">
               {leadingAddon}
             </span>
           )
@@ -65,7 +65,7 @@ const Input = React.forwardRef(function Input(props, ref) {
             trailingAddon && "rounded-l-md",
             error
               ? "placeholder-red-300 text-red-900 border-red-300 focus:border-red-500 focus:outline-none focus:ring-red-500"
-              : "border-blue-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           )}
           id={id}
           aria-invalid={!!error}
@@ -78,13 +78,13 @@ const Input = React.forwardRef(function Input(props, ref) {
             />
           </div>
         ) : trailingAddon ? (
-          <span className="inline-flex items-center px-3 text-blue-gray-500 bg-blue-gray-50 border border-l-0 border-blue-gray-300 rounded-r-md sm:text-sm">
+          <span className="inline-flex items-center px-3 text-gray-500 bg-gray-50 border border-l-0 border-gray-300 rounded-r-md sm:text-sm">
             {trailingAddon}
           </span>
         ) : (
           inlineTrailingAddon && (
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              <span className="text-blue-gray-500 sm:text-sm">
+              <span className="text-gray-500 sm:text-sm">
                 {inlineTrailingAddon}
               </span>
             </div>
@@ -95,7 +95,7 @@ const Input = React.forwardRef(function Input(props, ref) {
         <p
           className={cn(
             "mt-1.5 text-sm",
-            error ? "text-red-600" : "text-blue-gray-500"
+            error ? "text-red-600" : "text-gray-500"
           )}
         >
           {error ?? info}
