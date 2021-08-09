@@ -1,10 +1,8 @@
 import React from "react"
-import { useHistory } from "react-router-dom"
-import { UseQueryResult, UseMutationResult } from "react-query"
+import { UseMutationResult } from "react-query"
 import { Transition } from "@headlessui/react"
 import { useForm } from "react-hook-form"
 import { useId } from "@reach/auto-id"
-import toast from "react-hot-toast"
 import cn from "classnames"
 import Loader from "components/core/alpha/Loader"
 
@@ -211,15 +209,10 @@ interface FormProps {
     icon?: React.FunctionComponent
     label?: string
     mutation?: UseMutationResult
-
     loading?: boolean
-    beforeMutate?: { confirm?: string; args?: Array<any> }
     onClick?: () => void
-    onSuccess?:
-      | string
-      | { toast?: string; refetch: UseQueryResult; push?: any }
-      | ((data: any) => void)
-    onError?: boolean | ((error: Error) => void)
+    onSuccess?: (data: any) => void
+    onError?: (error: Error) => void
   }>
   gap?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   readOnly?: boolean
@@ -227,17 +220,12 @@ interface FormProps {
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   renderFooter?: (props: { children: React.ReactNode }) => React.ReactNode
   onSubmit?: (values: Object) => void
-  onCancel?: { push?: any } | (() => void)
-  onSuccess?:
-    | string
-    | { toast?: string; refetch: UseQueryResult; push?: any }
-    | ((data: any) => void)
-  onError?: boolean | ((error: Error) => void)
+  onCancel?: () => void
+  onSuccess?: (data: any) => void
+  onError?: (error: Error) => void
 }
 
 export default function Form(props: FormProps) {
-  const history = useHistory()
-
   const form = useForm<any>({
     defaultValues: {
       // We need to spread props.defaultValues because we might want to pass
@@ -259,19 +247,9 @@ export default function Form(props: FormProps) {
   const defaultActions: any = [
     props.onCancel && {
       variant: "secondary",
-      label: "Cancel",
+      label: "Cancelar",
       disabled: loading,
-      onClick: () => {
-        if (typeof props.onCancel === "object") {
-          if (props.onCancel.push) {
-            history.push(props.onCancel.push)
-          }
-
-          return
-        }
-
-        props.onCancel?.()
-      },
+      onClick: props.onCancel,
     },
     {
       type: "submit",
@@ -290,39 +268,8 @@ export default function Form(props: FormProps) {
             void props.onSubmit?.(values) ??
             props.mutation
               ?.mutateAsync(values)
-              .then((data) => {
-                if (typeof props.onSuccess === "string") {
-                  toast.success(props.onSuccess)
-                  return
-                }
-
-                if (typeof props.onSuccess === "object") {
-                  if (props.onSuccess.toast) {
-                    toast.success(props.onSuccess.toast)
-                  }
-
-                  if (props.onSuccess.refetch) {
-                    props.onSuccess.refetch.refetch(/*{
-                      cancelRefetch: true,
-                    }*/)
-                  }
-
-                  if (props.onSuccess.push) {
-                    history.push(props.onSuccess.push)
-                  }
-
-                  return
-                }
-
-                props.onSuccess?.(data)
-              })
-              .catch((error) =>
-                props.onError === true
-                  ? toast.error(error.message)
-                  : props.onError === false
-                  ? error
-                  : props.onError?.(error)
-              )
+              .then(props.onSuccess)
+              .catch(props.onError)
         )}
       >
         {(props.renderContent || ((props) => props.children))({
@@ -389,51 +336,7 @@ export default function Form(props: FormProps) {
                     loading={
                       action.mutation?.status === "loading" ?? action.loading
                     }
-                    onClick={() => {
-                      if (action.beforeMutate?.confirm) {
-                        if (!window.confirm(action.beforeMutate.confirm)) {
-                          return
-                        }
-                      }
-
-                      action.mutation?.mutateAsync
-                        .apply(null, action.beforeMutate?.args)
-                        .then((data) => {
-                          if (typeof action.onSuccess === "string") {
-                            toast.success(action.onSuccess)
-                            return
-                          }
-
-                          if (typeof action.onSuccess === "object") {
-                            if (action.onSuccess.toast) {
-                              toast.success(action.onSuccess.toast)
-                            }
-
-                            if (action.onSuccess.refetch) {
-                              action.onSuccess.refetch.refetch(/*{
-                              cancelRefetch: true,
-                            }*/)
-                            }
-
-                            if (action.onSuccess.push) {
-                              history.push(action.onSuccess.push)
-                            }
-
-                            return
-                          }
-
-                          action.onSuccess?.(data)
-                        })
-                        .catch((error) =>
-                          action.onError === true
-                            ? toast.error(error.message)
-                            : action.onError === false
-                            ? error
-                            : action.onError?.(error)
-                        )
-
-                      action.onClick?.()
-                    }}
+                    onClick={action.onClick}
                   >
                     {action.label}
                   </FormButton>

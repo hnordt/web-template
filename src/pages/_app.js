@@ -38,7 +38,7 @@ export default function App(props) {
       </QueryClientProvider>
       <Toaster
         toastOptions={{
-          className: "text-sm",
+          className: "text-sm whitespace-nowrap",
         }}
         position="bottom-right"
         reverseOrder

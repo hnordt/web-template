@@ -8,6 +8,7 @@ import toast from "react-hot-toast"
 
 export type HandleEventConfig =
   | {
+      confirm?: string
       /** Triggers the mutation */
       mutate?:
         | UseMutationResult
@@ -52,6 +53,11 @@ export default function useHandleEvent() {
         return result
       }
 
+      // TODO: window.confirm causes a refetch due to window refocus
+      // if (config.confirm && !window.confirm(config.confirm)) {
+      //   return
+      // }
+
       if (config.mutate) {
         if (Array.isArray(config.mutate)) {
           config.mutate[0].mutate(config.mutate[1], config.mutate[2])
@@ -82,7 +88,9 @@ export default function useHandleEvent() {
       }
 
       if (config.refetch) {
-        config.refetch.refetch()
+        config.refetch.refetch({
+          cancelRefetch: true,
+        })
       }
 
       if (config.push) {
