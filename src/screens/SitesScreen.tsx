@@ -6,12 +6,14 @@ import Layout from "components/Layout"
 import Card from "components/core/alpha/Card"
 import Table from "components/core/alpha/Table"
 import ModalForm from "components/core/alpha/ModalForm"
+import useHandleEvent from "hooks/useHandleEvent"
 import httpClient from "utils/httpClient"
 
 const GROUP = "westfield"
 
 export default function SitesScreen() {
   const location = useLocation()
+  const handleEvent = useHandleEvent()
 
   const sitesQuery = useQuery(
     ["sites", GROUP],
@@ -78,11 +80,11 @@ export default function SitesScreen() {
       actions={[
         {
           label: "Create site",
-          onClick: {
+          onClick: handleEvent({
             push: {
               search: `?new`,
             },
-          },
+          }),
         },
       ]}
     >
@@ -119,11 +121,11 @@ export default function SitesScreen() {
           actions={[
             {
               icon: PencilIcon,
-              onClick: {
-                push: (site) => ({
+              onClick: handleEvent((site) => ({
+                push: {
                   search: `?edit=${site.id}`,
-                }),
-              },
+                },
+              })),
             },
           ]}
         />
@@ -199,19 +201,23 @@ export default function SitesScreen() {
         submitLabel="Save"
         mutation={createSiteMutation}
         open={location.search.includes("new")}
-        onSuccess={{
-          toast: "Site created successfully!",
+        onSuccess={handleEvent({
+          toast: ["success", "Site created successfully!"],
           refetch: sitesQuery,
           push: {
             search: "",
           },
-        }}
-        onError
-        onClose={{
+        })}
+        onError={(error) =>
+          handleEvent({
+            toast: ["error", error.message],
+          })
+        }
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
       <ModalForm
         title="Update site"
@@ -302,35 +308,43 @@ export default function SitesScreen() {
           {
             variant: "secondary",
             icon: TrashIcon,
-            mutation: deleteSiteMutation,
-            beforeMutate: {
+            onClick: handleEvent({
               confirm: "Are you sure you want to delete this site?",
-              args: [draftSite],
-            },
-            onSuccess: {
-              push: {
-                search: "",
-              },
-              refetch: sitesQuery,
-              toast: "Site deleted successfully!",
-            },
-            onError: true,
+              mutateAsync: [
+                deleteSiteMutation,
+                draftSite,
+                {
+                  then: {
+                    toast: ["success", "Site deleted successfully!"],
+                    refetch: sitesQuery,
+                    push: {
+                      search: "",
+                    },
+                  },
+                  catch: (error) => ({
+                    toast: ["error", error.message],
+                  }),
+                },
+              ],
+            }),
           },
         ]}
         open={!!draftSite}
-        onSuccess={{
-          toast: "Site updated successfully!",
+        onSuccess={handleEvent({
+          toast: ["success", "Site updated successfully!"],
           refetch: sitesQuery,
           push: {
             search: "",
           },
-        }}
-        onError
-        onClose={{
+        })}
+        onError={handleEvent((error) => ({
+          toast: ["error", error.message],
+        }))}
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
     </Layout>
   )

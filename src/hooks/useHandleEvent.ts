@@ -21,8 +21,8 @@ export type HandleEventConfig =
       mutateAsync?: [
         mutation: UseMutationResult,
         variables: any,
-        options?: UseMutationOptions,
-        handlers?: {
+        config?: {
+          options?: UseMutationOptions
           then?: HandleEventConfig
           catch?: HandleEventConfig
         }
@@ -68,15 +68,15 @@ export default function useHandleEvent() {
 
       if (config.mutateAsync) {
         config.mutateAsync[0]
-          .mutateAsync(config.mutateAsync[1], config.mutateAsync[2])
+          .mutateAsync(config.mutateAsync[1], config.mutateAsync[2]?.options)
           .then((data) => {
-            if (config.mutateAsync[3]?.then) {
-              handleEvent(config.mutateAsync[3].then)(data)
+            if (config.mutateAsync[2]?.then) {
+              handleEvent(config.mutateAsync[2].then)(data)
             }
           })
           .catch((error) => {
-            if (config.mutateAsync[3]?.catch) {
-              handleEvent(config.mutateAsync[3].catch)(error)
+            if (config.mutateAsync[2]?.catch) {
+              handleEvent(config.mutateAsync[2].catch)(error)
             } else {
               throw error
             }
