@@ -6,15 +6,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "blue-gray": colors.blueGray,
+        gray: colors.blueGray,
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],
       },
     },
-  },
-  purge: {
-    content: ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"],
   },
   plugins: [
     require("@tailwindcss/typography"),
@@ -22,4 +19,7 @@ module.exports = {
     require("@tailwindcss/line-clamp"),
     require("@tailwindcss/aspect-ratio"),
   ],
+  purge: {
+    content: ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"],
+  },
 }
