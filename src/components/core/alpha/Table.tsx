@@ -1,5 +1,4 @@
 import React from "react"
-import { useHistory } from "react-router-dom"
 import { UseQueryResult } from "react-query"
 import { PlusIcon, XCircleIcon } from "@heroicons/react/solid"
 import { useTable } from "react-table"
@@ -11,30 +10,30 @@ interface TableProps {
     variant?: "primary" | "secondary" | "tertiary"
     label: string
     accessor: string | ((row: any, rowIndex: number) => any)
+    align?: "center" | "right"
     renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   }>
   data?: Array<any>
   query?: UseQueryResult
   emptyState: {
     icon?: React.FunctionComponent<{ className: string }>
-    title: string
+    title?: string
     description: string
     action?: {
       label: string
       onClick: () => void
     }
+    padding?: boolean
   }
   actions?: Array<{
     icon?: React.FunctionComponent<{ className: string }>
     label?: string
     hidden?: (row) => boolean
-    onClick: { push?: any } | ((row) => void)
+    onClick: (row) => void
   }>
 }
 
 export default function Table(props: TableProps) {
-  const history = useHistory()
-
   // TODO: this memoization will probably not work because
   // column.renderContent is a function
   const columns = useDeepCompareMemo(
@@ -94,21 +93,21 @@ export default function Table(props: TableProps) {
 
   if (props.query?.status === "success" && !(props.query?.data as []).length) {
     return (
-      <div className="text-center">
+      <div className={cn("text-center", props.emptyState.padding && "p-8")}>
         {props.emptyState.icon &&
           React.createElement(props.emptyState.icon, {
             className: "mx-auto w-8 h-8 text-gray-400",
           })}
-        <h3 className="mt-2 text-gray-900 text-sm font-medium">
-          {props.emptyState.title}
-        </h3>
-        <p className="mt-1 text-gray-500 text-sm">
-          {props.emptyState.description}
-        </p>
+        {props.emptyState.title && (
+          <h3 className="mb-1 mt-2 text-gray-900 text-sm font-medium">
+            {props.emptyState.title}
+          </h3>
+        )}
+        <p className="text-gray-500 text-sm">{props.emptyState.description}</p>
         {props.emptyState.action && (
           <div className="mt-6">
             <button
-              className="inline-flex items-center px-4 py-2 text-white text-sm font-medium bg-indigo-600 hover:bg-indigo-700 border border-transparent rounded-md focus:outline-none shadow-sm focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="inline-flex items-center px-4 py-2 text-white text-sm font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               type="button"
               onClick={props.emptyState.action.onClick}
             >
@@ -203,21 +202,7 @@ export default function Table(props: TableProps) {
                             <button
                               className="text-blue-600 hover:text-blue-900 focus-visible:underline"
                               type="button"
-                              onClick={() => {
-                                if (typeof action.onClick === "object") {
-                                  if (action.onClick.push) {
-                                    history.push(
-                                      typeof action.onClick.push === "function"
-                                        ? action.onClick.push(row.original)
-                                        : action.onClick.push
-                                    )
-                                  }
-
-                                  return
-                                }
-
-                                action.onClick?.(row.original)
-                              }}
+                              onClick={() => action.onClick?.(row.original)}
                             >
                               {action.icon
                                 ? React.createElement(action.icon, {

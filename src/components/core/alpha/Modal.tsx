@@ -1,5 +1,4 @@
 import React from "react"
-import { useHistory } from "react-router-dom"
 import { Dialog, Transition } from "@headlessui/react"
 import cn from "classnames"
 
@@ -11,14 +10,12 @@ interface ModalProps {
   size?: "lg" | "3xl"
   open: boolean
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
-  onClose: { push?: any } | (() => void)
+  onClose: () => void
   onClosed?: () => void
   children: React.ReactNode
 }
 
 export default function Modal(props: ModalProps) {
-  const history = useHistory()
-
   return (
     <Transition
       as={React.Fragment}
@@ -29,17 +26,7 @@ export default function Modal(props: ModalProps) {
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
-        onClose={() => {
-          if (typeof props.onClose === "object") {
-            if (props.onClose.push) {
-              history.push(props.onClose.push)
-            }
-
-            return
-          }
-
-          props.onClose?.()
-        }}
+        onClose={props.onClose}
       >
         <div className="px-4 min-h-screen text-center">
           <Transition.Child

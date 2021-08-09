@@ -1,7 +1,10 @@
 import React from "react"
 import cn from "classnames"
 
-const Button = React.forwardRef(function Button(props, ref) {
+// TODO
+type ButtonProps = any
+
+const Button = React.forwardRef<any, ButtonProps>(function Button(props, ref) {
   const {
     type = "button",
     variant = "primary",

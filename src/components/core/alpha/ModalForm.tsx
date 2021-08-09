@@ -1,5 +1,5 @@
 import React from "react"
-import { UseQueryResult, UseMutationResult } from "react-query"
+import { UseMutationResult } from "react-query"
 import Form, { FormInputProps } from "components/core/alpha/Form"
 import Modal from "components/core/alpha/Modal"
 
@@ -16,21 +16,14 @@ interface ModalFormProps {
     label?: string
     mutation?: UseMutationResult
     loading?: boolean
-    beforeMutate?: { confirm?: string; args?: Array<any> }
     onClick?: () => void
-    onSuccess?:
-      | string
-      | { toast?: string; refetch: UseQueryResult; push?: any }
-      | ((data: any) => void)
-    onError?: boolean | ((error: Error) => void)
+    onSuccess?: (data: any) => void
+    onError?: (error: Error) => void
   }>
   open: boolean
-  onClose?: { push?: any } | (() => void)
-  onSuccess?:
-    | string
-    | { toast?: string; refetch: UseQueryResult; push?: any }
-    | ((data: any) => void)
-  onError?: boolean | ((error: Error) => void)
+  onClose?: () => void
+  onSuccess?: (data: any) => void
+  onError?: (error: Error) => void
 }
 
 export default function ModalForm(props: ModalFormProps) {
@@ -38,6 +31,7 @@ export default function ModalForm(props: ModalFormProps) {
     <Modal
       title={props.title}
       description={props.description}
+      size="lg"
       open={props.open}
       renderContent={(props) => props.children}
       onClose={props.onClose}
