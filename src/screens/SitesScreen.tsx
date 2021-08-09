@@ -208,11 +208,9 @@ export default function SitesScreen() {
             search: "",
           },
         })}
-        onError={(error) =>
-          handleEvent({
-            toast: ["error", error.message],
-          })
-        }
+        onError={handleEvent((error) => ({
+          toast: ["error", error.message],
+        }))}
         onClose={handleEvent({
           push: {
             search: "",

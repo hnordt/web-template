@@ -66,8 +66,10 @@ export default function UsersScreen() {
   const controllers = controllersQuery.data?.reduce(
     (acc, controller) => ({
       ...acc,
-      [controller.site.id]: acc[controller.site.id]
-        ? [...acc[controller.site.id], controller]
+      [controller.site?.id ?? "unassigned"]: acc[
+        controller.site?.id ?? "unassigned"
+      ]
+        ? [...acc[controller.site?.id ?? "unassigned"], controller]
         : [controller],
     }),
     {}
@@ -111,11 +113,11 @@ export default function UsersScreen() {
       actions={[
         {
           label: "Create user",
-          onClick: {
+          onClick: handleEvent({
             push: {
               search: `?new`,
             },
-          },
+          }),
         },
       ]}
     >
@@ -166,19 +168,19 @@ export default function UsersScreen() {
             {
               icon: KeyIcon,
               hidden: (user) => user.access === "administrator",
-              onClick: {
-                push: (user) => ({
+              onClick: handleEvent((user) => ({
+                push: {
                   search: `?access-control=${user.profile.id}`,
-                }),
-              },
+                },
+              })),
             },
             {
               icon: PencilIcon,
-              onClick: {
-                push: (user) => ({
+              onClick: handleEvent((user) => ({
+                push: {
                   search: `?edit=${user.profile.id}`,
-                }),
-              },
+                },
+              })),
             },
           ]}
         />
@@ -256,12 +258,14 @@ export default function UsersScreen() {
             search: "",
           },
         })}
-        onError
-        onClose={{
+        onError={handleEvent((error) => ({
+          toast: ["error", error.message],
+        }))}
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
       <ModalForm
         title="Update user"
@@ -342,35 +346,43 @@ export default function UsersScreen() {
           {
             variant: "secondary",
             icon: TrashIcon,
-            mutation: deleteUserMutation,
-            beforeMutate: {
+            onClick: handleEvent({
               confirm: "Are you sure you want to delete this user?",
-              args: [draftUser],
-            },
-            onSuccess: {
-              push: {
-                search: "",
-              },
-              refetch: usersQuery,
-              toast: "User deleted successfully!",
-            },
-            onError: true,
+              mutateAsync: [
+                deleteUserMutation,
+                draftUser,
+                {
+                  then: {
+                    toast: ["success", "User deleted successfully!"],
+                    refetch: usersQuery,
+                    push: {
+                      search: "",
+                    },
+                  },
+                  catch: (error) => ({
+                    toast: ["error", error.message],
+                  }),
+                },
+              ],
+            }),
           },
         ]}
         open={!!draftUser}
-        onSuccess={{
-          toast: "User updated successfully!",
+        onSuccess={handleEvent({
+          toast: ["success", "User updated successfully!"],
           refetch: usersQuery,
           push: {
             search: "",
           },
-        }}
-        onError
-        onClose={{
+        })}
+        onError={handleEvent((error) => ({
+          toast: ["error", error.message],
+        }))}
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
       {/* If there is no controllers the modal will crash because we need
       something to focus */}
@@ -381,11 +393,11 @@ export default function UsersScreen() {
           user={aclUser}
           controllers={controllers}
           open={!!aclUser}
-          onClose={{
+          onClose={handleEvent({
             push: {
               search: "",
             },
-          }}
+          })}
         />
       )}
     </Layout>
@@ -423,7 +435,7 @@ function AccessControlModal(props) {
         {Object.keys(props.controllers).map((siteId) => (
           <div key={siteId} className="relative">
             <div className="sticky z-10 top-0 px-6 py-1 text-gray-500 text-sm font-medium bg-gray-50 border-b border-t border-gray-200">
-              <h3>{props.controllers[siteId][0].site.site}</h3>
+              <h3>{props.controllers[siteId][0].site?.site ?? "No site"}</h3>
             </div>
             <ul className="divide-gray-200 divide-y">
               {props.controllers[siteId].map((controller) => (

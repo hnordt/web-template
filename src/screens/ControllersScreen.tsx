@@ -1,7 +1,7 @@
 import React, { Fragment } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { useQuery, useMutation } from "react-query"
-import { Listbox, Portal, Transition } from "@headlessui/react"
+import { Listbox, Transition } from "@headlessui/react"
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid"
 import {
   PencilIcon,
@@ -16,12 +16,14 @@ import ModalForm from "components/core/alpha/ModalForm"
 import httpClient from "utils/httpClient"
 import Button from "components/core/alpha/Button"
 import toast from "react-hot-toast"
+import useHandleEvent from "hooks/useHandleEvent"
 
 const GROUP = "westfield"
 
 export default function UsersScreen() {
   const history = useHistory()
   const location = useLocation()
+  const handleEvent = useHandleEvent()
 
   const [searchText, setSearchText] = React.useState("")
   const [selectedControllerIds, setSelectedControllerIds] = React.useState([])
@@ -69,13 +71,15 @@ export default function UsersScreen() {
         controller.device.name
           .toLowerCase()
           .includes(searchText.toLowerCase()) ||
-        controller.site.site.toLowerCase().includes(searchText.toLowerCase())
+        controller.site?.site.toLowerCase().includes(searchText.toLowerCase())
     )
     .reduce(
       (acc, controller) => ({
         ...acc,
-        [controller.site.id]: acc[controller.site.id]
-          ? [...acc[controller.site.id], controller]
+        [controller.site?.id ?? "unassigned"]: acc[
+          controller.site?.id ?? "unassigned"
+        ]
+          ? [...acc[controller.site?.id ?? "unassigned"], controller]
           : [controller],
       }),
       {}
@@ -152,7 +156,7 @@ export default function UsersScreen() {
           {Object.keys(controllers).map((siteId) => (
             <div key={siteId} className="relative">
               <div className="sticky z-10 top-0 px-6 py-1 text-gray-500 text-sm font-medium bg-gray-50 border-b border-t border-gray-200">
-                <h3>{controllers[siteId][0].site.site}</h3>
+                <h3>{controllers[siteId][0].site?.site ?? "No site"}</h3>
               </div>
               <ul className="divide-gray-200 divide-y">
                 {controllers[siteId].map((controller) => (
@@ -260,7 +264,7 @@ export default function UsersScreen() {
             size: 4,
             // TODO: getControllerStatus + row => boolean
             disabled:
-              !draftController?.device.name || !draftController?.site.id,
+              !draftController?.device.name || !draftController?.site?.id,
             required: true,
           },
         ]}
@@ -272,7 +276,7 @@ export default function UsersScreen() {
                 name: draftController.device.name,
                 // TODO: getControllerStatus
                 status:
-                  !draftController?.device.name || !draftController?.site.id
+                  !draftController.device.name || !draftController.site?.id
                     ? "unassigned"
                     : draftController.device.active
                     ? "active"
@@ -283,19 +287,21 @@ export default function UsersScreen() {
         submitLabel="Save"
         mutation={updateControllerMutation}
         open={!!draftController}
-        onSuccess={{
-          toast: "Controller updated successfully!",
+        onSuccess={handleEvent({
+          toast: ["success", "Controller updated successfully!"],
           refetch: controllersQuery,
           push: {
             search: "",
           },
-        }}
-        onError
-        onClose={{
+        })}
+        onError={handleEvent((error) => ({
+          toast: ["error", error.message],
+        }))}
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
       <ModalForm
         title="Assign site"
@@ -325,19 +331,21 @@ export default function UsersScreen() {
           location.search.includes("assign=site") &&
           selectedControllerIds.length > 0
         }
-        onSuccess={{
-          toast: "Controllers updated successfully!",
+        onSuccess={handleEvent({
+          toast: ["success", "Controllers updated successfully!"],
           refetch: controllersQuery,
           push: {
             search: "",
           },
-        }}
-        onError
-        onClose={{
+        })}
+        onError={handleEvent((error) => ({
+          toast: ["error", error.message],
+        }))}
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
       <AssignUsersModal
         key={location.search.includes("assign=users")}
@@ -348,11 +356,11 @@ export default function UsersScreen() {
           location.search.includes("assign=users") &&
           selectedControllerIds.length > 0
         }
-        onClose={{
+        onClose={handleEvent({
           push: {
             search: "",
           },
-        }}
+        })}
       />
     </Layout>
   )
