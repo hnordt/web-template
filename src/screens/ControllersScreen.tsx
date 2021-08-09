@@ -11,12 +11,10 @@ import {
 import cn from "classnames"
 import Layout from "components/Layout"
 import Card from "components/core/alpha/Card"
-import Table from "components/core/alpha/Table"
 import Modal from "components/core/alpha/Modal"
 import ModalForm from "components/core/alpha/ModalForm"
 import httpClient from "utils/httpClient"
-import Badge from "components/core/alpha/Badge"
-import Button from "components/core/pre-alpha/Button"
+import Button from "components/core/alpha/Button"
 import toast from "react-hot-toast"
 
 const GROUP = "westfield"
