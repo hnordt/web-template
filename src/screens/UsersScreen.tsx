@@ -80,8 +80,6 @@ export default function UsersScreen() {
       first_name: user.firstName,
       last_name: user.lastName,
       email: user.email,
-      phone_number: user.phone,
-      mobile_number: user.mobile,
       access: user.role,
     })
   )
@@ -112,7 +110,7 @@ export default function UsersScreen() {
       title="Users"
       actions={[
         {
-          label: "Create user",
+          label: "Invite user",
           onClick: handleEvent({
             push: {
               search: `?new`,
@@ -186,8 +184,8 @@ export default function UsersScreen() {
         />
       </Card>
       <ModalForm
-        title="Create user"
-        description="Fill in the information below to create a user"
+        title="Invite user"
+        description="Fill in the information below to invite an user"
         fields={[
           {
             type: "text",
@@ -213,20 +211,20 @@ export default function UsersScreen() {
             size: 12,
             required: true,
           },
-          {
-            type: "tel",
-            name: "phone",
-            label: "Phone",
-            autoComplete: "tel",
-            size: 6,
-          },
-          {
-            type: "tel",
-            name: "mobile",
-            label: "Mobile",
-            autoComplete: "tel",
-            size: 6,
-          },
+          // {
+          //   type: "tel",
+          //   name: "phone",
+          //   label: "Phone",
+          //   autoComplete: "tel",
+          //   size: 6,
+          // },
+          // {
+          //   type: "tel",
+          //   name: "mobile",
+          //   label: "Mobile",
+          //   autoComplete: "tel",
+          //   size: 6,
+          // },
           {
             type: "select",
             name: "role",
@@ -269,46 +267,46 @@ export default function UsersScreen() {
       />
       <ModalForm
         title="Update user"
-        description="Fill in the information below to update the user"
+        // description="Fill in the information below to update the user"
         fields={[
-          {
-            type: "text",
-            name: "firstName",
-            label: "First name",
-            autoComplete: "given-name",
-            size: 6,
-            required: true,
-          },
-          {
-            type: "text",
-            name: "lastName",
-            label: "Last name",
-            autoComplete: "familys-name",
-            size: 6,
-            required: true,
-          },
-          {
-            type: "email",
-            name: "email",
-            label: "Email",
-            autoComplete: "email",
-            size: 12,
-            disabled: true,
-          },
-          {
-            type: "tel",
-            name: "phone",
-            label: "Phone",
-            autoComplete: "tel",
-            size: 6,
-          },
-          {
-            type: "tel",
-            name: "mobile",
-            label: "Mobile",
-            autoComplete: "tel",
-            size: 6,
-          },
+          // {
+          //   type: "text",
+          //   name: "firstName",
+          //   label: "First name",
+          //   autoComplete: "given-name",
+          //   size: 6,
+          //   required: true,
+          // },
+          // {
+          //   type: "text",
+          //   name: "lastName",
+          //   label: "Last name",
+          //   autoComplete: "familys-name",
+          //   size: 6,
+          //   required: true,
+          // },
+          // {
+          //   type: "email",
+          //   name: "email",
+          //   label: "Email",
+          //   autoComplete: "email",
+          //   size: 12,
+          //   disabled: true,
+          // },
+          // {
+          //   type: "tel",
+          //   name: "phone",
+          //   label: "Phone",
+          //   autoComplete: "tel",
+          //   size: 6,
+          // },
+          // {
+          //   type: "tel",
+          //   name: "mobile",
+          //   label: "Mobile",
+          //   autoComplete: "tel",
+          //   size: 6,
+          // },
           {
             type: "select",
             name: "role",
