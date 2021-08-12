@@ -55,30 +55,34 @@ export default function Modal(props: ModalProps) {
           >
             <div
               className={cn(
-                "inline-block align-middle my-8 w-full text-left bg-white rounded-2xl shadow-xl transform transition-all",
+                "inline-block align-middle my-8 w-full text-left transform transition-all",
                 !props.size && "max-w-md",
                 props.size === "lg" && "max-w-lg",
                 props.size === "3xl" && "max-w-3xl"
               )}
             >
-              {props.title && (
-                <div className="p-6 border-b border-gray-200">
-                  {props.title && (
-                    <Dialog.Title
-                      as="h1"
-                      className="text-gray-900 text-2xl font-bold"
-                    >
-                      {props.title}
-                    </Dialog.Title>
-                  )}
-                  {props.description && (
-                    <p className="text-gray-500 text-sm">{props.description}</p>
-                  )}
-                </div>
-              )}
-              {props.renderContent?.({
-                children: props.children,
-              }) ?? <div className="p-6">{props.children}</div>}
+              <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                {props.title && (
+                  <div className="p-6 border-b border-gray-200">
+                    {props.title && (
+                      <Dialog.Title
+                        as="h1"
+                        className="text-gray-900 text-2xl font-bold"
+                      >
+                        {props.title}
+                      </Dialog.Title>
+                    )}
+                    {props.description && (
+                      <p className="text-gray-500 text-sm">
+                        {props.description}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {props.renderContent?.({
+                  children: props.children,
+                }) ?? <div className="p-6">{props.children}</div>}
+              </div>
             </div>
           </Transition.Child>
         </div>
