@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const accessToken = "82ab59bbbd5fa375f0944ae28d9e5892d07e6ccd"
+const accessToken = "24275a1db0f9fb6c8361c26f1fca0c94f5d6b790"
 
 const httpClient = axios.create({
   baseURL: "https://new-dev.digichemplus.com/api",

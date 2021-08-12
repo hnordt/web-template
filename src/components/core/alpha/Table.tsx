@@ -84,7 +84,7 @@ export default function Table(props: TableProps) {
           </div>
         ),
         accessor: column.accessor,
-        width: column.width ?? 200,
+        width: column.width ?? `${100 / props.columns.length}%`,
       })),
     [props.columns, props.query?.status, props.infiniteQuery?.status]
   )
@@ -179,13 +179,22 @@ export default function Table(props: TableProps) {
             {headerGroup.headers.map((column) => (
               <div
                 className="px-6 py-3 text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
-                {...column.getHeaderProps()}
+                {...column.getHeaderProps({
+                  style: {
+                    width: column.width,
+                  },
+                })}
               >
                 {column.render("Header")}
               </div>
             ))}
             {props.actions && props.query?.status !== "loading" && (
-              <div className="px-6 py-3" />
+              <div
+                className="px-6 py-3"
+                style={{
+                  width: "0%",
+                }}
+              />
             )}
           </div>
         ))}
@@ -196,15 +205,15 @@ export default function Table(props: TableProps) {
             const row = table.rows[i]
             table.prepareRow(row)
             return (
-              <div
-                {...row.getRowProps({
-                  style: {},
-                })}
-              >
+              <div {...row.getRowProps()}>
                 {row.cells.map((cell) => (
                   <div
                     className="px-6 py-4 text-gray-900 whitespace-nowrap text-sm overflow-hidden"
-                    {...cell.getCellProps()}
+                    {...cell.getCellProps({
+                      style: {
+                        width: cell.column.width,
+                      },
+                    })}
                   >
                     {cell.render("Cell")}
                   </div>
@@ -212,7 +221,12 @@ export default function Table(props: TableProps) {
                 {props.actions &&
                   props.actions &&
                   props.query?.status !== "loading" && (
-                    <div className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                    <div
+                      className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium"
+                      style={{
+                        width: "0%",
+                      }}
+                    >
                       <span className="flex flex-shrink-0 items-center justify-end space-x-4">
                         {props.actions
                           .filter((action) => !action.hidden?.(row.original))

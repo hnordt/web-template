@@ -14,7 +14,7 @@ import httpClient from "utils/httpClient"
 import Badge from "components/core/alpha/Badge"
 import useHandleEvent from "hooks/useHandleEvent"
 
-const GROUP = "westfield"
+const GROUP = "core-water"
 
 export default function UsersScreen() {
   const location = useLocation()
@@ -51,7 +51,7 @@ export default function UsersScreen() {
     ["controllers", GROUP],
     () =>
       httpClient
-        .get(`/group/${GROUP}/devices/`, {
+        .get(`/group/${GROUP}/map/`, {
           params: {
             page: 1,
             limit: 2000,
@@ -63,17 +63,14 @@ export default function UsersScreen() {
     }
   )
 
-  const controllers = controllersQuery.data?.reduce(
-    (acc, controller) => ({
-      ...acc,
-      [controller.site?.id ?? "unassigned"]: acc[
-        controller.site?.id ?? "unassigned"
-      ]
-        ? [...acc[controller.site?.id ?? "unassigned"], controller]
-        : [controller],
-    }),
-    {}
-  )
+  const controllers =
+    controllersQuery.data?.reduce((acc, controller) => {
+      const siteId = controller.site_id ?? "unassigned"
+      return {
+        ...acc,
+        [siteId]: acc[siteId] ? [...acc[siteId], controller] : [controller],
+      }
+    }, {}) ?? {}
 
   const createUserMutation = useMutation((user: any) =>
     httpClient.post(`/group/${GROUP}/invite/`, {
@@ -403,15 +400,34 @@ export default function UsersScreen() {
 }
 
 function AccessControlModal(props) {
-  const [acl, setAcl] = React.useState({})
+  console.log({
+    controllers: props.controllers,
+    props,
+  })
 
-  const options = [
-    "sms/e-mail only",
-    "view (excluding logs)",
-    "view",
-    "full (excluing contact list)",
-    "full",
-  ]
+  const userId = props.user?.profile.id
+
+  const controllerAccessQuery = useQuery(
+    ["controllerAccess", userId],
+    () =>
+      httpClient
+        .get(`/personal/${userId}/controllers/`, {
+          params: {
+            controller_id: "0830:04838",
+            // page: 1,
+            // limit: 2000,
+          },
+        })
+        .then((response) => response.data),
+    {
+      // select: (data) => data.results,
+      enabled: !!userId,
+    }
+  )
+
+  console.log({
+    controllerAccessQuery,
+  })
 
   return (
     <Modal
@@ -428,111 +444,36 @@ function AccessControlModal(props) {
         <span className="block text-gray-500 text-sm">
           {props.user?.profile.email}
         </span>
+        <input />
       </div>
-      <div className="h-[624px] overflow-y-auto">
+      <div className="h-[605px] overflow-y-auto">
         {Object.keys(props.controllers).map((siteId) => (
           <div key={siteId} className="relative">
-            <div className="sticky z-10 top-0 px-6 py-1 text-gray-500 text-sm font-medium bg-gray-50 border-b border-t border-gray-200">
-              <h3>{props.controllers[siteId][0].site?.site ?? "No site"}</h3>
+            <div className="sticky z-10 top-0 px-6 py-1.5 text-gray-500 text-sm font-medium bg-gray-50 border-b border-t border-gray-200">
+              <h3>
+                {siteId === "unassigned"
+                  ? "Unassigned"
+                  : props.controllers[siteId][0].site}
+              </h3>
             </div>
             <ul className="divide-gray-200 divide-y">
               {props.controllers[siteId].map((controller) => (
-                <li key={controller.id} className="px-6 py-5 bg-white">
-                  <div className="flex items-center justify-between space-x-6">
-                    <div>
-                      <p className="text-gray-900 text-sm font-medium">
-                        {controller.device.name}
-                      </p>
-                      <p className="text-gray-500 text-sm truncate">
-                        {controller.device.header_id}-
+                <li
+                  key={controller.device.equipment_id}
+                  className="px-6 py-2 bg-white"
+                >
+                  <div className="flex items-center justify-between overflow-hidden space-x-6">
+                    <p className="text-gray-900 text-sm font-medium truncate">
+                      {controller.device.name}
+                      <span className="text-gray-500 text-xs">
+                        &nbsp;&mdash; {controller.device.header_id}-
                         {controller.device.equipment_id}
-                      </p>
-                    </div>
-                    <div>
-                      <Listbox
-                        value={acl[controller.id] ?? options[0]}
-                        onChange={(value) =>
-                          setAcl((acl) => ({
-                            ...acl,
-                            [controller.id]: value,
-                          }))
-                        }
-                      >
-                        {({ open }) => (
-                          <div className="relative mt-1">
-                            <Listbox.Button className="relative pl-3 pr-10 py-2 w-full text-left bg-white border focus-visible:border-blue-500 border-transparent rounded-md focus:outline-none cursor-default focus-visible:ring-1 focus-visible:ring-blue-500 sm:text-sm">
-                              <span className="block">
-                                {acl[controller.id] ?? options[0]}
-                              </span>
-                              <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <SelectorIcon
-                                  className="w-5 h-5 text-gray-400"
-                                  aria-hidden
-                                />
-                              </span>
-                            </Listbox.Button>
-                            <Transition
-                              show={open}
-                              as={React.Fragment}
-                              leave="transition ease-in duration-100"
-                              leaveFrom="opacity-100"
-                              leaveTo="opacity-0"
-                            >
-                              <Listbox.Options
-                                static
-                                className="absolute z-20 right-0 mt-1 py-1 w-60 max-h-60 text-base bg-white rounded-md focus:outline-none shadow-lg overflow-auto ring-1 ring-black ring-opacity-5 sm:text-sm"
-                              >
-                                {options.map((option) => (
-                                  <Listbox.Option
-                                    key={option}
-                                    className={({ active }) =>
-                                      cn(
-                                        active
-                                          ? "text-white bg-blue-600"
-                                          : "text-gray-900",
-                                        "cursor-default select-none relative py-2 pl-3 pr-9"
-                                      )
-                                    }
-                                    value={option}
-                                  >
-                                    {({ selected, active }) => (
-                                      <>
-                                        <span
-                                          className={cn(
-                                            selected
-                                              ? "font-semibold"
-                                              : "font-normal",
-                                            "block"
-                                          )}
-                                        >
-                                          {option}
-                                        </span>
-
-                                        {selected ? (
-                                          <span
-                                            className={cn(
-                                              active
-                                                ? "text-white"
-                                                : "text-blue-600",
-                                              "absolute inset-y-0 right-0 flex items-center pr-4"
-                                            )}
-                                          >
-                                            <CheckIcon
-                                              className="w-5 h-5"
-                                              aria-hidden
-                                            />
-                                          </span>
-                                        ) : null}
-                                      </>
-                                    )}
-                                  </Listbox.Option>
-                                ))}
-                              </Listbox.Options>
-                            </Transition>
-                          </div>
-                        )}
-                      </Listbox>
-                    </div>
+                      </span>
+                    </p>
+                    <AccessLevelSelect
+                      user={props.user}
+                      controller={controller}
+                    />
                   </div>
                 </li>
               ))}
@@ -541,5 +482,88 @@ function AccessControlModal(props) {
         ))}
       </div>
     </Modal>
+  )
+}
+
+interface AccessLevelSelectProps {
+  controller: any
+  user: any
+  value?: string
+  onChange?: (value: string) => void
+}
+
+function AccessLevelSelect(props: AccessLevelSelectProps) {
+  const options = [
+    "sms/e-mail only",
+    "view (excluding logs)",
+    "view",
+    "full (excluing contact list)",
+    "full",
+  ]
+
+  const value = props.value ?? options[0]
+
+  return (
+    <Listbox value={value} onChange={props.onChange}>
+      {({ open }) => (
+        <div className="relative">
+          <Listbox.Button className="relative pl-3 pr-10 py-2 w-full text-left bg-white border focus-visible:border-blue-500 border-transparent rounded-md focus:outline-none cursor-default focus-visible:ring-1 focus-visible:ring-blue-500 sm:text-sm">
+            <span className="block">{value}</span>
+            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <SelectorIcon className="w-5 h-5 text-gray-400" aria-hidden />
+            </span>
+          </Listbox.Button>
+          <Transition
+            show={open}
+            as={React.Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options
+              static
+              className="absolute z-20 right-0 mt-1 py-1 w-60 max-h-60 text-base bg-white rounded-md focus:outline-none shadow-lg overflow-auto ring-1 ring-black ring-opacity-5 sm:text-sm"
+            >
+              {options.map((option) => (
+                <Listbox.Option
+                  key={option}
+                  className={({ active }) =>
+                    cn(
+                      active ? "text-white bg-blue-600" : "text-gray-900",
+                      "cursor-default select-none relative py-2 pl-3 pr-9"
+                    )
+                  }
+                  value={option}
+                >
+                  {({ selected, active }) => (
+                    <>
+                      <span
+                        className={cn(
+                          selected ? "font-semibold" : "font-normal",
+                          "block"
+                        )}
+                      >
+                        {option}
+                      </span>
+
+                      {selected ? (
+                        <span
+                          className={cn(
+                            active ? "text-white" : "text-blue-600",
+                            "absolute inset-y-0 right-0 flex items-center pr-4"
+                          )}
+                        >
+                          <CheckIcon className="w-5 h-5" aria-hidden />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </div>
+      )}
+    </Listbox>
   )
 }
