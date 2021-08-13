@@ -1,7 +1,12 @@
 import React from "react"
-import { UseQueryResult, UseInfiniteQueryResult } from "react-query"
-import { PlusIcon, XCircleIcon } from "@heroicons/react/solid"
-import { Virtuoso } from "react-virtuoso"
+import {
+  UseQueryResult,
+  UseInfiniteQueryResult,
+  useQuery,
+  useInfiniteQuery,
+} from "react-query"
+import { XCircleIcon } from "@heroicons/react/solid"
+import { GroupedVirtuoso } from "react-virtuoso"
 import _ from "lodash/fp"
 import cn from "classnames"
 
@@ -23,15 +28,15 @@ export interface TableProps {
     icon?: React.FunctionComponent<{ className: string }> // TODO
     title?: string
     description: string
-    action?: {
-      label: string
-      onClick: () => void
-    }
+    action?: React.ReactNode
   }
   actions?: Array<{
+    // TODO: icon is required if no label is passed, and label is required if
+    // no icon is passed
     icon?: React.FunctionComponent<{ className: string }> // TODO
     label?: string
-    onClick: (item) => void
+    hidden?: (item: unknown) => boolean
+    onClick: (item: unknown) => void
   }>
   height: number
   onEndReached?: () => void
@@ -47,12 +52,11 @@ function getCellValue(column, item) {
 
 function renderRow(columns: Array<Column>, item?: null | unknown) {
   return (
-    <div className="grid grid-cols-12 items-center h-11">
+    <div className="grid gap-6 grid-cols-12 items-center h-11">
       {columns.map((column, index) => (
         <div
           key={`${index}${column.label}`}
           className={cn(
-            "px-6",
             column.span === 1 && "col-span-1",
             column.span === 2 && "col-span-2",
             column.span === 3 && "col-span-3",
@@ -64,11 +68,13 @@ function renderRow(columns: Array<Column>, item?: null | unknown) {
             column.span === 9 && "col-span-9",
             column.span === 10 && "col-span-10",
             column.span === 11 && "col-span-11",
-            column.span === 12 && "col-span-12"
+            column.span === 12 && "col-span-12",
+            column.align === "center" && "text-center",
+            column.align === "right" && "text-right"
           )}
         >
           {item === undefined ? (
-            <span className="block text-gray-500 text-xs font-medium uppercase truncate">
+            <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">
               {column.label}
             </span>
           ) : item === null ? (
@@ -102,16 +108,16 @@ function renderCell(column, item) {
   return value
 }
 
+// TODO: query + infiniteQuery
+// - loading state
+// - error state
 function Table(props: TableProps) {
-  // [ ] loading state
-  // [ ] empty state
-  // [ ] non-empty state
-  // [ ] error state
+  const itemCount = Array.isArray(props.data) ? props.data.length : 0
 
-  if (!props.data || (Array.isArray(props.data) && !props.data.length)) {
+  if (!itemCount) {
     return (
       <div
-        className="flex items-center justify-center"
+        className="flex flex-col items-center justify-center"
         style={{
           height: props.height,
         }}
@@ -129,36 +135,77 @@ function Table(props: TableProps) {
           {props.emptyState?.description ?? "No results found"}
         </p>
         {props.emptyState?.action && (
-          <div className="mt-6">
-            <button
-              className="inline-flex items-center px-4 py-2 text-white text-sm font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              type="button"
-              onClick={props.emptyState.action.onClick}
-            >
-              <PlusIcon className="-ml-1 mr-2 w-5 h-5" aria-hidden />
-              {props.emptyState.action.label}
-            </button>
-          </div>
+          <div className="mt-6">{props.emptyState.action}</div>
         )}
       </div>
     )
   }
 
   return (
-    <Virtuoso
-      data={props.data}
-      itemContent={(_, item) => renderRow(props.columns, item)}
+    <GroupedVirtuoso
+      groupCounts={[itemCount]}
+      groupContent={() => (
+        <div className="grid gap-6 grid-cols-12 items-center px-6 bg-gray-50 border-b border-gray-200">
+          <div className={props.actions ? "col-span-11" : "col-span-12"}>
+            {renderRow(props.columns)}
+          </div>
+          {props.actions && (
+            <div>
+              <span className="sr-only">Actions</span>
+            </div>
+          )}
+        </div>
+      )}
+      itemContent={(index) => {
+        const item = props.data[index]
+        return (
+          <div
+            className={cn(
+              "grid gap-6 grid-cols-12 items-center px-6 border-b",
+              index === itemCount - 1 ? "border-transparent" : "border-gray-200"
+            )}
+          >
+            <div className={props.actions ? "col-span-11" : "col-span-12"}>
+              {renderRow(props.columns, item)}
+            </div>
+            {props.actions && (
+              <div className="flex items-center justify-end space-x-4">
+                {props.actions
+                  .filter((action) => !action.hidden?.(item))
+                  .map((action, i) => (
+                    <React.Fragment key={action.label ?? action.icon?.name}>
+                      {/* {i > 0 && (
+                        <span className="text-gray-300" aria-hidden>
+                          |
+                        </span>
+                      )} */}
+                      <button
+                        className="text-blue-600 hover:text-blue-900 focus-visible:underline"
+                        type="button"
+                        onClick={() => action.onClick(item)}
+                      >
+                        {action.icon ? (
+                          React.createElement(action.icon, {
+                            className: "w-5 h-5 text-gray-400",
+                          })
+                        ) : (
+                          <span className="whitespace-nowrap text-sm font-medium">
+                            {action.label}
+                          </span>
+                        )}
+                      </button>
+                    </React.Fragment>
+                  ))}
+              </div>
+            )}
+          </div>
+        )
+      }}
       components={{
-        Header: () => (
-          <div className="bg-gray-200">{renderRow(props.columns)}</div>
-        ),
         EmptyPlaceholder: () => (
           <div className="border-t border-gray-200">
             {renderRow(props.columns, null)}
           </div>
-        ),
-        Item: (props) => (
-          <div {...props} className="border-t border-gray-200" />
         ),
         Footer: () => (
           <div className="flex items-center px-6 h-11 border-t border-gray-200">
@@ -175,9 +222,11 @@ function Table(props: TableProps) {
 }
 
 export default function HomeScreen() {
+  const query = useQuery()
+
   return (
     <div className="p-6">
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
         <Table
           columns={[
             {
@@ -206,7 +255,17 @@ export default function HomeScreen() {
               span: 3,
             },
           ]}
-          // data={users}
+          data={users}
+          actions={[
+            {
+              icon: XCircleIcon,
+              onClick: () => {},
+            },
+            {
+              icon: XCircleIcon,
+              onClick: () => {},
+            },
+          ]}
           height={404}
         />
       </div>
