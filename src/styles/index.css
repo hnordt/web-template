@@ -1,6 +1,11 @@
 @import "~tailwindcss/tailwind.css";
 @import "~react-calendar/dist/Calendar.css";
 
+/* Safari bug fix */
+.overflow-hidden {
+  -webkit-transform: translateZ(0);
+}
+
 .react-calendar {
   @apply text-sm border-none;
 }
