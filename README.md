@@ -2,7 +2,7 @@
 
 A template for creating web apps
 
-## Available scripts
+## Scripts
 
 In the project directory, you can run:
 
