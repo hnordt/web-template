@@ -1,163 +1,149 @@
 import React from "react"
 import { UseQueryResult, UseInfiniteQueryResult } from "react-query"
-import { PlusIcon, XCircleIcon } from "@heroicons/react/solid"
-import { useTable, useBlockLayout } from "react-table"
-import { Virtuoso } from "react-virtuoso"
-import { useDeepCompareMemo } from "use-deep-compare"
+import { XCircleIcon } from "@heroicons/react/solid"
+import { GroupedVirtuoso } from "react-virtuoso"
 import cn from "classnames"
+import _ from "lodash/fp"
 import Loader from "components/core/alpha/Loader"
 
+export interface Column {
+  variant?: "primary" | "secondary" | "tertiary"
+  label: string
+  accessor: string | ((item: unknown) => string | number | boolean)
+  span: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+  align?: "center" | "right"
+  renderCell?: (value: unknown) => React.ReactNode
+}
+
 export interface TableProps {
-  columns: Array<{
-    variant?: "primary" | "secondary" | "tertiary"
-    label: string
-    accessor: string | ((row: any, rowIndex: number) => any)
-    width?: number
-    align?: "center" | "right"
-    renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
-  }>
-  data?: Array<any>
+  columns: Array<Column>
+  data?: Array<unknown>
   query?: UseQueryResult
   infiniteQuery?: UseInfiniteQueryResult
-  emptyState: {
-    icon?: React.FunctionComponent<{ className: string }>
+  emptyState?: {
+    icon?: React.FunctionComponent<{ className: string }> // TODO
     title?: string
     description: string
-    action?: {
-      label: string
-      onClick: () => void
-    }
-    padding?: boolean
+    action?: React.ReactNode
   }
   actions?: Array<{
-    icon?: React.FunctionComponent<{ className: string }>
+    // TODO: icon is required if no label is passed, and label is required if
+    // no icon is passed
+    icon?: React.FunctionComponent<{ className: string }> // TODO
     label?: string
-    hidden?: (row) => boolean
-    onClick: (row) => void
+    hidden?: (item: unknown) => boolean
+    onClick: (item: unknown) => void
   }>
-  height?: number
+  height: number
   onEndReached?: () => void
 }
 
-const VirtuosoList = React.forwardRef<any, any>((props, ref) => (
-  <div {...props} ref={ref} className="divide-gray-200 divide-y" />
-))
-
-const VirtuosoEmptyPlaceholder = React.forwardRef<any, any>((props, ref) => (
-  <div {...props} ref={ref} className="flex items-center justify-center h-full">
-    <Loader variant="dark" size="sm" />
-  </div>
-))
-
-const VirtuosoFooter = React.forwardRef<any, any>((props, ref) => (
-  <div {...props} ref={ref} className="px-6 py-5 border-t border-gray-200">
-    <Loader variant="dark" size="sm" />
-  </div>
-))
-
-export default function Table(props: TableProps) {
-  // TODO: this memoization will probably not work because
-  // column.renderContent is a function
-  const columns = useDeepCompareMemo(
-    () =>
-      props.columns.map((column) => ({
-        Header: column.label,
-        Cell: (_props) => (
-          <div
-            className={cn(
-              "truncate",
-              {
-                primary: "font-medium",
-                tertiary: "text-gray-500",
-              }[column.variant]
-            )}
-          >
-            {column.renderContent?.({
-              children: _props.value,
-            }) ?? (
-              // Returning a React Fragment will avoid crashes when props.value
-              // is null or undefined.
-              // We don't want to cast it to string otherwise "undefined" or
-              // "null" would be rendered.
-              <>{_props.value}</>
-            )}
-          </div>
-        ),
-        accessor: column.accessor,
-        width: column.width ?? `${100 / props.columns.length}%`,
-      })),
-    [props.columns, props.query?.status, props.infiniteQuery?.status]
-  )
-
-  const data = useDeepCompareMemo(() => props.data, [props.data])
-
-  const table = useTable(
-    {
-      columns,
-      data: props.query
-        ? props.query.status === "loading"
-          ? new Array(props.columns.length).fill({})
-          : props.query.status === "error"
-          ? []
-          : props.query.data
-        : props.infiniteQuery
-        ? props.infiniteQuery.status === "loading"
-          ? []
-          : props.infiniteQuery.status === "error"
-          ? []
-          : props.infiniteQuery.data
-        : data,
-    },
-    useBlockLayout
-  )
-
-  if (
-    (props.query?.status === "success" && !(props.query?.data as []).length) ||
-    (props.infiniteQuery?.status === "success" &&
-      !(props.infiniteQuery?.data as []).length)
-  ) {
-    return (
-      <div className={cn("text-center", props.emptyState.padding && "p-8")}>
-        {props.emptyState.icon &&
-          React.createElement(props.emptyState.icon, {
-            className: "mx-auto w-8 h-8 text-gray-400",
-          })}
-        {props.emptyState.title && (
-          <h3 className="mb-1 mt-2 text-gray-900 text-sm font-medium">
-            {props.emptyState.title}
-          </h3>
-        )}
-        <p className="text-gray-500 text-sm">{props.emptyState.description}</p>
-        {props.emptyState.action && (
-          <div className="mt-6">
-            <button
-              className="inline-flex items-center px-4 py-2 text-white text-sm font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              type="button"
-              onClick={props.emptyState.action.onClick}
-            >
-              <PlusIcon className="-ml-1 mr-2 w-5 h-5" aria-hidden="true" />
-              {props.emptyState.action.label}
-            </button>
-          </div>
-        )}
-      </div>
-    )
+function getCellValue(column, item) {
+  if (typeof column.accessor === "string") {
+    return _.get(column.accessor, item)
   }
 
-  if (props.query?.status === "error") {
+  return column.accessor(item)
+}
+
+function renderRow(
+  columns: Array<Column>,
+  item?: { index: number; data: null | unknown }
+) {
+  return (
+    <div className="grid gap-6 grid-cols-12 items-center h-11">
+      {columns.map((column, columnIndex) => (
+        <div
+          key={`${columnIndex}${column.label}`}
+          className={cn(
+            column.span === 1 && "col-span-1",
+            column.span === 2 && "col-span-2",
+            column.span === 3 && "col-span-3",
+            column.span === 4 && "col-span-4",
+            column.span === 5 && "col-span-5",
+            column.span === 6 && "col-span-6",
+            column.span === 7 && "col-span-7",
+            column.span === 8 && "col-span-8",
+            column.span === 9 && "col-span-9",
+            column.span === 10 && "col-span-10",
+            column.span === 11 && "col-span-11",
+            column.span === 12 && "col-span-12",
+            column.align === "center" && "text-center",
+            column.align === "right" && "text-right"
+          )}
+        >
+          {!item ? (
+            <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">
+              {column.label}
+            </span>
+          ) : item.data === null ? (
+            <div
+              className={cn(
+                "h-4 bg-gray-200 rounded animate-pulse",
+                ["w-2/4", "w-1/4", "w-3/4"][`${item.index}`] ?? "wfull"
+              )}
+            />
+          ) : (
+            <span
+              className={cn(
+                "block text-sm truncate",
+                {
+                  primary: "font-medium",
+                  tertiary: "text-gray-500",
+                }[column.variant] ?? "text-gray-900"
+              )}
+            >
+              {renderCell(column, item.data)}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function renderCell(column, item) {
+  const value = getCellValue(column, item)
+
+  if (column.renderCell) {
+    return column.renderCell(value)
+  }
+
+  return value
+}
+
+export default function Table(props: TableProps) {
+  const query = props.query ?? props.infiniteQuery
+
+  if (query.error) {
     return (
-      <div className="p-4 bg-red-50 rounded-md">
+      <div
+        className="p-4 bg-red-50"
+        // TODO
+        // style={{
+        //   height: props.height,
+        // }}
+      >
         <div className="flex">
           <div className="flex-shrink-0">
             <XCircleIcon className="w-5 h-5 text-red-400" aria-hidden />
           </div>
           <div className="flex-1 ml-3 md:flex md:justify-between">
-            <p className="text-red-700 text-sm">{props.query.error}</p>
+            <p className="text-red-700 text-sm">
+              {query.error instanceof Error
+                ? query.error.message
+                : "Something went wrong"}
+            </p>
             <p className="mt-3 text-sm md:ml-6 md:mt-0">
               <button
                 className="hover:text-red-600 text-red-700 whitespace-nowrap font-medium"
                 type="button"
-                onClick={() => props.query.refetch()}
+                onClick={() => {
+                  query.remove()
+                  query.refetch({
+                    cancelRefetch: true,
+                  })
+                }}
               >
                 Try again
               </button>
@@ -168,118 +154,123 @@ export default function Table(props: TableProps) {
     )
   }
 
+  const data =
+    query?.status === "loading" ? [null, null, null] : query?.data ?? props.data
+  const itemCount = Array.isArray(data) ? data.length : 0
+
+  if (!itemCount) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center"
+        style={{
+          height: props.height,
+        }}
+      >
+        {props.emptyState?.icon &&
+          React.createElement(props.emptyState.icon, {
+            className: "mx-auto w-8 h-8 text-gray-400",
+          })}
+        {props.emptyState?.title && (
+          <h3 className="mb-1 mt-2 text-gray-900 text-sm font-medium">
+            {props.emptyState.title}
+          </h3>
+        )}
+        <p className="text-gray-500 text-sm">
+          {props.emptyState?.description ?? "No results found"}
+        </p>
+        {props.emptyState?.action && (
+          <div className="mt-6">{props.emptyState.action}</div>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <div
-      className="min-w-full divide-gray-200 divide-y"
-      {...table.getTableProps()}
-    >
-      <div className="bg-gray-50">
-        {table.headerGroups.map((headerGroup) => (
-          <div {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <div
-                className="px-6 py-3 text-left text-gray-500 text-xs font-medium tracking-wider uppercase"
-                {...column.getHeaderProps({
-                  style: {
-                    width: column.width,
-                  },
-                })}
-              >
-                {column.render("Header")}
+    <GroupedVirtuoso
+      groupCounts={[itemCount]}
+      groupContent={() => (
+        <div className="grid gap-6 grid-cols-12 items-center px-6 bg-gray-50 border-b border-gray-200">
+          <div className={props.actions ? "col-span-11" : "col-span-12"}>
+            {renderRow(props.columns)}
+          </div>
+          {props.actions && (
+            <div>
+              <span className="sr-only">Actions</span>
+            </div>
+          )}
+        </div>
+      )}
+      itemContent={(index) => {
+        const item = data[index]
+        return (
+          <div
+            className={cn(
+              "grid gap-6 grid-cols-12 items-center px-6 border-b",
+              index === itemCount - 1 ? "border-transparent" : "border-gray-200"
+            )}
+          >
+            <div className={props.actions ? "col-span-11" : "col-span-12"}>
+              {renderRow(props.columns, {
+                index,
+                data: item,
+              })}
+            </div>
+            {props.actions && (
+              <div className="flex items-center justify-end space-x-4">
+                {props.actions
+                  .filter((action) => !action.hidden?.(item))
+                  .map((action, actionIndex) => (
+                    <button
+                      key={`${actionIndex}${action.label ?? action.icon?.name}`}
+                      className="text-blue-600 hover:text-blue-900 focus-visible:underline"
+                      type="button"
+                      onClick={() => action.onClick(item)}
+                    >
+                      {action.icon ? (
+                        React.createElement(action.icon, {
+                          className: "w-5 h-5 text-gray-400",
+                        })
+                      ) : (
+                        <span className="whitespace-nowrap text-sm font-medium">
+                          {action.label}
+                        </span>
+                      )}
+                    </button>
+                  ))}
               </div>
-            ))}
-            {props.actions && props.query?.status !== "loading" && (
-              <div
-                className="px-6 py-3"
-                style={{
-                  width: "0%",
-                }}
-              />
             )}
           </div>
-        ))}
-      </div>
-      <div className="bg-white" {...table.getTableBodyProps()}>
-        <Virtuoso
-          itemContent={(i) => {
-            const row = table.rows[i]
-            table.prepareRow(row)
-            return (
-              <div {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <div
-                    className="px-6 py-4 text-gray-900 whitespace-nowrap text-sm overflow-hidden"
-                    {...cell.getCellProps({
-                      style: {
-                        width: cell.column.width,
-                      },
-                    })}
-                  >
-                    {cell.render("Cell")}
-                  </div>
-                ))}
-                {props.actions &&
-                  props.actions &&
-                  props.query?.status !== "loading" && (
-                    <div
-                      className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium"
-                      style={{
-                        width: "0%",
-                      }}
-                    >
-                      <span className="flex flex-shrink-0 items-center justify-end space-x-4">
-                        {props.actions
-                          .filter((action) => !action.hidden?.(row.original))
-                          .map((action, i) => (
-                            <React.Fragment
-                              key={action.label ?? action.icon?.name}
-                            >
-                              {i > 0 && (
-                                <span className="text-gray-300" aria-hidden>
-                                  |
-                                </span>
-                              )}
-                              <button
-                                className="text-blue-600 hover:text-blue-900 focus-visible:underline"
-                                type="button"
-                                onClick={() => action.onClick?.(row.original)}
-                              >
-                                {action.icon
-                                  ? React.createElement(action.icon, {
-                                      className: "w-5 h-5 text-gray-400",
-                                    })
-                                  : action.label}
-                              </button>
-                            </React.Fragment>
-                          ))}
-                      </span>
-                    </div>
-                  )}
-              </div>
-            )
-          }}
-          totalCount={table.rows.length}
-          endReached={() => {
-            if (
-              props.infiniteQuery?.hasNextPage &&
-              !props.infiniteQuery?.isFetchingNextPage
-            ) {
-              props.infiniteQuery.fetchNextPage()
-            }
-            props.onEndReached?.()
-          }}
-          components={{
-            List: VirtuosoList,
-            EmptyPlaceholder: VirtuosoEmptyPlaceholder,
-            Footer: props.infiniteQuery?.isFetchingNextPage
-              ? VirtuosoFooter
-              : undefined,
-          }}
-          style={{
-            height: props.height ?? 423 /* 423px = 8 items */,
-          }}
-        />
-      </div>
-    </div>
+        )
+      }}
+      components={{
+        EmptyPlaceholder: () => (
+          <div className="border-t border-gray-200">
+            {renderRow(props.columns, {
+              index: 0,
+              data: null,
+            })}
+          </div>
+        ),
+        Footer: () =>
+          props.infiniteQuery?.isFetchingNextPage ? (
+            <div className="flex items-center px-6 h-11 border-t border-gray-200">
+              <Loader variant="dark" size="sm" />
+            </div>
+          ) : null,
+      }}
+      endReached={() => {
+        console.log(props.infiniteQuery)
+        if (
+          props.infiniteQuery?.hasNextPage &&
+          !props.infiniteQuery?.isFetchingNextPage
+        ) {
+          props.infiniteQuery.fetchNextPage()
+        }
+        props.onEndReached?.()
+      }}
+      style={{
+        height: props.height,
+      }}
+    />
   )
 }
