@@ -259,7 +259,6 @@ export default function Table(props: TableProps) {
           ) : null,
       }}
       endReached={() => {
-        console.log(props.infiniteQuery)
         if (
           props.infiniteQuery?.hasNextPage &&
           !props.infiniteQuery?.isFetchingNextPage
