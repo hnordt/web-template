@@ -25,13 +25,8 @@ export default function App(props) {
   return (
     <>
       <Head>
-        <meta name="description" content="" />
         <title></title>
-        <link href="/favicon.ico" rel="icon" />
-        <link
-          href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900"
-          rel="stylesheet"
-        />
+        <meta name="description" content="" />
       </Head>
       <QueryClientProvider client={queryClient}>
         <props.Component {...props.pageProps} />
