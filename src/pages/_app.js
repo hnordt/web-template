@@ -25,8 +25,8 @@ export default function App(props) {
   return (
     <>
       <Head>
-        <title></title>
         <meta name="description" content="" />
+        <title></title>
       </Head>
       <QueryClientProvider client={queryClient}>
         <props.Component {...props.pageProps} />
