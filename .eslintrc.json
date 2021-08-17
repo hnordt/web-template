@@ -1,5 +1,5 @@
 {
-  "extends": ["react-app", "plugin:cypress/recommended"],
+  "extends": ["next/core-web-vitals", "plugin:cypress/recommended", "prettier"],
   "rules": {
     "object-curly-newline": [
       "error",
