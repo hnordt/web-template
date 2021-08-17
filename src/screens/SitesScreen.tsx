@@ -95,6 +95,7 @@ export default function SitesScreen() {
               variant: "primary",
               label: "Name",
               accessor: "site",
+              span: 4,
             },
             {
               variant: "tertiary",
@@ -103,6 +104,7 @@ export default function SitesScreen() {
                 [site.address?.city, site.address?.state]
                   .filter(Boolean)
                   .join(", "),
+              span: 4,
             },
             {
               variant: "tertiary",
@@ -111,6 +113,7 @@ export default function SitesScreen() {
                 `${site.devices} device${site.devices === 1 ? "" : "s"}, ${
                   site.member?.length
                 } member${site.member?.length === 1 ? "" : "s"}`,
+              span: 4,
             },
           ]}
           query={sitesQuery}
@@ -128,6 +131,7 @@ export default function SitesScreen() {
               })),
             },
           ]}
+          height={500}
         />
       </Card>
       <ModalForm

@@ -5,6 +5,7 @@ import { Listbox, Transition } from "@headlessui/react"
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid"
 import { PencilIcon, TrashIcon, KeyIcon } from "@heroicons/react/outline"
 import cn from "classnames"
+import { GroupMember, MemberAccess } from "types"
 import Layout from "components/Layout"
 import Card from "components/core/alpha/Card"
 import Table from "components/core/alpha/Table"
@@ -14,7 +15,7 @@ import httpClient from "utils/httpClient"
 import Badge from "components/core/alpha/Badge"
 import useHandleEvent from "hooks/useHandleEvent"
 
-const GROUP = "core-water"
+const GROUP = "westfield"
 
 export default function UsersScreen() {
   const location = useLocation()
@@ -32,7 +33,7 @@ export default function UsersScreen() {
         })
         .then((response) => response.data),
     {
-      select: (data) => data.results,
+      select: (data) => data.results as GroupMember[],
     }
   )
 
@@ -122,36 +123,41 @@ export default function UsersScreen() {
             {
               variant: "primary",
               label: "Name",
-              accessor: (user) =>
-                [user.profile?.first_name, user.profile?.last_name]
+              accessor: (user: GroupMember) =>
+                [user.profile.first_name, user.profile.last_name]
                   .filter(Boolean)
                   .join(" "),
+              span: 3,
             },
             {
               variant: "tertiary",
               label: "Email",
               accessor: "profile.email",
+              span: 3,
             },
             {
               variant: "tertiary",
               label: "Phone",
               accessor: "profile.phone_number",
+              span: 2,
             },
             {
               variant: "tertiary",
               label: "Mobile",
               accessor: "profile.mobile_number",
+              span: 2,
             },
             {
               variant: "tertiary",
               label: "Role",
               accessor: "access",
-              renderContent: (props) =>
-                props.children === "administrator" ? (
-                  <Badge variant="success">Administrator</Badge>
+              renderCell: (value: MemberAccess) =>
+                value === "administrator" ? (
+                  <Badge variant="success">Admin</Badge>
                 ) : (
                   <Badge variant="secondary">User</Badge>
                 ),
+              span: 2,
             },
           ]}
           query={usersQuery}
@@ -162,7 +168,7 @@ export default function UsersScreen() {
           actions={[
             {
               icon: KeyIcon,
-              hidden: (user) => user.access === "administrator",
+              hidden: (user: GroupMember) => user.access === "administrator",
               onClick: handleEvent((user) => ({
                 push: {
                   search: `?access-control=${user.profile.id}`,
@@ -178,6 +184,7 @@ export default function UsersScreen() {
               })),
             },
           ]}
+          height={500}
         />
       </Card>
       <ModalForm

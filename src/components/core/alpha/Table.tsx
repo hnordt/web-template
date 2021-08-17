@@ -201,6 +201,8 @@ export default function Table(props: TableProps) {
         </div>
       )}
       itemContent={(index) => {
+        // When data is loading item is null, so we need to ensure item exists
+        // before applying relevant logic
         const item = data[index]
         return (
           <div
@@ -218,7 +220,7 @@ export default function Table(props: TableProps) {
             {props.actions && (
               <div className="flex items-center justify-end space-x-4">
                 {props.actions
-                  .filter((action) => !action.hidden?.(item))
+                  .filter((action) => item && !action.hidden?.(item))
                   .map((action, actionIndex) => (
                     <button
                       key={`${actionIndex}${action.label ?? action.icon?.name}`}
