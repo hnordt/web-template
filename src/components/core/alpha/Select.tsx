@@ -1,68 +1,73 @@
 import React from "react"
-import { useQuery } from "react-query"
-import BaseSelect from "react-select"
-import { useId } from "@reach/auto-id"
+import BaseSelect, { components } from "react-select"
+import Loader from "components/core/alpha/Loader"
 
 // TODO
 type SelectProps = any
 
-export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
-  const id = useId()
-
-  const [keywords, setKeywords] = React.useState("")
-
-  const query = useQuery(
-    ["Select", id, keywords],
-    props.loadOptions
-      ? () => props.loadOptions(keywords)
-      : () => Promise.resolve(),
-    {
-      staleTime: 30000,
-      enabled: !!props.loadOptions,
-    }
+function MenuList(props) {
+  return (
+    <components.MenuList {...props}>
+      {props.children}
+      {props.selectProps.fetchingNextPage && (
+        <div className="px-3 py-4">
+          <Loader variant="dark" size="sm" />
+        </div>
+      )}
+      {props.selectProps.onLoadMoreClick && (
+        <button
+          className="px-3 py-2 w-full text-left text-blue-600 text-base font-medium"
+          type="button"
+          onClick={() => props.selectProps.onLoadMoreClick()}
+        >
+          Load more
+        </button>
+      )}
+    </components.MenuList>
   )
+}
 
-  const options = props.options ?? query.data
+// TODO: any
+export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
   const selectedOption = Array.isArray(props.value)
-    ? options?.filter((option) =>
-        props.value.includes(
-          props.getOptionValue ? props.getOptionValue(option) : option.value
-        )
+    ? props.options?.filter((option) =>
+        props.value.includes(getOptionValue(option))
       )
-    : options?.find((option) => {
-        if (props.getOptionValue) {
-          return props.getOptionValue(option) === props.value
-        }
+    : props.options?.find((option) => getOptionValue(option) === props.value)
 
-        return option.value === props.value
-      })
+  const query = props.query ?? props.infiniteQuery
+  const loading = query?.status === "loading" ?? false
 
   function getOptionValue(option) {
-    if (props.getOptionValue) {
-      return props.getOptionValue(option) ?? null
-    }
-
-    return option?.value ?? null
+    return props.getOptionValue?.(option) ?? option?.value ?? null
   }
 
   return (
     <BaseSelect
       {...props}
       ref={ref}
-      options={options}
+      options={props.options}
       value={props.value ? selectedOption : undefined}
       placeholder={props.placeholder ?? ""}
       isMulti={props.multiple}
       isClearable={!props.multiple}
-      isLoading={query.status === "loading"}
-      onInputChange={setKeywords}
-      onChange={(option) => {
-        if (Array.isArray(option)) {
-          props.onChange?.(option.map(getOptionValue))
-          return
-        }
-
-        props.onChange?.(getOptionValue(option))
+      isLoading={loading}
+      fetchingNextPage={props.infiniteQuery?.isFetchingNextPage ?? false}
+      onChange={(option) =>
+        props.onChange?.(
+          Array.isArray(option)
+            ? option.map(getOptionValue)
+            : getOptionValue(option)
+        )
+      }
+      onLoadMoreClick={
+        props.infiniteQuery?.hasNextPage &&
+        !props.infiniteQuery?.isFetchingNextPage
+          ? props.infiniteQuery.fetchNextPage
+          : undefined
+      }
+      components={{
+        MenuList,
       }}
     />
   )
