@@ -407,35 +407,6 @@ export default function UsersScreen() {
 }
 
 function AccessControlModal(props) {
-  console.log({
-    controllers: props.controllers,
-    props,
-  })
-
-  const userId = props.user?.profile.id
-
-  const controllerAccessQuery = useQuery(
-    ["controllerAccess", userId],
-    () =>
-      httpClient
-        .get(`/personal/${userId}/controllers/`, {
-          params: {
-            controller_id: "0830:04838",
-            // page: 1,
-            // limit: 2000,
-          },
-        })
-        .then((response) => response.data),
-    {
-      // select: (data) => data.results,
-      enabled: !!userId,
-    }
-  )
-
-  console.log({
-    controllerAccessQuery,
-  })
-
   return (
     <Modal
       {...props}
@@ -495,11 +466,29 @@ function AccessControlModal(props) {
 interface AccessLevelSelectProps {
   controller: any
   user: any
-  value?: string
-  onChange?: (value: string) => void
 }
 
 function AccessLevelSelect(props: AccessLevelSelectProps) {
+  const userId = props.user.profile.id
+
+  const controllerAccessQuery = useQuery(
+    ["controllerAccess", userId],
+    () =>
+      httpClient
+        .get(`/personal/${userId}/controllers/`, {
+          params: {
+            controller_id: `${props.controller.device.header_id}:${props.controller.device.equipment_id}`,
+            page: 1,
+            limit: 1,
+          },
+        })
+        .then((response) => response.data),
+    {
+      // select: (data) => data.results,
+      // enabled: !!userId,
+    }
+  )
+
   const options = [
     "sms/e-mail only",
     "view (excluding logs)",
@@ -508,10 +497,12 @@ function AccessLevelSelect(props: AccessLevelSelectProps) {
     "full",
   ]
 
-  const value = props.value ?? options[0]
+  const currentAccessLevel =
+    controllerAccessQuery.data?.results[0]?.access ?? "sms/e-mail only"
+  const value = currentAccessLevel
 
   return (
-    <Listbox value={value} onChange={props.onChange}>
+    <Listbox value={value} onChange={console.log}>
       {({ open }) => (
         <div className="relative">
           <Listbox.Button className="relative pl-3 pr-10 py-2 w-full text-left bg-white border focus-visible:border-blue-500 border-transparent rounded-md focus:outline-none cursor-default focus-visible:ring-1 focus-visible:ring-blue-500 sm:text-sm">
