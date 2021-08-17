@@ -2,6 +2,7 @@ import React from "react"
 import { useLocation } from "react-router-dom"
 import { useQuery, useMutation } from "react-query"
 import { PencilIcon, TrashIcon } from "@heroicons/react/outline"
+import { Site, SiteInput } from "types"
 import Layout from "components/Layout"
 import Card from "components/core/alpha/Card"
 import Table from "components/core/alpha/Table"
@@ -27,7 +28,7 @@ export default function SitesScreen() {
         })
         .then((response) => response.data),
     {
-      select: (data) => data.results,
+      select: (data) => data.results as Site[],
     }
   )
 
@@ -35,7 +36,7 @@ export default function SitesScreen() {
     (site) => site.id === new URLSearchParams(location.search).get("edit")
   )
 
-  const createSiteMutation = useMutation((site: any) =>
+  const createSiteMutation = useMutation((site: SiteInput) =>
     httpClient.post(`/group/${GROUP}/sites/`, {
       site: site.name,
       address: {
@@ -50,7 +51,7 @@ export default function SitesScreen() {
     })
   )
 
-  const updateSiteMutation = useMutation((site: any) =>
+  const updateSiteMutation = useMutation((site: SiteInput) =>
     httpClient.put(`/group/${GROUP}/sites/`, {
       id: site.id,
       site: site.name,
@@ -66,7 +67,7 @@ export default function SitesScreen() {
     })
   )
 
-  const deleteSiteMutation = useMutation((site: any) =>
+  const deleteSiteMutation = useMutation((site: SiteInput) =>
     httpClient.delete(`/group/${GROUP}/sites/`, {
       data: {
         id: site.id,
@@ -100,8 +101,8 @@ export default function SitesScreen() {
             {
               variant: "tertiary",
               label: "Location",
-              accessor: (site) =>
-                [site.address?.city, site.address?.state]
+              accessor: (site: Site) =>
+                [site.address.city, site.address.state]
                   .filter(Boolean)
                   .join(", "),
               span: 4,
@@ -109,10 +110,10 @@ export default function SitesScreen() {
             {
               variant: "tertiary",
               label: "Stats",
-              accessor: (site) =>
+              accessor: (site: Site) =>
                 `${site.devices} device${site.devices === 1 ? "" : "s"}, ${
-                  site.member?.length
-                } member${site.member?.length === 1 ? "" : "s"}`,
+                  site.member.length
+                } member${site.member.length === 1 ? "" : "s"}`,
               span: 4,
             },
           ]}
@@ -124,7 +125,7 @@ export default function SitesScreen() {
           actions={[
             {
               icon: PencilIcon,
-              onClick: handleEvent((site) => ({
+              onClick: handleEvent((site: Site) => ({
                 push: {
                   search: `?edit=${site.id}`,
                 },
@@ -212,7 +213,7 @@ export default function SitesScreen() {
             search: "",
           },
         })}
-        onError={handleEvent((error) => ({
+        onError={handleEvent((error: Error) => ({
           toast: ["error", error.message],
         }))}
         onClose={handleEvent({
@@ -323,7 +324,7 @@ export default function SitesScreen() {
                       search: "",
                     },
                   },
-                  catch: (error) => ({
+                  catch: (error: Error) => ({
                     toast: ["error", error.message],
                   }),
                 },
@@ -339,7 +340,7 @@ export default function SitesScreen() {
             search: "",
           },
         })}
-        onError={handleEvent((error) => ({
+        onError={handleEvent((error: Error) => ({
           toast: ["error", error.message],
         }))}
         onClose={handleEvent({
