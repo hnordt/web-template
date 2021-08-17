@@ -245,20 +245,23 @@ export default function Table(props: TableProps) {
         )
       }}
       components={{
-        EmptyPlaceholder: () => (
-          <div className="border-t border-gray-200">
-            {renderRow(props.columns, {
-              index: 0,
-              data: null,
-            })}
-          </div>
-        ),
-        Footer: () =>
-          props.infiniteQuery?.isFetchingNextPage ? (
+        EmptyPlaceholder: function EmptyPlaceholder() {
+          return (
+            <div className="border-t border-gray-200">
+              {renderRow(props.columns, {
+                index: 0,
+                data: null,
+              })}
+            </div>
+          )
+        },
+        Footer: function Footer() {
+          return props.infiniteQuery?.isFetchingNextPage ? (
             <div className="flex items-center px-6 h-11 border-t border-gray-200">
               <Loader variant="dark" size="sm" />
             </div>
-          ) : null,
+          ) : null
+        },
       }}
       endReached={() => {
         if (
