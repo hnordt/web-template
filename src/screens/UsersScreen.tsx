@@ -1,10 +1,12 @@
-import React, { Fragment } from "react"
+import React from "react"
 import { useLocation } from "react-router-dom"
 import { useQuery, useMutation } from "react-query"
 import { Listbox, Transition } from "@headlessui/react"
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid"
 import { PencilIcon, TrashIcon, KeyIcon } from "@heroicons/react/outline"
+import { GroupedVirtuoso } from "react-virtuoso"
 import cn from "classnames"
+import _ from "lodash/fp"
 import { GroupMember, MemberAccess } from "types"
 import Layout from "components/Layout"
 import Card from "components/core/alpha/Card"
@@ -15,7 +17,7 @@ import httpClient from "utils/httpClient"
 import Badge from "components/core/alpha/Badge"
 import useHandleEvent from "hooks/useHandleEvent"
 
-const GROUP = "westfield"
+const GROUP = "core-water"
 
 export default function UsersScreen() {
   const location = useLocation()
@@ -407,6 +409,88 @@ export default function UsersScreen() {
 }
 
 function AccessControlModal(props) {
+  const [searchText, setSearchText] = React.useState("")
+
+  const groupControllersMapQuery = useQuery(
+    ["groupControllersMap", GROUP],
+    () =>
+      httpClient
+        .get(`/group/${GROUP}/map/`, {
+          params: {
+            // site: "miller",
+            // equipment_id: "086",
+            // controller: "tenant",
+            // site_null: true, // returns only controllers with no site
+            // alarm: params.filterBy === "in-alarm",
+            // favourite: params.filterBy === "favourites",
+            order: "site", // site, name or equipment_id
+            page: 1,
+            limit: 2000,
+          },
+        })
+        .then((response) => response.data)
+  )
+
+  const controllers = React.useMemo(
+    () =>
+      groupControllersMapQuery.data
+        ? _.orderBy(
+            ["site", "device.name"],
+            ["asc", "asc"],
+            groupControllersMapQuery.data.results.filter((result) => {
+              if (!searchText) {
+                return true
+              }
+
+              if (
+                result.device.equipment_id
+                  .toLowerCase()
+                  .includes(searchText.toLowerCase())
+              ) {
+                return true
+              }
+
+              if (
+                result.site.toLowerCase().includes(searchText.toLowerCase())
+              ) {
+                return true
+              }
+
+              if (
+                result.device.name
+                  .toLowerCase()
+                  .includes(searchText.toLowerCase())
+              ) {
+                return true
+              }
+
+              return false
+            })
+          )
+        : [],
+    [groupControllersMapQuery.data, searchText]
+  )
+  const controllersBySite = controllers.reduce(
+    (acc, controller) => ({
+      ...acc,
+      [controller.site_id]: [...(acc[controller.site_id] ?? []), controller],
+    }),
+    {}
+  )
+  const sites = _.orderBy(
+    "name",
+    "asc",
+    Object.keys(controllersBySite).map((siteId) => ({
+      id: siteId,
+      name: controllersBySite[siteId][0].site,
+    }))
+  )
+
+  const groupCounts = React.useMemo(
+    () => sites.map((site) => controllersBySite[site.id].length),
+    [sites, controllersBySite]
+  )
+
   return (
     <Modal
       {...props}
@@ -422,29 +506,39 @@ function AccessControlModal(props) {
         <span className="block text-gray-500 text-sm">
           {props.user?.profile.email}
         </span>
-        <input />
       </div>
-      <div className="h-[605px] overflow-y-auto">
-        {Object.keys(props.controllers).map((siteId) => (
-          <div key={siteId} className="relative">
-            <div className="sticky z-10 top-0 px-6 py-1.5 text-gray-500 text-sm font-medium bg-gray-50 border-b border-t border-gray-200">
-              <h3>
-                {siteId === "unassigned"
-                  ? "Unassigned"
-                  : props.controllers[siteId][0].site}
-              </h3>
-            </div>
-            <ul className="divide-gray-200 divide-y">
-              {props.controllers[siteId].map((controller) => (
-                <li
-                  key={controller.device.equipment_id}
-                  className="px-6 py-2 bg-white"
-                >
+      <div className="p-6 border-t border-gray-200">
+        <input
+          className="placeholder-gray-400 block px-3 w-full h-9 border focus:border-blue-500 border-gray-300 rounded-md focus:outline-none shadow-sm focus:ring-blue-500 sm:text-sm"
+          placeholder="Search controllers"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </div>
+
+      <div className="h-[500px]">
+        {controllers.length > 0 ? (
+          <GroupedVirtuoso
+            groupCounts={groupCounts}
+            groupContent={(index) => (
+              <div className="px-6 py-1.5 bg-gray-50 border-b border-t border-gray-200">
+                <h3 className="text-gray-500 text-sm font-medium">
+                  {sites[index].name}
+                </h3>
+              </div>
+            )}
+            itemContent={(index) => {
+              const controller = controllers[index]
+
+              return (
+                <div className="-mb-px px-6 py-2 border-b border-gray-200">
                   <div className="flex items-center justify-between overflow-hidden space-x-6">
-                    <p className="text-gray-900 text-sm font-medium truncate">
-                      {controller.device.name}
+                    <p className="truncate">
+                      <span className="text-gray-900 text-sm font-medium">
+                        {controller.device.name}
+                      </span>
                       <span className="text-gray-500 text-xs">
-                        &nbsp;&mdash; {controller.device.header_id}-
+                        &nbsp;&mdash;&nbsp;{controller.device.header_id}-
                         {controller.device.equipment_id}
                       </span>
                     </p>
@@ -453,11 +547,15 @@ function AccessControlModal(props) {
                       controller={controller}
                     />
                   </div>
-                </li>
-              ))}
-            </ul>
+                </div>
+              )
+            }}
+          />
+        ) : (
+          <div className="flex items-center justify-center p-6 h-full border-t border-gray-200">
+            <p className="text-gray-500 text-sm">No results found</p>
           </div>
-        ))}
+        )}
       </div>
     </Modal>
   )

@@ -1,7 +1,7 @@
 Users:
   Access control modal:
-    [ ] GroupedVirtuoso @1h
-    [ ] Map endpoint @30m
+    [x] GroupedVirtuoso @1h @done(21-08-19 21:59)
+    [x] Map endpoint @30m @done(21-08-19 22:56)
     [ ] Select mutation @30m
     [ ] Extract ListBox @1h
     [ ] Publish @15m
