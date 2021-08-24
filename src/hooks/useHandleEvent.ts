@@ -54,9 +54,9 @@ export default function useHandleEvent() {
       }
 
       // TODO: window.confirm causes a refetch due to window refocus
-      // if (config.confirm && !window.confirm(config.confirm)) {
-      //   return
-      // }
+      if (config.confirm && !window.confirm(config.confirm)) {
+        return
+      }
 
       if (config.mutate) {
         if (Array.isArray(config.mutate)) {

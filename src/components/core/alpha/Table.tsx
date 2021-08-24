@@ -115,7 +115,7 @@ function renderCell(column, item) {
 export default function Table(props: TableProps) {
   const query = props.query ?? props.infiniteQuery
 
-  if (query.error) {
+  if (query?.error) {
     return (
       <div
         className="p-4 bg-red-50"
