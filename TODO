@@ -1,20 +1,16 @@
-Users:
-  Access control modal:
-    [x] GroupedVirtuoso @1h @done(21-08-19 21:59)
-    [x] Map endpoint @30m @done(21-08-19 22:56)
-    [ ] Select mutation @30m
-    [ ] Extract ListBox @1h
-    [ ] Publish @15m
-
-Sites:
-  [ ] Publish @15m
-
 Controllers:
   [ ] GroupedVirtuoso @30m
   [ ] Map endpoint @15m
   [ ] Assign site endpoint @30m
   [ ] Assign users endpoint @1h
-  [ ] Publish @15m
+
+Settings:
+  [ ] Biocide timers
+    [ ] Lines should not go to the edges
+    [ ] Shopping cart
+    [ ] Trash icon set biocide to defaults
+  [ ] Add 2px to the left of form labels
+  [ ] Auto revert
 
 Misc:
   [ ] New layout @1h

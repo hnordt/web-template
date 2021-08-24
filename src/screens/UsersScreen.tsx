@@ -13,6 +13,7 @@ import Card from "components/core/alpha/Card"
 import Table from "components/core/alpha/Table"
 import Modal from "components/core/alpha/Modal"
 import ModalForm from "components/core/alpha/ModalForm"
+import Loader from "components/core/alpha/Loader"
 import httpClient from "utils/httpClient"
 import Badge from "components/core/alpha/Badge"
 import useHandleEvent from "hooks/useHandleEvent"
@@ -388,22 +389,17 @@ export default function UsersScreen() {
           },
         })}
       />
-      {/* If there is no controllers the modal will crash because we need
-      something to focus */}
-      {/* We can remove that check after we add the close button to Modal */}
-      {controllers && (
-        <AccessControlModal
-          key={aclUser?.profile.id}
-          user={aclUser}
-          controllers={controllers}
-          open={!!aclUser}
-          onClose={handleEvent({
-            push: {
-              search: "",
-            },
-          })}
-        />
-      )}
+      <AccessControlModal
+        // key={aclUser?.profile.id}
+        user={aclUser}
+        controllers={controllers}
+        open={!!aclUser}
+        onClose={handleEvent({
+          push: {
+            search: "",
+          },
+        })}
+      />
     </Layout>
   )
 }
@@ -515,7 +511,6 @@ function AccessControlModal(props) {
           onChange={(e) => setSearchText(e.target.value)}
         />
       </div>
-
       <div className="h-[500px]">
         {controllers.length > 0 ? (
           <GroupedVirtuoso
@@ -532,7 +527,7 @@ function AccessControlModal(props) {
 
               return (
                 <div className="-mb-px px-6 py-2 border-b border-gray-200">
-                  <div className="flex items-center justify-between overflow-hidden space-x-6">
+                  <div className="flex items-center justify-between h-10 space-x-6">
                     <p className="truncate">
                       <span className="text-gray-900 text-sm font-medium">
                         {controller.device.name}
@@ -567,40 +562,74 @@ interface AccessLevelSelectProps {
 }
 
 function AccessLevelSelect(props: AccessLevelSelectProps) {
-  const userId = props.user.profile.id
+  const handleEvent = useHandleEvent()
+
+  const userId = props.user?.profile.id
+  const controllerId = `${props.controller.device.header_id}:${props.controller.device.equipment_id}`
 
   const controllerAccessQuery = useQuery(
-    ["controllerAccess", userId],
+    ["controllerAccess", userId, controllerId],
     () =>
       httpClient
         .get(`/personal/${userId}/controllers/`, {
           params: {
-            controller_id: `${props.controller.device.header_id}:${props.controller.device.equipment_id}`,
+            controller_id: controllerId,
             page: 1,
             limit: 1,
           },
         })
         .then((response) => response.data),
     {
-      // select: (data) => data.results,
-      // enabled: !!userId,
+      staleTime: 60_000,
+      enabled: !!userId,
     }
   )
+
+  const controllerAccessMutation = useMutation((value) =>
+    httpClient[
+      // Profile exists? Then patch, otherwise post
+      controllerAccessQuery.data?.results.length > 0 ? "patch" : "post"
+    ](`/controller/${controllerId}/members/`, {
+      profile: userId,
+      access: value,
+    })
+  )
+
+  if (
+    controllerAccessQuery.status === "loading" ||
+    controllerAccessMutation.status === "loading"
+  ) {
+    return <Loader variant="dark" size="sm" />
+  }
 
   const options = [
     "sms/e-mail only",
     "view (excluding logs)",
     "view",
-    "full (excluing contact list)",
+    "full (excluding contact list)",
     "full",
   ]
-
-  const currentAccessLevel =
+  const value =
     controllerAccessQuery.data?.results[0]?.access ?? "sms/e-mail only"
-  const value = currentAccessLevel
 
   return (
-    <Listbox value={value} onChange={console.log}>
+    <Listbox
+      value={value}
+      onChange={handleEvent((value) => ({
+        mutateAsync: [
+          controllerAccessMutation,
+          value,
+          {
+            then: {
+              refetch: controllerAccessQuery,
+            },
+            catch: (error) => ({
+              toast: ["error", error.message],
+            }),
+          },
+        ],
+      }))}
+    >
       {({ open }) => (
         <div className="relative">
           <Listbox.Button className="relative pl-3 pr-10 py-2 w-full text-left bg-white border focus-visible:border-blue-500 border-transparent rounded-md focus:outline-none cursor-default focus-visible:ring-1 focus-visible:ring-blue-500 sm:text-sm">
