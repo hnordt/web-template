@@ -1,9 +1,6 @@
 import React from "react"
-import { useHistory } from "react-router-dom"
 
 export default function Layout(props) {
-  const history = useHistory()
-
   return (
     <main className="px-6 py-16">
       <div className="mx-auto w-full max-w-6xl">
@@ -22,17 +19,7 @@ export default function Layout(props) {
                 key={action.label}
                 className="inline-flex items-center px-4 py-2 text-white text-sm font-medium bg-green-600 hover:bg-green-700 border border-transparent rounded-md focus:outline-none shadow-sm focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 type="button"
-                onClick={() => {
-                  if (typeof action.onClick === "object") {
-                    if (action.onClick.push) {
-                      history.push(action.onClick.push)
-                    }
-
-                    return
-                  }
-
-                  action.onClick?.()
-                }}
+                onClick={action.onClick}
               >
                 {action.label}
               </button>
