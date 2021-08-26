@@ -4,13 +4,15 @@ const httpClient = axios.create({
   baseURL: "/api",
 })
 
-httpClient.interceptors.request.use((config) => ({
-  ...config,
-  headers: {
-    ...config.headers,
-    // Authorization: `Bearer ${}`
-  },
-}))
+httpClient.interceptors.request.use((config) => {
+  const accessToken = null
+
+  if (accessToken) {
+    config.headers.Authorization = `Token ${accessToken}`
+  }
+
+  return config
+})
 
 httpClient.interceptors.response.use(undefined, (error) => {
   const data = error.response?.data
