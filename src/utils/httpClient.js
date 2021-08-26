@@ -8,7 +8,7 @@ httpClient.interceptors.request.use((config) => {
   const accessToken = null
 
   if (accessToken) {
-    config.headers.Authorization = `Token ${accessToken}`
+    config.headers.Authorization = `Bearer ${accessToken}`
   }
 
   return config
