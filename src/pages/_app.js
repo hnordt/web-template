@@ -9,7 +9,6 @@ import "focus-visible"
 const queryClient = new QueryClient()
 
 dayjs.extend(require("dayjs/plugin/utc"))
-dayjs.extend(require("dayjs/plugin/timezone"))
 dayjs.extend(require("dayjs/plugin/localizedFormat"))
 
 export default function App(props) {
