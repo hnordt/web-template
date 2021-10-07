@@ -33,7 +33,8 @@ export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
     ? props.options?.filter((option) =>
         props.value.includes(getOptionValue(option))
       )
-    : props.options?.find((option) => getOptionValue(option) === props.value)
+    : props.options?.find((option) => getOptionValue(option) === props.value) ??
+      null
 
   const query = props.query ?? props.infiniteQuery
   const loading = query?.status === "loading" ?? false
