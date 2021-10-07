@@ -47,7 +47,7 @@ export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
       {...props}
       ref={ref}
       options={props.options}
-      value={props.value ? selectedOption : undefined}
+      value={props.value !== undefined ? selectedOption : undefined}
       placeholder={props.placeholder ?? ""}
       isMulti={props.multiple}
       isClearable={!props.multiple}
