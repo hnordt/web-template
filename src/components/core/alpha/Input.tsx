@@ -9,7 +9,7 @@ export default React.forwardRef<any, InputProps>(function Input(props, ref) {
   const { leftIcon, ...rest } = props
 
   return (
-    <div className="relative rounded-md shadow-sm">
+    <div className={cn("relative rounded-md shadow-sm", props.className)}>
       {leftIcon && (
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           {React.createElement(leftIcon, {

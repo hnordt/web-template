@@ -47,11 +47,13 @@ export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
     <BaseSelect
       {...props}
       ref={ref}
+      className={props.className}
       options={props.options}
       value={props.value !== undefined ? selectedOption : undefined}
       placeholder={props.placeholder ?? ""}
+      noOptionsMessage={props.messages?.noOptions}
       isMulti={props.multiple}
-      isClearable={!props.multiple}
+      isClearable
       isLoading={loading}
       fetchingNextPage={props.infiniteQuery?.isFetchingNextPage ?? false}
       onChange={(option) =>
@@ -69,6 +71,12 @@ export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
       }
       components={{
         MenuList,
+      }}
+      styles={{
+        valueContainer: (provided) => ({
+          ...provided,
+          minHeight: 32,
+        }),
       }}
     />
   )
