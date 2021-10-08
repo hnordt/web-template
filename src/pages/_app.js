@@ -1,6 +1,7 @@
 import React from "react"
 import Head from "next/head"
 import { QueryClientProvider, QueryClient } from "react-query"
+import ReactTooltip from "react-tooltip"
 import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
 import "styles/index.css"
@@ -32,6 +33,11 @@ export default function App(props) {
       <QueryClientProvider client={queryClient}>
         <props.Component {...props.pageProps} />
       </QueryClientProvider>
+      <ReactTooltip
+        className="!tracking-wide !rounded !px-3 !py-1.5 !text-xs"
+        effect="solid"
+        delayHide={250}
+      />
       <Toaster
         toastOptions={{
           className: "text-sm whitespace-nowrap",
