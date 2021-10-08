@@ -1,5 +1,6 @@
 import React from "react"
 import BaseSelect, { components } from "react-select"
+import cn from "classnames"
 import Loader from "components/core/alpha/Loader"
 
 // TODO
@@ -47,7 +48,7 @@ export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
     <BaseSelect
       {...props}
       ref={ref}
-      className={props.className}
+      className={cn("text-sm", props.className)}
       options={props.options}
       value={props.value !== undefined ? selectedOption : undefined}
       placeholder={props.placeholder ?? ""}
