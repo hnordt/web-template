@@ -1,5 +1,5 @@
 import React from "react"
-import { Link as BaseLink } from "react-router-dom"
+import BaseLink from "next/link"
 
 export default function Link(props) {
   const className = props.unstyled
@@ -8,8 +8,10 @@ export default function Link(props) {
 
   if (props.href) {
     return (
-      <BaseLink className={className} to={props.href} onClick={props.onClick}>
-        {props.children}
+      <BaseLink href={props.href} replace={props.replace}>
+        <a className={className} onClick={props.onClick}>
+          {props.children}
+        </a>
       </BaseLink>
     )
   }

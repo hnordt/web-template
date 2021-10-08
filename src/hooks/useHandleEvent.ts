@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom"
+import { useRouter } from "next/router"
 import {
   UseQueryResult,
   UseMutationResult,
@@ -31,13 +31,15 @@ export type HandleEventConfig =
       toast?: ["success" | "error", string]
       /** Refetches the query */
       refetch?: UseQueryResult
-      /** Pushes new entry to browser history */
-      push?: string | { search?: string }
+      /** Pushes new entry to the browser history */
+      push?: string
+      /** Replaces current entry in the browser history */
+      replace?: string
     }
   | ((...args: any) => HandleEventConfig | void)
 
 export default function useHandleEvent() {
-  const history = useHistory()
+  const router = useRouter()
 
   function handleEvent(config: HandleEventConfig) {
     return (...args) => {
@@ -94,7 +96,11 @@ export default function useHandleEvent() {
       }
 
       if (config.push) {
-        history.push(config.push)
+        router.push(config.push)
+      }
+
+      if (config.replace) {
+        router.replace(config.replace)
       }
     }
   }

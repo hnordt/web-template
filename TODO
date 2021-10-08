@@ -1,3 +1,0 @@
-Refactor:
-  [ ] Remove `react-router-dom` from `Link`
-  [ ] [ ] Remove `react-router-dom` from `useHandleEvent`
