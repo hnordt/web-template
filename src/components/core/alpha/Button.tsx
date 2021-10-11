@@ -30,7 +30,8 @@ const Button = React.forwardRef<any, ButtonProps>(function Button(props, ref) {
           : {
               "hover:bg-blue-700": variant === "primary",
               "hover:bg-gray-50": variant === "secondary",
-            }
+            },
+        props.className
       )}
       type={type}
       disabled={loading || disabled}
