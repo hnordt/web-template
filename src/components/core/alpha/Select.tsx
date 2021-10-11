@@ -17,11 +17,11 @@ function MenuList(props) {
       )}
       {props.selectProps.onLoadMoreClick && (
         <button
-          className="px-3 py-2 w-full text-left text-blue-600 text-base font-medium"
+          className="px-3 py-2 w-full text-left text-blue-600 text-sm font-medium"
           type="button"
           onClick={() => props.selectProps.onLoadMoreClick()}
         >
-          Load more
+          Load more...
         </button>
       )}
     </components.MenuList>
