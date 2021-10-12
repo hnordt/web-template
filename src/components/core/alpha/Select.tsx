@@ -1,6 +1,6 @@
 import React from "react"
 import BaseSelect, { components } from "react-select"
-import cn from "classnames"
+import { useId } from "@reach/auto-id"
 import Loader from "components/core/alpha/Loader"
 
 // TODO
@@ -30,55 +30,71 @@ function MenuList(props) {
 
 // TODO: any
 export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
-  const selectedOption = Array.isArray(props.value)
-    ? props.options?.filter((option) =>
-        props.value.includes(getOptionValue(option))
+  const { label, help, ...rest } = props
+  const id = useId(rest.id)
+
+  const selectedOption = Array.isArray(rest.value)
+    ? rest.options?.filter((option) =>
+        rest.value.includes(getOptionValue(option))
       )
-    : props.options?.find((option) => getOptionValue(option) === props.value) ??
+    : rest.options?.find((option) => getOptionValue(option) === rest.value) ??
       null
 
-  const query = props.query ?? props.infiniteQuery
+  const query = rest.query ?? rest.infiniteQuery
   const loading = query?.status === "loading" ?? false
 
   function getOptionValue(option) {
-    return props.getOptionValue?.(option) ?? option?.value ?? null
+    return rest.getOptionValue?.(option) ?? option?.value ?? null
   }
 
   return (
-    <BaseSelect
-      {...props}
-      ref={ref}
-      className={cn("text-sm", props.className)}
-      options={props.options}
-      value={props.value !== undefined ? selectedOption : undefined}
-      placeholder={props.placeholder ?? ""}
-      noOptionsMessage={props.messages?.noOptions}
-      isMulti={props.multiple}
-      isClearable
-      isLoading={loading}
-      fetchingNextPage={props.infiniteQuery?.isFetchingNextPage ?? false}
-      onChange={(option) =>
-        props.onChange?.(
-          Array.isArray(option)
-            ? option.map(getOptionValue)
-            : getOptionValue(option)
-        )
-      }
-      onLoadMoreClick={
-        props.infiniteQuery?.hasNextPage &&
-        !props.infiniteQuery?.isFetchingNextPage
-          ? props.infiniteQuery.fetchNextPage
-          : undefined
-      }
-      components={{
-        MenuList,
-      }}
-      styles={{
-        valueContainer: (provided) => ({
-          ...provided,
-          minHeight: 32,
-        }),
-      }}
-    />
+    <div className={rest.className}>
+      {label && (
+        <label
+          className="block mb-1 text-gray-700 text-sm font-medium"
+          htmlFor={id}
+        >
+          {label}
+        </label>
+      )}
+      <BaseSelect
+        {...rest}
+        ref={ref}
+        className="text-sm"
+        id={id}
+        options={rest.options}
+        value={rest.value !== undefined ? selectedOption : undefined}
+        placeholder={rest.placeholder ?? ""}
+        noOptionsMessage={rest.messages?.noOptions}
+        isMulti={rest.multiple}
+        isDisabled={rest.disabled}
+        isClearable={rest.clearable !== undefined ? rest.clearable : true}
+        isLoading={loading}
+        fetchingNextPage={rest.infiniteQuery?.isFetchingNextPage ?? false}
+        onChange={(option) =>
+          rest.onChange?.(
+            Array.isArray(option)
+              ? option.map(getOptionValue)
+              : getOptionValue(option)
+          )
+        }
+        onLoadMoreClick={
+          rest.infiniteQuery?.hasNextPage &&
+          !rest.infiniteQuery?.isFetchingNextPage
+            ? rest.infiniteQuery.fetchNextPage
+            : undefined
+        }
+        components={{
+          MenuList,
+        }}
+        styles={{
+          valueContainer: (provided) => ({
+            ...provided,
+            minHeight: 32,
+          }),
+        }}
+      />
+      {help && <p className="mt-1.5 text-gray-500 text-sm">{help}</p>}
+    </div>
   )
 })

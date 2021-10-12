@@ -61,7 +61,7 @@ export default function Modal(props: ModalProps) {
                 props.size === "3xl" && "max-w-3xl"
               )}
             >
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-white rounded-2xl shadow-xl">
                 {props.title && (
                   <div className="p-6 border-b border-gray-200">
                     {props.title && (
