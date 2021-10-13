@@ -1,7 +1,7 @@
 import React from "react"
 import { UseMutationResult } from "react-query"
 import { Transition } from "@headlessui/react"
-import { useForm } from "react-hook-form"
+import { useForm, UseFormReturn } from "react-hook-form"
 import { useId } from "@reach/auto-id"
 import cn from "classnames"
 import Loader from "components/core/Loader"
@@ -17,8 +17,8 @@ const FormContext = React.createContext<FormContextProps>({
 })
 
 interface FormProviderProps {
-  readOnly: boolean
-  loading: boolean
+  readOnly?: boolean
+  loading?: boolean
   children: React.ReactNode
 }
 
@@ -26,8 +26,8 @@ export function FormProvider(props: FormProviderProps) {
   return (
     <FormContext.Provider
       value={{
-        readOnly: props.readOnly,
-        loading: props.loading,
+        readOnly: props.readOnly ?? false,
+        loading: props.loading ?? false,
       }}
     >
       {props.children}
@@ -217,8 +217,14 @@ interface FormProps {
   gap?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   readOnly?: boolean
   loading?: boolean
-  renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
-  renderFooter?: (props: { children: React.ReactNode }) => React.ReactNode
+  renderContent?: (props: {
+    form: UseFormReturn
+    children: React.ReactNode
+  }) => React.ReactNode
+  renderFooter?: (props: {
+    form: UseFormReturn
+    children: React.ReactNode
+  }) => React.ReactNode
   onSubmit?: (values: Object) => void
   onCancel?: () => void
   onSuccess?: (data: any) => void
@@ -273,6 +279,7 @@ export default function Form(props: FormProps) {
         )}
       >
         {(props.renderContent || ((props) => props.children))({
+          form,
           children: (
             <div
               className={cn(
@@ -325,7 +332,11 @@ export default function Form(props: FormProps) {
             </div>
           ),
         })}
-        {(props.renderFooter ?? ((props) => props.children))({
+        {(
+          props.renderFooter ??
+          ((props) => <div className="mt-6">{props.children}</div>)
+        )({
+          form,
           children: (
             <div className="flex justify-between space-x-6">
               <div className="flex justify-end space-x-3">
