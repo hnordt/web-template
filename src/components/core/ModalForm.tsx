@@ -1,7 +1,7 @@
 import React from "react"
 import { UseMutationResult } from "react-query"
-import Form, { FormInputProps } from "components/core/alpha/Form"
-import Modal from "components/core/alpha/Modal"
+import Form, { FormInputProps } from "components/core/Form"
+import Modal from "components/core/Modal"
 
 interface ModalFormProps {
   title: string

@@ -1,7 +1,7 @@
 import React from "react"
 import BaseSelect, { components } from "react-select"
 import { useId } from "@reach/auto-id"
-import Loader from "components/core/alpha/Loader"
+import Loader from "components/core/Loader"
 
 // TODO
 type SelectProps = any

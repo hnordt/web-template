@@ -4,7 +4,7 @@ import { XCircleIcon } from "@heroicons/react/solid"
 import { GroupedVirtuoso } from "react-virtuoso"
 import cn from "classnames"
 import _ from "lodash/fp"
-import Loader from "components/core/alpha/Loader"
+import Loader from "components/core/Loader"
 
 export interface Column {
   variant?: "primary" | "secondary" | "tertiary"

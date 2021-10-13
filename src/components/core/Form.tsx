@@ -4,7 +4,7 @@ import { Transition } from "@headlessui/react"
 import { useForm } from "react-hook-form"
 import { useId } from "@reach/auto-id"
 import cn from "classnames"
-import Loader from "components/core/alpha/Loader"
+import Loader from "components/core/Loader"
 
 interface FormContextProps {
   readOnly: boolean
