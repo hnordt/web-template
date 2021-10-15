@@ -75,7 +75,7 @@ export interface FormInputProps {
   error?: string
   size?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   required?: string
-  hidden?: (props: { values: any }) => boolean
+  hidden?: (values: any) => boolean
   multiple?: boolean
   readOnly?: boolean
   disabled?: boolean
@@ -362,12 +362,7 @@ export default function Form(props: FormProps) {
               )}
             >
               {props.fields
-                .filter(
-                  (field) =>
-                    !field.hidden?.({
-                      values,
-                    })
-                )
+                .filter((field) => !field.hidden?.(values))
                 .map((field) => (
                   <div
                     key={field.name}
