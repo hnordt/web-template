@@ -1,6 +1,6 @@
 import React from "react"
 import { UseMutationResult } from "react-query"
-import Form, { FormInputProps } from "components/core/Form"
+import Form, { FormInputProps, RenderContent } from "components/core/Form"
 import Modal from "components/core/Modal"
 
 interface ModalFormProps {
@@ -9,7 +9,7 @@ interface ModalFormProps {
   fields: Array<FormInputProps>
   defaultValues?: Object
   submitLabel?: string
-  mutation: UseMutationResult
+  mutation?: UseMutationResult
   actions?: Array<{
     variant: "primary" | "secondary"
     icon?: React.FunctionComponent<{ className: string }>
@@ -20,7 +20,10 @@ interface ModalFormProps {
     onSuccess?: (data: any) => void
     onError?: (error: Error) => void
   }>
+  size: "lg" | "3xl" | "4xl"
+  renderContent?: RenderContent
   open: boolean
+  onSubmit?: (values: Object) => void
   onClose?: () => void
   onSuccess?: (data: any) => void
   onError?: (error: Error) => void
@@ -31,7 +34,7 @@ export default function ModalForm(props: ModalFormProps) {
     <Modal
       title={props.title}
       description={props.description}
-      size="lg"
+      size={props.size}
       open={props.open}
       renderContent={(props) => props.children}
       onClose={props.onClose}
@@ -42,10 +45,17 @@ export default function ModalForm(props: ModalFormProps) {
         submitLabel={props.submitLabel}
         mutation={props.mutation}
         actions={props.actions}
-        renderContent={(props) => <div className="p-6">{props.children}</div>}
+        renderContent={(_props) => (
+          <div className="p-6">
+            {props.renderContent
+              ? props.renderContent(_props)
+              : _props.children}
+          </div>
+        )}
         renderFooter={(props) => (
           <div className="p-6 border-t border-gray-200">{props.children}</div>
         )}
+        onSubmit={props.onSubmit}
         onCancel={props.onClose}
         onSuccess={props.onSuccess}
         onError={props.onError}

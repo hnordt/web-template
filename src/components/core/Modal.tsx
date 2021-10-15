@@ -7,7 +7,7 @@ import cn from "classnames"
 interface ModalProps {
   title: string
   description?: string
-  size?: "lg" | "3xl"
+  size?: "lg" | "3xl" | "4xl"
   open: boolean
   renderContent?: (props: { children: React.ReactNode }) => React.ReactNode
   onClose: () => void
@@ -58,7 +58,8 @@ export default function Modal(props: ModalProps) {
                 "inline-block align-middle my-8 w-full text-left transform transition-all",
                 !props.size && "max-w-md",
                 props.size === "lg" && "max-w-lg",
-                props.size === "3xl" && "max-w-3xl"
+                props.size === "3xl" && "max-w-3xl",
+                props.size === "4xl" && "max-w-4xl"
               )}
             >
               <div className="bg-white rounded-2xl shadow-xl">
