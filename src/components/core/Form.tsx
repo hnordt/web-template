@@ -1,7 +1,7 @@
 import React from "react"
 import {
-  Controller,
   FormProvider,
+  Controller,
   useForm,
   useFormContext,
 } from "react-hook-form"
@@ -10,9 +10,11 @@ import cn from "classnames"
 import Button, { ButtonProps } from "components/core/Button"
 
 interface FormFieldProps {
+  className?: string
   name: string
   label?: string
   hint?: string
+  defaultValue?: any
   span?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
   required?: string | boolean
   children: React.ReactElement
@@ -38,7 +40,8 @@ export function FormField(props: FormFieldProps) {
         props.span === 9 && "col-span-9",
         props.span === 10 && "col-span-10",
         props.span === 11 && "col-span-11",
-        props.span === 12 && "col-span-12"
+        props.span === 12 && "col-span-12",
+        props.className
       )}
     >
       {props.label && (
@@ -52,6 +55,7 @@ export function FormField(props: FormFieldProps) {
       <Controller
         control={form.control}
         name={props.name}
+        defaultValue={props.defaultValue}
         rules={{
           required: props.required === true ? "Required" : props.required,
         }}
@@ -121,14 +125,26 @@ export function FormButton(props: ButtonProps) {
 interface FormProps {
   layout?: "grid"
   defaultValues: any
-  onSubmit: (values: any) => Promise<any> | void
-  children: React.ReactNode
+  watch?: string[]
+  onSubmit?: (values: any) => Promise<any> | void
+  children: ({ values: any }) => React.ReactNode | React.ReactNode
 }
 
 export default function Form(props: FormProps) {
   const form = useForm({
     defaultValues: props.defaultValues,
   })
+  // const values = props.watch
+  //   ? form.watch(props.watch).reduce(
+  //       (acc, fieldValue, fieldIndex) => ({
+  //         ...acc,
+  //         [props.watch[fieldIndex]]: fieldValue,
+  //       }),
+  //       {}
+  //     )
+  //   : []
+  // TODO: enable optimization
+  const values = form.watch()
 
   return (
     <FormProvider {...form}>
@@ -141,7 +157,11 @@ export default function Form(props: FormProps) {
         noValidate
         onSubmit={form.handleSubmit(props.onSubmit)}
       >
-        {props.children}
+        {typeof props.children === "function"
+          ? props.children({
+              values,
+            })
+          : props.children}
       </form>
     </FormProvider>
   )
