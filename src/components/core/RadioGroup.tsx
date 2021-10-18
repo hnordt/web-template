@@ -14,6 +14,7 @@ interface RadioGroupProps {
   required?: boolean
   disabled?: boolean
   onChange?: (option: any) => void
+  onBlur?: (option: any) => void
 }
 
 // TODO: any
@@ -23,7 +24,11 @@ export default React.forwardRef<any, RadioGroupProps>(function RadioGroup(
 ) {
   // TODO: BaseRadioGroup doesn't support ref yet
   return (
-    <BaseRadioGroup /*ref={ref}*/ value={props.value} onChange={props.onChange}>
+    <BaseRadioGroup
+      /*ref={ref}*/ value={props.value}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+    >
       {props.label && (
         <BaseRadioGroup.Label className="sr-only">
           {props.label}

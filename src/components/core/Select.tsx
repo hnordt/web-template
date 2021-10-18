@@ -67,6 +67,7 @@ export default React.forwardRef<any, SelectProps>(function Select(props, ref) {
         placeholder={rest.placeholder ?? ""}
         noOptionsMessage={rest.messages?.noOptions}
         isMulti={rest.multiple}
+        isSearchable={rest.searchable}
         isDisabled={rest.disabled}
         isClearable={rest.clearable !== undefined ? rest.clearable : true}
         isLoading={loading}
