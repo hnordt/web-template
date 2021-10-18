@@ -1,49 +1,62 @@
 import React from "react"
-import Image from "next/image"
 import cn from "classnames"
+import Loader from "components/core/Loader"
 
-// TODO
-type ButtonProps = any
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant: "primary" | "secondary" | "danger"
+  icon?: React.FunctionComponent<{ className: string }>
+  fill?: boolean
+  loading?: boolean
+}
 
-const Button = React.forwardRef<any, ButtonProps>(function Button(props, ref) {
-  const {
-    type = "button",
-    variant = "primary",
-    loading,
-    disabled,
-    children,
-    ...rest
-  } = props
-
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  props,
+  ref
+) {
   return (
     <button
-      {...rest}
       ref={ref}
       className={cn(
-        "inline-flex items-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2 whitespace-nowrap",
-        variant === "primary" && "text-white bg-blue-600 border-transparent",
-        variant === "secondary" && "text-gray-700 bg-white border-gray-300",
-        loading
-          ? "cursor-auto"
-          : disabled
-          ? "opacity-75 cursor-auto"
-          : {
-              "hover:bg-blue-700": variant === "primary",
-              "hover:bg-gray-50": variant === "secondary",
-            },
-        props.className
+        "relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2 whitespace-nowrap",
+        props.variant === "primary" && [
+          "text-white bg-blue-600 border-transparent",
+          !(props.loading || props.disabled) && "hover:bg-blue-700",
+        ],
+        props.variant === "secondary" && [
+          "text-gray-700 bg-white border-gray-300",
+          !(props.loading || props.disabled) && "hover:bg-gray-50",
+        ],
+        props.variant === "danger" && [
+          "text-white bg-red-600 border-transparent",
+          !(props.loading || props.disabled) && "hover:bg-red-700",
+        ],
+        props.fill && "w-full",
+        (props.loading || props.disabled) && "cursor-auto",
+        props.disabled && "opacity-75"
       )}
-      type={type}
-      disabled={loading || disabled}
+      type={props.type ?? "button"}
+      disabled={props.loading || props.disabled}
+      onClick={props.onClick}
     >
-      {loading ? (
-        <Image
-          className="w-7 h-auto"
-          src="data:image/svg+xml,%3Csvg width='120' height='30' xmlns='http://www.w3.org/2000/svg' fill='%23fff'%3E%3Ccircle cx='15' cy='15' r='15'%3E%3Canimate attributeName='r' from='15' to='15' begin='0s' dur='0.8s' values='15;9;15' calcMode='linear' repeatCount='indefinite'/%3E%3Canimate attributeName='fill-opacity' from='1' to='1' begin='0s' dur='0.8s' values='1;.5;1' calcMode='linear' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='60' cy='15' r='9' fill-opacity='.3'%3E%3Canimate attributeName='r' from='9' to='9' begin='0s' dur='0.8s' values='9;15;9' calcMode='linear' repeatCount='indefinite'/%3E%3Canimate attributeName='fill-opacity' from='.5' to='.5' begin='0s' dur='0.8s' values='.5;1;.5' calcMode='linear' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='105' cy='15' r='15'%3E%3Canimate attributeName='r' from='15' to='15' begin='0s' dur='0.8s' values='15;9;15' calcMode='linear' repeatCount='indefinite'/%3E%3Canimate attributeName='fill-opacity' from='1' to='1' begin='0s' dur='0.8s' values='1;.5;1' calcMode='linear' repeatCount='indefinite'/%3E%3C/circle%3E%3C/svg%3E"
-          alt="Loading..."
+      {props.icon && (
+        <props.icon
+          className={cn(
+            "w-5 h-5",
+            props.loading && "invisible",
+            props.children && "mr-2"
+          )}
         />
-      ) : (
-        children
+      )}
+      <span className={props.loading ? "invisible" : undefined}>
+        {props.children}
+      </span>
+      {props.loading && (
+        <span className="absolute inset-0 grid place-items-center">
+          <Loader
+            variant={props.variant === "secondary" ? "dark" : "light"}
+            size="sm"
+          />
+        </span>
       )}
     </button>
   )
