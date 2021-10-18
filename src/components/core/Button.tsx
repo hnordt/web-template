@@ -2,7 +2,8 @@ import React from "react"
 import cn from "classnames"
 import Loader from "components/core/Loader"
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant: "primary" | "secondary" | "danger"
   icon?: React.FunctionComponent<{ className: string }>
   fill?: boolean
