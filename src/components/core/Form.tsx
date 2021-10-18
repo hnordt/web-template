@@ -85,7 +85,7 @@ interface FormActionsProps {
 
 export function FormActions(props: FormActionsProps) {
   return (
-    <div className="flex col-span-12 justify-end mt-1 space-x-3">
+    <div className="flex col-span-12 justify-end mt-2 space-x-3">
       {props.children}
     </div>
   )
