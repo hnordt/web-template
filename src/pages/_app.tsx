@@ -4,8 +4,8 @@ import { QueryClientProvider, QueryClient } from "react-query"
 import ReactTooltip from "react-tooltip"
 import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
-import "styles/index.css"
 import "focus-visible"
+import "styles/index.css"
 
 const queryClient = new QueryClient()
 
