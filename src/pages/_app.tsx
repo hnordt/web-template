@@ -1,3 +1,4 @@
+import type { AppProps } from "next/app"
 import React from "react"
 import Head from "next/head"
 import { QueryClientProvider, QueryClient } from "react-query"
@@ -13,7 +14,7 @@ dayjs.extend(require("dayjs/plugin/utc"))
 dayjs.extend(require("dayjs/plugin/timezone"))
 dayjs.extend(require("dayjs/plugin/localizedFormat"))
 
-export default function App(props) {
+export default function App(props: AppProps) {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
