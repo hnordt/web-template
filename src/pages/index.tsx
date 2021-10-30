@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function IndexPage() {
+export default function Home() {
   return (
     <div className="p-6">
       <p>It works!</p>
