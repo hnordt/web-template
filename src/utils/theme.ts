@@ -1,3 +1,5 @@
 import resolveConfig from "tailwindcss/resolveConfig"
 
-export default resolveConfig(require("../../tailwind.config.js")).theme
+const theme = resolveConfig(require("../../tailwind.config.js")).theme
+
+export default theme

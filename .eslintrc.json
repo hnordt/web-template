@@ -1,5 +1,11 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:cypress/recommended", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:jest-dom/recommended",
+    "plugin:testing-library/react",
+    "plugin:cypress/recommended",
+    "prettier"
+  ],
   "rules": {
     "object-curly-newline": [
       "error",
