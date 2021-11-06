@@ -1,6 +1,6 @@
 import React from "react"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
-import cn from "classnames"
+import cx from "classnames"
 import omit from "lodash/fp/omit"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -16,8 +16,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
       <input
         {...omit("error", props)}
         ref={ref}
-        className={cn(
-          "block w-full sm:text-sm rounded-md",
+        className={cx(
+          "block w-full rounded-md sm:text-sm",
           props.error
             ? "placeholder-red-300 pr-10 text-red-900 border-red-300 focus:border-red-500 focus:ring-red-500"
             : "focus:ring-blue-500 focus:border-blue-500 border-gray-300",

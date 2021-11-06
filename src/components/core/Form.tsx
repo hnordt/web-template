@@ -6,7 +6,7 @@ import {
   useFormContext,
 } from "react-hook-form"
 import { useId } from "@reach/auto-id"
-import cn from "classnames"
+import cx from "classnames"
 import Button, { ButtonProps } from "components/core/Button"
 
 interface FormFieldProps {
@@ -28,7 +28,7 @@ export function FormField(props: FormFieldProps) {
 
   return (
     <div
-      className={cn(
+      className={cx(
         props.span === 1 && "col-span-1",
         props.span === 2 && "col-span-2",
         props.span === 3 && "col-span-3",

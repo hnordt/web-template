@@ -1,5 +1,5 @@
 import React from "react"
-import cn from "classnames"
+import cx from "classnames"
 
 interface BadgeProps {
   variant: "primary" | "secondary" | "success" | "warning" | "danger"
@@ -10,8 +10,8 @@ interface BadgeProps {
 export default function Badge(props: BadgeProps) {
   return (
     <span
-      className={cn(
-        "inline-flex items-center px-3 py-0.5 text-sm font-medium rounded-full whitespace-nowrap",
+      className={cx(
+        "inline-flex items-center px-3 py-0.5 whitespace-nowrap text-sm font-medium rounded-full",
         props.variant === "primary" && "text-blue-800 bg-blue-100",
         props.variant === "secondary" && "text-gray-800 bg-gray-100",
         props.variant === "success" && "text-green-800 bg-green-100",

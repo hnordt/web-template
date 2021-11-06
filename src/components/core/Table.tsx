@@ -2,7 +2,7 @@ import React from "react"
 import { UseQueryResult, UseInfiniteQueryResult } from "react-query"
 import { XCircleIcon } from "@heroicons/react/solid"
 import { GroupedVirtuoso } from "react-virtuoso"
-import cn from "classnames"
+import cx from "classnames"
 import _ from "lodash/fp"
 import Loader from "components/core/Loader"
 
@@ -55,7 +55,7 @@ function renderRow(
       {columns.map((column, columnIndex) => (
         <div
           key={`${columnIndex}${column.label}`}
-          className={cn(
+          className={cx(
             column.span === 1 && "col-span-1",
             column.span === 2 && "col-span-2",
             column.span === 3 && "col-span-3",
@@ -78,14 +78,14 @@ function renderRow(
             </span>
           ) : item.data === null ? (
             <div
-              className={cn(
+              className={cx(
                 "h-4 bg-gray-200 rounded animate-pulse",
                 ["w-2/4", "w-1/4", "w-3/4"][`${item.index}`] ?? "wfull"
               )}
             />
           ) : (
             <span
-              className={cn(
+              className={cx(
                 "block text-sm truncate",
                 {
                   primary: "font-medium",
@@ -206,7 +206,7 @@ export default function Table(props: TableProps) {
         const item = data[index]
         return (
           <div
-            className={cn(
+            className={cx(
               "grid gap-6 grid-cols-12 items-center px-6 border-b",
               index === itemCount - 1 ? "border-transparent" : "border-gray-200"
             )}

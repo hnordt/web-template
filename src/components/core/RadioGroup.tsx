@@ -1,6 +1,6 @@
 import React from "react"
 import { RadioGroup as BaseRadioGroup } from "@headlessui/react"
-import cn from "classnames"
+import cx from "classnames"
 
 interface RadioGroupProps {
   id?: string
@@ -40,7 +40,7 @@ export default React.forwardRef<any, RadioGroupProps>(function RadioGroup(
             key={option.value}
             value={option.value}
             className={({ checked }) =>
-              cn(
+              cx(
                 optionIndex === 0 ? "rounded-tl-md rounded-tr-md" : "",
                 optionIndex === props.options.length - 1
                   ? "rounded-bl-md rounded-br-md"
@@ -53,7 +53,7 @@ export default React.forwardRef<any, RadioGroupProps>(function RadioGroup(
             {({ active, checked }) => (
               <>
                 <span
-                  className={cn(
+                  className={cx(
                     checked
                       ? "bg-blue-600 border-transparent"
                       : "bg-white border-gray-300",
@@ -67,7 +67,7 @@ export default React.forwardRef<any, RadioGroupProps>(function RadioGroup(
                 <div className="flex flex-col ml-3">
                   <BaseRadioGroup.Label
                     as="span"
-                    className={cn(
+                    className={cx(
                       checked ? "text-blue-900" : "text-gray-900",
                       "block text-sm font-medium"
                     )}
@@ -77,7 +77,7 @@ export default React.forwardRef<any, RadioGroupProps>(function RadioGroup(
                   {option.description && (
                     <BaseRadioGroup.Description
                       as="span"
-                      className={cn(
+                      className={cx(
                         checked ? "text-blue-700" : "text-gray-500",
                         "block text-sm"
                       )}

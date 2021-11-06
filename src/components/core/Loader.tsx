@@ -1,5 +1,5 @@
 import React from "react"
-import cn from "classnames"
+import cx from "classnames"
 
 interface LoaderProps {
   className?: string
@@ -10,7 +10,7 @@ interface LoaderProps {
 export default function Loader(props: LoaderProps) {
   return (
     <svg
-      className={cn(
+      className={cx(
         "fill-current",
         props.variant === "light" && "text-white",
         props.variant === "dark" && "text-gray-900",

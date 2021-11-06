@@ -1,5 +1,5 @@
 import React from "react"
-import cn from "classnames"
+import cx from "classnames"
 import Loader from "components/core/Loader"
 
 export interface ButtonProps
@@ -17,8 +17,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   return (
     <button
       ref={ref}
-      className={cn(
-        "relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-blue-500 focus:ring-offset-2 focus:ring-2 whitespace-nowrap",
+      className={cx(
+        "relative inline-flex items-center justify-center px-4 py-2 whitespace-nowrap text-sm font-medium border rounded-md focus:outline-none shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
         props.variant === "primary" && [
           "text-white bg-blue-600 border-transparent",
           !(props.loading || props.disabled) && "hover:bg-blue-700",
@@ -41,7 +41,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     >
       {props.icon && (
         <props.icon
-          className={cn(
+          className={cx(
             "w-5 h-5",
             props.loading && "invisible",
             props.children && "mr-2"

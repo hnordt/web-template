@@ -1,6 +1,6 @@
 import React from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import cn from "classnames"
+import cx from "classnames"
 
 // TODO: add close button
 
@@ -54,7 +54,7 @@ export default function Modal(props: ModalProps) {
             leaveTo="opacity-0 scale-95"
           >
             <div
-              className={cn(
+              className={cx(
                 "inline-block align-middle my-8 w-full text-left transform transition-all",
                 !props.size && "max-w-md",
                 props.size === "lg" && "max-w-lg",
