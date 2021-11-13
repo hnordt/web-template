@@ -2,6 +2,7 @@ import type { AppProps } from "next/app"
 import React from "react"
 import Head from "next/head"
 import { QueryClientProvider, QueryClient } from "react-query"
+import { DesignSystemProvider } from "@modulz/design-system"
 import ReactTooltip from "react-tooltip"
 import { Toaster } from "react-hot-toast"
 import dayjs from "dayjs"
@@ -32,7 +33,9 @@ export default function App(props: AppProps) {
         <title></title>
       </Head>
       <QueryClientProvider client={queryClient}>
-        <props.Component {...props.pageProps} />
+        <DesignSystemProvider>
+          <props.Component {...props.pageProps} />
+        </DesignSystemProvider>
       </QueryClientProvider>
       <ReactTooltip
         className="!tracking-wide !rounded !px-3 !py-1.5 !text-xs"

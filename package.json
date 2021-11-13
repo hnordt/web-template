@@ -15,6 +15,7 @@
   "dependencies": {
     "@headlessui/react": "1.4.2",
     "@heroicons/react": "1.0.5",
+    "@modulz/design-system": "0.6.1",
     "@reach/auto-id": "0.16.0",
     "@xstate/react": "1.6.2",
     "axios": "0.24.0",
